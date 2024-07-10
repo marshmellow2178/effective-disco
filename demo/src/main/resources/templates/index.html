@@ -1,0 +1,41 @@
+<html layout:decorate="~{layout}">
+<main class="container" layout:fragment="content">
+	<hr>
+	<form name = "searchForm" class="form-row mt-3">
+		<select class="form-control col-4" id="category"></select>
+		<div class="input-group col">
+			<input type="search" class="form-control" id="keyword_input">
+			<div class="input-group-append">
+				<input type="submit" value="검색" class="btn btn-custom">
+			</div>
+		</div>
+	</form>
+	<hr>
+	<div class="map_wrap">
+		<div id="map"></div>
+		<div class="custom_zoomctrl input-group">
+			<button id="zoomin" role="button" class="btn btn-outline-secondary"
+				type="button">+</button>
+			<input type="number" id="maplevel" readonly class="form-control">
+			<button id="zoomout" role="button" class="btn btn-outline-secondary"
+				type="button">-</button>
+		</div>
+	</div>
+	<hr>
+	
+	<section class="place_info">
+		<img id="dest_img" src="/img/ALL.png">
+		<div>
+			<a href = "#" id = "dest_id">
+				<b id = "dest_name">현재 위치</b>
+			</a>
+			<p id="dest_addr"></p>
+			<p>
+				현재 위치<span id="dest_distance"></span>
+			</p>
+		</div>
+	</section>
+	<hr>
+	<script defer src = "/js/index.js"></script>
+</main>
+</html>

@@ -1,0 +1,17 @@
+<header th:fragment="headerFragment" class = "container">
+    <h3><a class="nav-link" href="/">Home</a></h3>
+    <ol class="nav">
+        <li class="nav-item">
+            <a th:if="${session.userInfo==null}"
+            class="nav-link" th:href="@{|login|}">Login</a>
+            <a th:unless ="${session.userInfo==null}"
+            class = "nav-link" href = "/logout">Logout</a>
+        </li>
+        <li class="nav-item">
+            <a th:if="${session.userInfo==null}"
+            class="nav-link" href = "#">Sign up</a>
+            <a th:unless ="${session.userInfo==null}"
+            class = "nav-link" href = "/mypage">MyPage</a>
+        </li>
+    </ol>
+</header>
