@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -46,7 +47,12 @@ public class ReviewCtrl {
 			return "redirect:/login";
 		}
 		Place place = placeRepo.findById(placeId).get();
-		Review review = new Review( content, score, user, place);
+		Review review = new Review();
+		review.setContent(content);
+		review.setScore(score);
+		review.setUser(user);
+		review.setPlace(place);
+		review.setCreateDate(LocalDateTime.now());
 		reviewRepo.save(review);
 		place.review(review);
 		return "redirect:/place/detail?id="+placeId;
@@ -76,7 +82,10 @@ public class ReviewCtrl {
 			
 		}
 		Review review = reviewRepo.findById(id);
-		reviewRepo.save(review.update(content, score));
+		review.setContent(content);
+		review.setScore(score);
+		review.setModifyDate(LocalDateTime.now());
+		reviewRepo.save(review);
 		return "redirect:/place/detail?id="+placeId;
 	}
 	
@@ -91,6 +100,8 @@ public class ReviewCtrl {
 		}
 		Review review = reviewRepo.findById(id);
 		String placeId = review.getPlaceId();
+		Place p = placeRepo.findById(placeId).get();
+		p.deleteReview(review);
 		List<Recommend> recommendList = rcRepo.findByReviewId(id);
 		for(int i = 0;i<recommendList.size();i++) {
 			rcRepo.delete(recommendList.get(i));
@@ -119,17 +130,19 @@ public class ReviewCtrl {
 	@PostMapping("/recommend")
 	public void recommend(
 			@RequestBody int reviewId,
+			@RequestBody boolean isRecommend,
 			HttpSession session
 			) {
 		Userinfo user = (Userinfo)session.getAttribute("userInfo");
-		Recommend rc = rcRepo.findByReviewIdAndUid(reviewId, user.getId());
+		
 		Review review = reviewRepo.findById(reviewId);
-		if(rc!=null) {
-			review.recommendCancel();
+		if(isRecommend) {
+			Recommend rc = rcRepo.findByReviewIdAndUid(reviewId, user.getId());
+			review.recommendCancel(rc);
 			rcRepo.delete(rc);
 		}else {
-			review.recommend();
-			rc = new Recommend(user, review);
+			Recommend rc = new Recommend(user, review);
+			review.recommend(rc);
 			rcRepo.save(rc);
 		}
 	}

@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -50,12 +51,26 @@ public class PlaceCtrl {
 		if(user==null) {
 			return "redirect:/login";
 		}
-		Pageable pageable = PageRequest.of(page, 10, Direction.DESC, order);
+		Pageable pageable = PageRequest.of(page, 10, Direction.ASC, order);
 		Page<Review> reviewPage = reviewRepo.findByPlaceId(placeid, pageable);
 		Place place = placeRepo.findById(placeid).get();
+		List<Review> reviewList = place.getReviewList();
+		int[] scores = new int[6];
+		double avgScore = 0.0;
+		if(reviewPage.getTotalElements()!=0) {
+			for(int i = 0;i<reviewList.size();i++) {
+				int score = reviewList.get(i).getScore();
+				scores[0] += score;
+				scores[score]++;
+			} //[총점, 1점인원, 2점인원, 3점인원, 4점인원, 5점인원]
+			avgScore = Math.round((double)scores[0]/reviewList.size()*10);
+			avgScore /=10;
+		}
 		Review myReview = reviewRepo.findByUidAndPlaceId(user.getId(), placeid);
 		model.addAttribute("myReview", myReview);
 		model.addAttribute("reviewPage", reviewPage);
+		model.addAttribute("scoreInfo", scores);
+		model.addAttribute("avgScore", avgScore);
 		model.addAttribute("place", place);
 		return "place_detail";
 	}
