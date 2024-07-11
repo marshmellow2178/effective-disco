@@ -11,4 +11,6 @@ public class PlaceVO {
 	private String ctgr;
 	private String addr;
 	private String brand;
+	private String latitude;
+	private String longitude;
 }

@@ -13,10 +13,6 @@ footer{
 table th{
 	text-align: center;
 }
-.disabled{
-	color:#6c757d;
-	border: 1px #6c757d solid;
-}
 #map {
 	width: 100%;
 	height: 600px;
@@ -45,15 +41,17 @@ table th{
 	color: #563d7c;
 }
 .btn-outline-disabled{
-	border-color:  #6c757d;
-	background-color: white;
-	color: #6c757d;
+	border-color: rgba(118, 118, 118, 0.3);
+	background-color:#e9ecef;
+	color: black;
 }
 .btn-toggle{
-	background-color: white;
+	background-color:white;
 	color: #007bff;
-	border: 1px solid #007bff;
+	border: 1px solid white;
 	margin-bottom: 0.5rem;
+	padding: 0;
+	text-decoration:underline;
 }
 .map_wrap{
 	position: relative;
@@ -74,8 +72,11 @@ table th{
 	width: 4rem;
 	margin-left: 1rem;
 }
+.review_title{
+	margin-bottom:0.5rem;
+}
 .review_content{
-	margin: 0.5rem;
+	margin: 0 0.5rem;
 	max-height: 72px;
 	white-space: pre;
 	overflow:hidden;

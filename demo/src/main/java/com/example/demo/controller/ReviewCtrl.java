@@ -23,6 +23,9 @@ import com.example.demo.entity.Place;
 import com.example.demo.entity.Recommend;
 import com.example.demo.entity.Review;
 import com.example.demo.entity.Userinfo;
+import com.example.demo.vo.PageInfo;
+import com.example.demo.vo.RecommendVO;
+
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -54,8 +57,58 @@ public class ReviewCtrl {
 		review.setPlace(place);
 		review.setCreateDate(LocalDateTime.now());
 		reviewRepo.save(review);
-		place.review(review);
-		return "redirect:/place/detail?id="+placeId;
+		return "redirect:/review/list?id="+placeId;
+	}
+	
+	@GetMapping("/list")
+	public String getList(
+			@RequestParam(value = "id") String placeid,
+			@RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "sort", defaultValue = "r") String sort,
+			Model model,
+			HttpSession session) {
+		if(page<=0) { page = 1; }
+		Pageable pageable = PageRequest.of(page-1, 10, Direction.DESC, "recCount");
+		if(sort.equals("d")) {
+			pageable = PageRequest.of(page-1, 10, Direction.ASC, "createDate");
+		}
+		Userinfo user = (Userinfo)session.getAttribute("userInfo");
+		Place place = placeRepo.findById(placeid).get();
+		Page<Review> reviewPage = reviewRepo.findByPlaceId(placeid, pageable);
+		PageInfo reviewPageInfo = new PageInfo();
+		
+		reviewPageInfo.setReviewPageInfo(reviewPage);
+		List<Review> reviewList = reviewPage.getContent();
+		int[] scores = new int[6];
+		double avgScore = 0.0;
+		for(int i = 0;i<reviewList.size();i++) {
+			Review review = reviewList.get(i);
+			int score = review.getScore();
+			scores[0] += score;
+			scores[score]++; //[총점, 1점인원, 2점인원, 3점인원, 4점인원, 5점인원]
+			if(user!=null && review.getRecCount()>0) {
+				List<Recommend> rList = rcRepo.findByReviewId(review.getId());
+				for(Recommend r: rList) {
+					if(r.getUid().equals(user.getId())) {
+						review.setRecommend(true);
+						break;
+					}
+				}
+			} //리뷰 추천 여부 확인하기
+		}
+		avgScore = Math.round((double)scores[0]/reviewList.size()*10);
+		avgScore /=10;
+		
+		if(user!=null) {
+			Review myReview = reviewRepo.findByUidAndPlaceId(user.getId(), placeid);
+			model.addAttribute("myReview", myReview);
+		}
+		model.addAttribute("reviewPageInfo", reviewPageInfo);
+		model.addAttribute("place", place);
+		model.addAttribute("reviewList", reviewList);
+		model.addAttribute("scoreInfo", scores);
+		model.addAttribute("avgScore", avgScore);
+		return "review_list";
 	}
 	
 	@GetMapping("/modify")
@@ -86,7 +139,7 @@ public class ReviewCtrl {
 		review.setScore(score);
 		review.setModifyDate(LocalDateTime.now());
 		reviewRepo.save(review);
-		return "redirect:/place/detail?id="+placeId;
+		return "redirect:/review/list?id="+placeId;
 	}
 	
 	@GetMapping("/delete")
@@ -99,15 +152,8 @@ public class ReviewCtrl {
 			return "redirect:/login";
 		}
 		Review review = reviewRepo.findById(id);
-		String placeId = review.getPlaceId();
-		Place p = placeRepo.findById(placeId).get();
-		p.deleteReview(review);
-		List<Recommend> recommendList = rcRepo.findByReviewId(id);
-		for(int i = 0;i<recommendList.size();i++) {
-			rcRepo.delete(recommendList.get(i));
-		}
 		reviewRepo.delete(review);
-		return "redirect:/place/detail?id="+placeId;
+		return "redirect:/review/list?id="+review.getPlaceId();
 	}
 	
 	@GetMapping("/mypage")
@@ -129,20 +175,18 @@ public class ReviewCtrl {
 	@ResponseBody
 	@PostMapping("/recommend")
 	public void recommend(
-			@RequestBody int reviewId,
-			@RequestBody boolean isRecommend,
+			@RequestBody RecommendVO revo,
 			HttpSession session
 			) {
 		Userinfo user = (Userinfo)session.getAttribute("userInfo");
-		
-		Review review = reviewRepo.findById(reviewId);
-		if(isRecommend) {
-			Recommend rc = rcRepo.findByReviewIdAndUid(reviewId, user.getId());
-			review.recommendCancel(rc);
+		Review review = reviewRepo.findById(revo.getReviewId());
+		Recommend rc = rcRepo.findByReviewIdAndUid(revo.getReviewId(), user.getId());
+		if(rc!=null) {
 			rcRepo.delete(rc);
 		}else {
-			Recommend rc = new Recommend(user, review);
-			review.recommend(rc);
+			rc = new Recommend();
+			rc.setUser(user);
+			rc.setReview(review);
 			rcRepo.save(rc);
 		}
 	}
@@ -159,6 +203,6 @@ public class ReviewCtrl {
 		Pageable pageable = PageRequest.of(page, 10, Direction.DESC, "createdate");
 		Page<Review> reviewPage = reviewRepo.findByUid(user.getId(), pageable);
 		model.addAttribute("reviewPage", reviewPage);
-		return "mypage/review";
+		return "mypage_review";
 	}
 }

@@ -1,187 +1,64 @@
-<html layout:decorate = "~{layout}">
-<main class="container" layout:fragment = "content"
-	th:with = "reviewCounts = ${reviewPage.getTotalElements}">
-	<!-- ${values}
-	myReview	내 리뷰
-	place		장소
-	reviewPage	리뷰(페이징)
-	scoreInfo	평점정보 배열[총점, 1, 2, 3, 4, 5]
-	avgScore	평균평점
-	 -->
-    <hr>
-    <section class="place_info">
-		<img th:unless= "${place.ctgr == ''}" th:src="@{${'/img/'+place.ctgr+'.png'}}" id = "dest_img">
+<html layout:decorate="~{layout}">
+<main class="container" layout:fragment="content">
+	<hr>
+	<form name = "searchForm" class="input-group mt-3">
+		<input type = "text" class = "form-control" id = "start_name">
+		<span class = "input-group-text">▶</span>
+		<input type = "text" class = "form-control" th:value = "${place.placename}">
+	</form>
+	<hr>
+	<div class="map_wrap">
+		<div id="map"></div>
+	</div>
+	<hr>
+
+	<section class="place_info">
+		<input type= "hidden" id = "place_x" th:value = "${place.longitude}">
+		<input type= "hidden" id = "place_y" th:value = "${place.latitude}">
 		<img th:if = "${place.ctgr==''}" src="/img/all.png" id = "dest_img">
+		<img th:unless = "${place.ctgr==''}" th:src="@{${'/img/'+place.ctgr+'.png'}}" id = "dest_img">
 		<div>
 			<b th:text = "${place.placename}"></b>
 			<p th:text = "${place.addr}"></p>
-			<span th:text = "|⭐ ${avgScore} (💬 ${reviewCounts})|"></span>
+			<a th:href = "@{|/review/list?id=${place.id}|}">리뷰</a>
 		</div>
-		<table class = "table table-sm col-4 table-borderless">
-			<tr th:each = "idx:${#numbers.sequence(5, 1)}">
-				<th scope = "row" class = "col-2" th:text = "${idx}"></th>
-				<td><input type = "range" min = 0 th:max = "${reviewCounts}" th:value = ${scoreInfo[idx]} disabled></td>
-				<td th:text = "${scoreInfo[idx]}"></td>
-			</tr>
-		</table>
 	</section>
 	<hr>
- 	<form th:if = "${myReview == null}" action = "/review/create" method = "post">
- 		<input type = "hidden" th:value = "${param.id}" name = "placeid">
- 		<div class = "input-group">
- 			<span class = "input-group-text">평점</span>
- 			<input type = "number" min = "1" max = "5" name = "score" class = "form-control col-2">
- 		</div>
- 		<textarea class = "form-control my-3" name = "content" rows = "5">내용</textarea>
- 		<input type = "submit" class = "btn btn-custom" value = "제출">
-	</form>
-	<div th:unless = "${myReview == null}" action = "/modifyReview" method = "post">
-		<span th:text = "|⭐ ${myReview.score}|"></span>
-		<b th:text = "${myReview.uid}" class = "user_id"></b>
-		<span th:if = "${myReview.modifyDate == null}" th:text = "${#temporals.format(myReview.createDate, 'yy/MM/dd')}"></span>
-	 	<span th:unless= "${myReview.modifyDate == null}" th:text = "|${#temporals.format(myReview.modifyDate, 'yy/MM/dd')} (수정됨)|"></span> 		
-	 	
- 		<p th:text = "${myReview.content}" class = "review_content show"></p>
- 		<span class = "btn btn-sm btn-outline-disabled" th:text = "|👍 ${myReview.recCount}|"></span>
- 		<a th:href = "@{|/review/modify?id=${myReview.id}&place=${place.id}|}" role = "button" class = "btn btn-sm btn-custom">수정</a>
- 		<a href = "javascript:void(0);" role = "button" class = "btn btn-sm btn-danger" id = "del_btn" 
- 		th:data-uri = "@{|/review/delete?id=${myReview.id}|}">삭제</a>
- 	</div>
- 	<hr>
- 	<form id = "review_search_form" class = "input-group align-items-center justify-content-between">
-	 	<input type = "hidden" name = "id" th:value = "${param.id}">
-	 	<input type = "hidden" name = "page" th:value = "${param.page}" id = "page_input">
-	 	<span th:text = "|${reviewCounts}개의 리뷰가 있습니다|"></span>
-	 	<select class = "form-control col-3" name = "order" id = "order_input">
-	 		<option value = "recommend" th:selected = "${param.order} == 'recommend'">중요도순</option>
-	 		<option value = "createDate" th:selected = "${param.order} == 'createDate'">최신순</option>
-	 	</select>
- 	</form>
- 	<div th:unless = "${reviewPage.isEmpty()}">
-	 	<ul class = "list-group my-3">
-	 		<li class = "list-group-item review_item" th:each = "review : ${reviewPage}">
-	 			<div>
-	 				<span th:text = "|⭐ ${review.score}|"></span>
-	 				<b th:text = "${review.uid}" class = "user_id"></b>
-	 				<span th:if = "${review.modifyDate == null}" th:text = "${#temporals.format(review.createDate, 'yy/MM/dd')}"></span>
-	 				<span th:unless= "${review.modifyDate == null}" th:text = "|${#temporals.format(review.modifyDate, 'yy/MM/dd')} (수정됨)|"></span>
-	 			</div>
-	 			<div>
-	 				<p th:id = "|content${review.id}|"  
-	 				th:text = "${review.content}" class = "review_content"></p>
-	 			</div>
-	 			<div th:if = "${review.uid != session.userInfo.getId}">
-	 				<div th:if = "${#lists.contains(review.recommendList, session.userInfo.id)}">
-	 				<span class = "btn btn-outline-custom btn-sm recommend" th:data-id = "${review.id}"
-	 				 data-check = "false"
-	 				 th:text = "|👍 ${review.recCount}|"></span>
-	 				</div>
-	 				<div th:unless = "${#lists.contains(review.recommendList, session.userInfo.id)}">
-	 				<span class = "btn btn-custom btn-sm recommend" th:data-id = "${review.id}" 
-	 				data-check = "true"
-	 				th:text = "|👍 ${review.recCount}|"></span>
-	 				</div>
- 				</div>
- 				<div th:if = "${review.uid == session.userInfo.getId}">
- 					<span class = "btn btn-sm btn-outline-disabled" th:text = "|👍 ${review.recCount}|"></span>
-					<a th:href = "@{|/review/modify?id=${review.id}&place=${place.id}|}" role = "button" class = "btn btn-sm btn-custom">수정</a>
-					<a href = "javascript:void(0);" role = "button" class = "btn btn-sm btn-danger" id = "del_btn" 
-						th:data-uri = "@{|/review/delete?id=${review.id}|}">삭제</a>
-				</div>
-	 		</li>
-	 	</ul>
-	 	
-	 	<ul class = "pagination justify-content-center">
-	 	<th:block th:with = "block = 10,
-	 	sidx = ${(reviewPage.number/block)*block+1}, 
-	 	eidx = ${(reviewPage.totalPages > sidx+(block-1) ? sidx+(block-1) : reviewPage.totalPages)}">
-	 		<li class = "page-item" th:classappend="!${reviewPage.hasPrevious} ? disabled">
-	 			<a class = "page-link" th:data-page = "${sidx}-1">&lt;</a>
-	 		</li>
-	 		<li th:each = "idx:${#numbers.sequence(sidx, eidx)}"
-	 			th:text = "${reviewPage.number}"
-	 			class = "page-item"
-	 			th:classappend = "${reviewPage.number == param.page} ? active">
-	 			<a class = "page-link" th:text = "${idx}" th:data-page = "${idx}"></a>
-	 		</li>
-	 		<li class = "page-item" th:classappend="!${reviewPage.hasNext} ? disabled">
-	 			<a class = "page-link" th:data-page = "${eidx+1}">&gt;</a>
-	 		</li>
-	 	</th:block>
-	 	</ul>
- 	</div>
- 	<div th:if = "${reviewPage.isEmpty()}">
- 		 작성된 리뷰가 없습니다
- 	</div>
- 	<hr>
- 	<script>
-	let delBtn = document.querySelector("#del_btn");
-	let reviewSearchForm = document.querySelector('#review_search_form');
-	let pageInput = document.querySelector("#page_input");
-	let orderInput = document.querySelector('#order_input');
-	let pageItems = document.querySelectorAll(".page-item");
-	let reviewContents = document.querySelectorAll(".review_content");
-	let showClass = 'show';
-	let recommends = document.querySelectorAll('.recommend');
+	<script defer src= "/js/map.js"></script>
+	<script>
+	let placeX = document.querySelector("#place_x");
+	let placeY = document.querySelector("#place_y");
+	let startName = document.querySelector("#start_name");
 	
-	recommends.forEach(function(r){
-		r.addEventListener('click', function(event){
-			fetch("/review/recommend", {
-				method: 'post',
-				headers: {
-					'content-type': 'application/json'
-				},
-				body: JSON.stringify({
-					'reviewId': this.dataset.id, //이벤트 아님
-					'isRecommend' : this.dataset.check,
-				}),
-			})
-			.then((response)=>{
-				if(response.ok()){ return; }
-			})
-			.catch(err=>console.log(err));
-		})
-	});
-	
-	reviewContents.forEach(function(p){
-		if(p.offsetHeight >= 72 && p.id != "") { //1rem = 10px
-			let btn = document.createElement("button");
-			btn.classList.add('btn');
-			btn.classList.add('btn-sm');
-			btn.classList.add('btn-toggle');
-			btn.innerText = "more";
-			btn.setAttribute('id','more'+p.id.substring(7));
-			btn.addEventListener('click', function(event){
-				let btnId = event.target.id.substring(4);
-				let targetContent = document.querySelector('#content'+btnId);
-				if(targetContent.classList.contains(showClass)){
-					targetContent.classList.remove(showClass);
-					event.target.innerText = "more";
-				}else{
-					targetContent.classList.add(showClass);
-					event.target.innerText = "hide";
-				}
-			})
-			p.parentElement.appendChild(btn);
-		}
-	});
-	
-	orderInput.addEventListener('change', function(){
-		reviewSearchForm.submit();
-	});
-	
-	pageItems.forEach(function(item){
-		item.addEventListener('click', function(){
-			pageInput.value = this.dataset.page;
-			reviewSearchForm.submit();
+	function success(pos){
+		let destLat = Number(placeY.value);
+		let destLng = Number(placeX.value);
+		let startLat = pos.coords.latitude;
+		let startLng = pos.coords.longitude;
+		
+		let currentPos = new kakao.maps.LatLng(startLat, startLng);
+		let centerPos = new kakao.maps.LatLng((startLat+destLat)/2, (startLng+destLng)/2);
+		drawMap(centerPos);
+		//map.setBounds()
+		let currentMarker = new kakao.maps.Marker({
+			map:map,
+		    position: currentPos,
+		    image: markerImage
 		});
-	});
-	
-	delBtn.addEventListener('click', function(){
-		if(confirm('정말 삭제하시겠습니까?')){
-			location.href = this.dataset.uri;
-		}
-	});
- 	</script>
+		let destMarker = new kakao.maps.Marker({
+	        map: map,
+	        position: new kakao.maps.LatLng(destLat, destLng)
+	    });
+		
+		geocoder.coord2Address(currentPos.getLng(), currentPos.getLat(), function(result, status){
+			if (status === kakao.maps.services.Status.OK) {
+				let content = result[0].address.address_name;
+				startName.value = content;
+			}
+		});
+		
+	}//현재위치 로드
+
+	</script>
 </main>
 </html>

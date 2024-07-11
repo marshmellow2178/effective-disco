@@ -32,8 +32,13 @@ public class Recommend {
 	@JoinColumn(name = "review_id", insertable = false, updatable = false)
 	private Review review;
 	
-	public Recommend(Userinfo user, Review review) {
+	public void setUser(Userinfo user) {
+		this.user = user;
 		this.uid = user.getId();
+	}
+	
+	public void setReview(Review review) {
+		this.review = review;
 		this.reviewId = review.getId();
 	}
 }
