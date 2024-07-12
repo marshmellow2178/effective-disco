@@ -1,41 +1,52 @@
 <html layout:decorate="~{layout}">
 <main class="container" layout:fragment="content">
 	<hr>
-	<form name = "searchForm" class="form-row mt-3">
-		<select class="form-control col-4" id="category"></select>
-		<div class="input-group col">
+	<form id = "start_form">
+	<div class = "input-group">
+		<label class = "col-form-label">🔰 출발</label>
+		<span class = "input-group-text col-4 mr-3" id = "start_name">현재 위치</span>
+		<select class="form-control col-2" id = "start_select">
+			<option>북마크</option>
+		</select>
+		<input type="search" class="form-control" id="start_addr" readonly>
+		<input type = "submit" class="btn btn-custom" id="start_btn" value = "설정">
+	</div>
+	</form>
+	
+	<form id = "dest_form">
+		<div class = "input-group mt-3">
+			<label class = "col-form-label">🔍 검색</label>
+			<select class="form-control col-2" id="category"></select>
+			<select class="form-control col-2 mr-3" id="brand">
+				
+			</select>
+			<select class="form-control col-2" id="favorite">
+				<option>북마크</option>
+			</select>
 			<input type="search" class="form-control" id="keyword_input">
-			<div class="input-group-append">
-				<input type="submit" value="검색" class="btn btn-custom">
-			</div>
+			<input type="submit" value="검색" class="btn btn-custom">
 		</div>
 	</form>
 	<hr>
 	<div class="map_wrap">
 		<div id="map"></div>
-		<div class="custom_zoomctrl input-group">
-			<button id="zoomin" role="button" class="btn btn-outline-secondary"
-				type="button">+</button>
-			<input type="number" id="maplevel" readonly class="form-control">
-			<button id="zoomout" role="button" class="btn btn-outline-secondary"
-				type="button">-</button>
-		</div>
 	</div>
 	<hr>
 	
 	<section class="place_info">
 		<img id="dest_img" src="/img/ALL.png">
 		<div>
-			<a href = "#" id = "dest_id">
-				<b id = "dest_name">현재 위치</b>
-			</a>
-			<p id="dest_addr"></p>
-			<p>
-				현재 위치<span id="dest_distance"></span>
-			</p>
+			<b id = "dest_name">현재 위치</b>
+			<br>
+			<a class = "btn btn-sm btn-outline-custom" id ="is_fav" href = "#">📍 북마크</a>
+			<a class = "btn btn-sm btn-outline-custom" id = "dest_id" href = "#"></a>
+			<a class = "btn btn-sm btn-outline-custom" href = "#" id = "dest_detail"></a>
+			<br>
+			<span id="dest_addr"></span>
+			<br>
+			<span id="dest_distance"></span>
 		</div>
 	</section>
-	<hr>
 	<script defer src = "/js/map.js"></script>
 	<script>
 	const ctgr_code = ['', 'MT1', 'CS2', 'PS3', 'SC4', 'AC5', 'PK6', 'OL7', 'SW8', 'BK9',
@@ -44,25 +55,26 @@
 	    '지하철역', '은행', '문화시설', '중개업소', '공공기관', '관광명소', '숙박', '음식점', '카페', '병원', '약국'];
 
 	let category = document.querySelector("#category");
+	let brand = document.querySelector("#brand");
 	let infowindow = new kakao.maps.InfoWindow({ zindex: 1 });
 	
-	let mapLevelInput=document.querySelector('#maplevel'); //input
-	let zoomInBtn = document.querySelector('#zoomin');
-	let zoomOutBtn = document.querySelector('#zoomout');
 	let ps = new kakao.maps.services.Places();
-	let form = document.querySelector('form');
+	let form = document.querySelector('#dest_form');
 	let keywordInput = document.querySelector("#keyword_input");
 	let placeMarkers = []; //검색된 장소 마커
 	let mapRange = 500; //검색 범위
+	let startAddr = document.querySelector("#start_addr");
+	
+	let destDiv = document.querySelector('.place_info > div');
 	let destId = document.querySelector("#dest_id");
 	let destName = document.querySelector('#dest_name');
 	let destDist = document.querySelector('#dest_distance');
 	let destImg = document.querySelector('#dest_img');
 	let destAddr = document.querySelector('#dest_addr');
-
+	let destDetail = document.querySelector('#dest_detail');
+	let isFav = document.querySelector('#is_fav');
+	
 	form.addEventListener('submit', onFormSubmit);
-	zoomInBtn.addEventListener('click', zoomIn);
-	zoomOutBtn.addEventListener('click', zoomOut);
 	for (let i = 0; i < ctgr_code.length; i++) {
 	    let option = document.createElement('option');
 	    option.value = ctgr_code[i].toLowerCase();
@@ -70,7 +82,10 @@
 	    category.appendChild(option);
 	}// 카테고리 메뉴 생성하기
 	category.addEventListener('change', onSelect);
-
+	brand.addEventListener('change', function(event){
+		keywordInput.value = event.target.selectedOptions[0].innerText;
+	});
+	
 	function success(pos){
 		currentPos = new kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
 		drawMap(currentPos);
@@ -79,7 +94,7 @@
 		    position: currentPos,
 		    image: markerImage
 		});
-		mapLevelInput.value = map.getLevel();
+		
 		let circle = new kakao.maps.Circle({
 		    center : currentPos,
 		    radius : mapRange,
@@ -96,9 +111,8 @@
 	            let content = result[0].address.address_name;
 	            infowindow.setContent('<div style="padding:5px;font-size:12px;">' + content + '</div>');
 	            infowindow.open(map, currentMarker);
-
+				startAddr.value = content;
 			    destName.innerText = '현재 위치';
-				destId.href = 'javascript:void(0);';
 			    destAddr.innerText = content;
 			    destDist.innerText = '';
 				destImg.setAttribute('src', '/img/all.png');
@@ -110,20 +124,28 @@
 	    geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
 	}//지도에 현재위치와 주소표시하기
 		
-	function zoomIn(){
-	    let level = map.getLevel();
-	    map.setLevel(--level);
-	    mapLevelInput.value = level;
-	}//확대
-
-	function zoomOut(){
-	    let level = map.getLevel();
-	    map.setLevel(++level);
-	    mapLevelInput.value = level;
-	}
-	//축소
-
 	function onSelect(event){ 
+		brand.replaceChildren();
+		let option = document.createElement('option');
+		option.value = 0;
+		option.innerText = '브랜드 선택';
+		brand.appendChild(option);
+		
+		fetch("/brand/list?ctgr="+category.value, {
+	    	method: 'get',
+	    	headers: {
+	            'content-type': 'text'
+	        },
+	    })
+	    .then((response)=>response.json())
+	    .then((data)=>{
+	    	data.forEach(item=>{
+	    		let option = document.createElement('option');
+	    		option.value = item.id;
+	    		option.innerText = item.name;
+	    		brand.appendChild(option);
+	    	});
+	    });
 	    infowindow.close(); //지도 클리어
 	    keywordInput.value = ''; //검색창 클리어
 	    ps.categorySearch(event.target.value, placesSearchCB, {
@@ -157,19 +179,38 @@
 	}//검색된 목록 -> 마커
 	
 	function displayMarker(place) {
-	    var marker = new kakao.maps.Marker({
+		let check = checkPlace(place);
+		var marker = new kakao.maps.Marker({
 	        map: map,
 	        position: new kakao.maps.LatLng(place.y, place.x)
 	    });
+		if(check == 0){
+			savePlace(place);
+		}else if(check==2){
+			marker.setImage(myFavMarker);
+		}
 	    placeMarkers.push(marker);
 	    kakao.maps.event.addListener(marker, 'click', function () {
 	        infowindow.close();
 	        infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
 	        infowindow.open(map, marker);
-	        savePlace(place);
-	        showPlaceInfo(place);
+	        showPlaceInfo(place, check);
 	    });
 	}//마커 목록 표시, 이벤트리스너(장소정보 표시 & 저장)
+	
+	function checkPlace(place){
+		let check = 0;
+		fetch("/place/check?id="+place.id, {
+	    	method: 'get',
+	    	headers: {
+	            'content-type': 'text'
+	        }
+	    })
+	    .then((response)=>{
+	    	return response;
+	    })
+	    .catch(err=>console.log(err));
+	}
 
 	function savePlace(place){
 		fetch("/place/save", {
@@ -191,14 +232,24 @@
 	    	if(response.ok){return;}
 	    })
 	    .catch(err=>console.log(err));
+		
 	}//클릭 시 장소 저장
 
-	function showPlaceInfo(place){
+	function showPlaceInfo(place, check){
+		destDiv.classList.remove('hidden');
 	    destName.innerText = place.place_name;
 		destId.href = '/place/detail?id='+place.id;
+		destId.innerText = '길찾기';
 	    destAddr.innerText = place.address_name;
-	    destDist.innerText = '에서 '+place.distance+'m';
+	    destDetail.href = '/review/list?id='+place.id;
+	    destDetail.innerText = '리뷰';
+	    destDist.innerText = '현재 위치에서 '+place.distance+'m';
 	    
+	    if(check==2){
+	    	isFav.classList.remove('btn-outline-custom');
+	    	isFav.classList.add('btn-custom');
+	    }
+	    isFav.href = "/place/favorite?id"+place.id;
 	    let src = place.category_group_code;
 	    if(src == ''){
 	        src = 'all';

@@ -8,5 +8,6 @@ import com.example.demo.entity.Myplace;
 
 public interface MyplaceRepo extends JpaRepository<Myplace, Integer> {
 	Page<Myplace> findByUid(String uid, Pageable pageable);
+	Long countByUidAndPlaceId(String uid, String placeid);
 	Myplace findByUidAndPlaceId(String uid, String placeid);
 }

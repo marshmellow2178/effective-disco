@@ -19,11 +19,12 @@
 		<img th:unless = "${place.ctgr==''}" th:src="@{${'/img/'+place.ctgr+'.png'}}" id = "dest_img">
 		<div>
 			<b th:text = "${place.placename}"></b>
-			<p th:text = "${place.addr}"></p>
+			<br>
+			<button class = "btn btn-sm btn-outline-custom">북마크</button>
 			<a th:href = "@{|/review/list?id=${place.id}|}">리뷰</a>
+			<p th:text = "${place.addr}"></p>
 		</div>
 	</section>
-	<hr>
 	<script defer src= "/js/map.js"></script>
 	<script>
 	let placeX = document.querySelector("#place_x");
@@ -31,15 +32,15 @@
 	let startName = document.querySelector("#start_name");
 	
 	function success(pos){
-		let destLat = Number(placeY.value);
-		let destLng = Number(placeX.value);
-		let startLat = pos.coords.latitude;
-		let startLng = pos.coords.longitude;
+		currentPos = new kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+		let destPos = new kakao.maps.LatLng(Number(placeY.value), Number(placeX.value));
+		drawMap(currentPos);
 		
-		let currentPos = new kakao.maps.LatLng(startLat, startLng);
-		let centerPos = new kakao.maps.LatLng((startLat+destLat)/2, (startLng+destLng)/2);
-		drawMap(centerPos);
-		//map.setBounds()
+		let points = [
+			currentPos,
+			destPos
+		];
+		let bounds = new kakao.maps.LatLngBounds();
 		let currentMarker = new kakao.maps.Marker({
 			map:map,
 		    position: currentPos,
@@ -47,8 +48,11 @@
 		});
 		let destMarker = new kakao.maps.Marker({
 	        map: map,
-	        position: new kakao.maps.LatLng(destLat, destLng)
+	        position: destPos
 	    });
+		
+		bounds.extend(currentPos);
+		bounds.extend(destPos);
 		
 		geocoder.coord2Address(currentPos.getLng(), currentPos.getLat(), function(result, status){
 			if (status === kakao.maps.services.Status.OK) {
@@ -57,7 +61,38 @@
 			}
 		});
 		
-	}//현재위치 로드
+		let linepath =[];
+		
+		let origin = 'origin='+pos.coords.longitude+","+pos.coords.latitude;
+		let dest = '&destination='+Number(placeX.value)+','+Number(placeY.value);
+		fetch('https://apis-navi.kakaomobility.com/v1/directions?'+origin+
+				dest+"&car_type=7&priority=distance&summary=false&avoid=motorway", {
+	    	method: 'get',
+	    	headers: {
+	    		Authorization: 'KakaoAK 20e11ac823d1e1da60abf91d242a5478',
+	            'content-type': 'application/json'
+	        },
+	    })
+	    .then((response)=>response.json())
+	    .then((data)=>{
+	    	console.log(data);
+	    	let temp = data.routes[0].sections[0].guides;
+	    	temp.forEach((item)=>{
+	    		let pathPos = new kakao.maps.LatLng(Number(item.y), Number(item.x));
+	    		linepath.push(pathPos);
+	    		bounds.extend(pathPos);
+	    	})
+	    	let polyline = new kakao.maps.Polyline({
+				path:linepath,
+				strokeWeight:3,
+				strokeColor: '#75B8FA',
+				strokeOpacity:1,
+				strokeStyle:'solid'
+			});
+	    	map.setBounds(bounds);
+			polyline.setMap(map);
+	    });
+	}
 
 	</script>
 </main>

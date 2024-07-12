@@ -1,6 +1,6 @@
 <html layout:decorate = "~{layout}">
 <main class="container" layout:fragment = "content"
-	th:with = "reviewCounts = ${reviewPageInfo.getTotalElements}">
+	th:with = "reviewCounts = ${reviewPage.getTotalElements}">
 	<!-- ${values}
 	myReview	내 리뷰
 	place		장소
@@ -71,9 +71,9 @@
  	
  	<!--리뷰 출력 -->
  	
- 	<div th:unless = "${reviewList.isEmpty()}">
+ 	<div th:unless = "${reviewCounts}==0">
 	 	<ul class = "list-group my-3">
-	 		<li class = "list-group-item review_item" th:each = "review : ${reviewList}">
+	 		<li class = "list-group-item review_item" th:each = "review : ${reviewPage}">
 	 			<div class = "review_title">
 	 				<span th:text = "|⭐ ${review.score}|"></span>
 	 				<b th:text = "${review.uid}" class = "user_id"></b>
@@ -108,15 +108,15 @@
 	 	<!--페이징 -->
 	 	
 	 	<ul class = "pagination justify-content-center" 
-	 	th:with = "block = ${reviewPageInfo.blockSize},
-	 	total = ${reviewPageInfo.totalPages},
-	 	number = ${reviewPageInfo.number+1},
+	 	th:with = "block = 10,
+	 	total = ${reviewPage.totalPages},
+	 	number = ${reviewPage.number+1},
 	 	
 	 	sidx = ${(number/block)*block+1}, 
 	 	eidx = ${(total > sidx+(block-1) ? sidx+(block-1) : total)}">
 	 		<li class = "page-item" >
 	 			<a class = "page-link" th:data-page = "${number}-1"
-	 			th:classappend="!${reviewPageInfo.hasPrevious} ? disabled">&lt;</a>
+	 			th:classappend="!${reviewPage.hasPrevious} ? disabled">&lt;</a>
 	 		</li>
 	 		<th:block th:each = "idx:${#numbers.sequence(sidx, eidx)}">
 	 		<li class = "page-item"
@@ -124,13 +124,10 @@
 	 			<a class = "page-link" th:text = "${idx}" th:data-page = "${idx}"></a>
 	 		</li>
 	 		</th:block>
-	 		<li class = "page-item" th:classappend="!${reviewPageInfo.hasNext} ? disabled">
+	 		<li class = "page-item" th:classappend="!${reviewPage.hasNext} ? disabled">
 	 			<a class = "page-link" th:data-page = "${number}+1">&gt;</a>
 	 		</li>
 	 	</ul>
- 	</div>
- 	<div th:if = "${reviewPageInfo.number == 0}">
- 		 작성된 리뷰가 없습니다
  	</div>
  	<hr>
  	<script>

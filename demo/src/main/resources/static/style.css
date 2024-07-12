@@ -5,6 +5,9 @@ header{
 	justify-content: space-between;
 	align-items: center;
 }
+main{
+	min-height: calc(100vh - 150px);
+}
 footer{
 	text-align: center;
 	padding-top: 1rem;
@@ -18,10 +21,18 @@ table th{
 	height: 600px;
 	margin: 0 auto;
 }
+.col-form-label{
+	width: 80px;
+	text-align:center;
+	font-weight: bold;
+}
 #dest_img {
 	width: 100px;
 	height: 100px;
 	margin: 0 1rem;
+}
+.hidden{
+	display: none;
 }
 .place_info{
 	display: flex;

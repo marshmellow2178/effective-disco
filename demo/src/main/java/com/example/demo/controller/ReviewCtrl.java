@@ -23,7 +23,6 @@ import com.example.demo.entity.Place;
 import com.example.demo.entity.Recommend;
 import com.example.demo.entity.Review;
 import com.example.demo.entity.Userinfo;
-import com.example.demo.vo.PageInfo;
 import com.example.demo.vo.RecommendVO;
 
 import jakarta.servlet.http.HttpSession;
@@ -74,11 +73,7 @@ public class ReviewCtrl {
 		}
 		Userinfo user = (Userinfo)session.getAttribute("userInfo");
 		Place place = placeRepo.findById(placeid).get();
-		Page<Review> reviewPage = reviewRepo.findByPlaceId(placeid, pageable);
-		PageInfo reviewPageInfo = new PageInfo();
-		
-		reviewPageInfo.setReviewPageInfo(reviewPage);
-		List<Review> reviewList = reviewPage.getContent();
+		List<Review> reviewList = reviewRepo.findByPlaceId(placeid);		
 		int[] scores = new int[6];
 		double avgScore = 0.0;
 		for(int i = 0;i<reviewList.size();i++) {
@@ -103,9 +98,8 @@ public class ReviewCtrl {
 			Review myReview = reviewRepo.findByUidAndPlaceId(user.getId(), placeid);
 			model.addAttribute("myReview", myReview);
 		}
-		model.addAttribute("reviewPageInfo", reviewPageInfo);
 		model.addAttribute("place", place);
-		model.addAttribute("reviewList", reviewList);
+		model.addAttribute("reviewPage", reviewRepo.findByPlaceId(placeid, pageable));
 		model.addAttribute("scoreInfo", scores);
 		model.addAttribute("avgScore", avgScore);
 		return "review_list";

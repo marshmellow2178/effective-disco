@@ -10,5 +10,4 @@ public interface BrandRepo extends JpaRepository<Brand, Integer> {
 	Brand findById(int id);
 	List<Brand> findByCtgr(String ctgr);
 	Brand findByName(String name);
-	List<Brand> findAll();
 }

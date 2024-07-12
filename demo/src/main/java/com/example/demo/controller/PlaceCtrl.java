@@ -48,6 +48,25 @@ public class PlaceCtrl {
 	}
 	
 	@ResponseBody
+	@GetMapping("/check")
+	public int check(
+			@RequestParam(value="id")String id,
+			HttpSession session) {
+		Userinfo user = (Userinfo)session.getAttribute("userInfo");
+		Optional<Place> place = placeRepo.findById(id);
+		if(user!=null) {
+			Long check = mpRepo.countByUidAndPlaceId(user.getId(), place.get().getId());
+			if(check==1) {
+				return 2;
+			}
+		}
+		if(place.isEmpty()) {
+			return 0;
+		}
+		return 1;
+	}
+	
+	@ResponseBody
 	@PostMapping("/save")
 	public void save(
 			@RequestBody PlaceVO pvo) {
@@ -58,24 +77,15 @@ public class PlaceCtrl {
 			brand.setName(pvo.getBrand());
 			bRepo.save(brand);
 		}
-		Optional<Place> pOption = placeRepo.findById(pvo.getId());
-		if(pOption.isEmpty()) {
-			Place p = new Place();
-			p.setId(pvo.getId());
-			p.setCtgr(pvo.getCtgr());
-			p.setPlacename(pvo.getName());
-			p.setAddr(pvo.getAddr());
-			p.setBrand(brand.getId());
-			p.setLatitude(pvo.getLatitude());
-			p.setLongitude(pvo.getLongitude());
-			placeRepo.save(p);
-		}else {
-			Place p = pOption.get();
-			if(p.getBrand()==0) {
-				p.setBrand(brand.getId());
-				placeRepo.save(p);
-			}
-		}
+		Place p = new Place();
+		p.setId(pvo.getId());
+		p.setCtgr(pvo.getCtgr());
+		p.setPlacename(pvo.getName());
+		p.setAddr(pvo.getAddr());
+		p.setBrand(brand.getId());
+		p.setLatitude(pvo.getLatitude());
+		p.setLongitude(pvo.getLongitude());
+		placeRepo.save(p);
 	}
 	
 	@ResponseBody
