@@ -31,9 +31,6 @@ table th{
 	height: 100px;
 	margin: 0 1rem;
 }
-.hidden{
-	display: none;
-}
 .place_info{
 	display: flex;
 	flex-wrap: wrap;

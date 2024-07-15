@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -35,16 +36,28 @@ public class PlaceCtrl {
 	private final PlaceRepo placeRepo;
 	private final MyplaceRepo mpRepo;
 	private final BrandRepo bRepo;
+	
+	@GetMapping("/load")
+	@ResponseBody
+	public Place load(
+			@RequestParam(value = "id") String id) {
+		return placeRepo.findById(id).get();
+	}
 
-	@GetMapping("/detail")
+	@GetMapping("/route")
 	public String place(
 			@RequestParam(value = "id") String placeid,
+			@RequestParam(value = "sd", defaultValue = "0") String startId,
 			Model model,
 			HttpSession session) {
+		Optional<Place> start = placeRepo.findById(startId);
+		if(start.isPresent()) {
+			model.addAttribute("start", start.get());
+		}
 		Place place = placeRepo.findById(placeid).get();
 		
 		model.addAttribute("place", place);
-		return "place_detail";
+		return "place_route";
 	}
 	
 	@ResponseBody
@@ -54,16 +67,14 @@ public class PlaceCtrl {
 			HttpSession session) {
 		Userinfo user = (Userinfo)session.getAttribute("userInfo");
 		Optional<Place> place = placeRepo.findById(id);
-		if(user!=null) {
-			Long check = mpRepo.countByUidAndPlaceId(user.getId(), place.get().getId());
-			if(check==1) {
-				return 2;
+		int check = 0;
+		if(place.isPresent()) {
+			check++;
+			if(user!=null) {
+				check += mpRepo.countByUidAndPlaceId(user.getId(), place.get().getId());
 			}
 		}
-		if(place.isEmpty()) {
-			return 0;
-		}
-		return 1;
+		return check;
 	}
 	
 	@ResponseBody
@@ -89,23 +100,27 @@ public class PlaceCtrl {
 	}
 	
 	@ResponseBody
-	@PostMapping("/favorite")
-	public void favorite(
-			@RequestBody String placeId,
+	@GetMapping("/favorite")
+	public int favorite(
+			@RequestParam(value = "id") String placeId,
 			HttpSession session) {
 		Userinfo user = (Userinfo) session.getAttribute("userInfo");
+		if(user==null) {
+			return -1;
+		}
 		Myplace myplace = mpRepo.findByUidAndPlaceId(user.getId(), placeId);
 		if(myplace!=null) {
 			mpRepo.delete(myplace);
+			return 0;
 		}else {
-			myplace = new Myplace(user, placeRepo.findById(placeId).get());
-			mpRepo.save(myplace);
+			myplace = new Myplace();
+			mpRepo.save(myplace.setMyplace(user, placeRepo.findById(placeId).get()));
+			return 1;
 		}
 	}
 	
 	@GetMapping("/favorite/mypage")
 	public String mypage(
-			@RequestParam(value = "page", defaultValue = "1") int page,
 			HttpSession session,
 			Model model
 			) {
@@ -113,8 +128,7 @@ public class PlaceCtrl {
 		if(user==null) {
 			return "redirect:/login";
 		}
-		Pageable pageable = PageRequest.of(page, 10, Direction.DESC, "createdate");
-		Page<Myplace> myPlacePage = mpRepo.findByUid(user.getId(), pageable);
+		List<Myplace> myPlacePage = mpRepo.findByUid(user.getId());
 		model.addAttribute("myPlacePage", myPlacePage);
 		return "mypage/place";
 	}

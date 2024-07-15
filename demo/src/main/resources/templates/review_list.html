@@ -16,7 +16,10 @@
 		<img th:unless= "${place.ctgr == ''}" th:src="@{${'/img/'+place.ctgr+'.png'}}" id = "dest_img">
 		<img th:if = "${place.ctgr==''}" src="/img/all.png" id = "dest_img">
 		<div>
-			<a th:href = "@{|/place/detail?id=${place.id}|}" th:text = "${place.placename}"></a>
+			<b th:text = "${place.placename}"></b>
+			<br>
+			<a th:href = "@{|/place/route?id=${place.id}|}"
+			class = "btn btn-sm btn-outline-custom">길찾기</a>
 			<p th:text = "${place.addr}"></p>
 			<span th:text = "|⭐ ${avgScore} (💬 ${reviewCounts})|"></span>
 		</div>

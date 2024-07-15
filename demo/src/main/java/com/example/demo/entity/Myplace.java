@@ -26,6 +26,9 @@ public class Myplace {
 	@Column(name="place_id")
 	private String placeId;
 	
+	private String name;
+	private String addr;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "uid", insertable = false, updatable = false)
 	private Userinfo user;
@@ -34,8 +37,11 @@ public class Myplace {
 	@JoinColumn(name = "place_id", insertable = false, updatable = false)
 	private Place place;
 	
-	public Myplace(Userinfo user, Place place) {
+	public Myplace setMyplace(Userinfo user, Place place) {
 		this.uid = user.getId();
 		this.placeId = place.getId();
+		this.name = place.getPlacename();
+		this.addr = place.getAddr();
+		return this;
 	}
 }
