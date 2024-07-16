@@ -4,6 +4,7 @@ header{
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	flex-wrap: wrap;
 }
 main{
 	min-height: calc(100vh - 150px);

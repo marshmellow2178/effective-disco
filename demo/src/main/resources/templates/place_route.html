@@ -67,6 +67,7 @@
 				if (status === kakao.maps.services.Status.OK) {
 					let content = result[0].address.address_name;
 					startAddr.value = content;
+					startName.value = '현재 위치';
 				}
 			});
 		}

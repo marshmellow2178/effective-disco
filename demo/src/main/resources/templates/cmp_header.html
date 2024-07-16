@@ -1,0 +1,33 @@
+<header th:fragment="cmpHeaderFragment" class = "container">
+    <h3><a href = "/cmp/">Home</a></h3>
+    <ol class = "nav">
+    	<li class="nav-item">
+    		<a href = "/cmp/login" class="nav-link">Login</a>
+    	</li>
+    	<li class="nav-item">
+    		<a href = "/cmp/logout" class="nav-link">Logout</a>
+    	</li>
+    </ol>
+    <ul class = "nav nav-tabs mt-3">
+        <li class="nav-item">
+        	<a href = "/cmp/product/list" class="nav-link">상품관리</a>
+        </li>
+        <li class="nav-item">
+        	<a href = "/cmp/mypage/info" class="nav-link">매장관리</a>
+        </li>
+        <li class="nav-item">
+        	<a href="/cmp/review/list" class="nav-link">리뷰</a>
+        </li>
+        <li class="nav-item">
+        	<a href="/cmp/message/list" class="nav-link">메시지</a>
+        </li>
+        <li class="nav-item">
+        	<a href = "/cmp/sales/list" class="nav-link">판매통계</a>
+        </li>
+    </ul>
+    <style>
+    	header > ul{
+    		width: 100%;
+    	}
+    </style>
+</header>

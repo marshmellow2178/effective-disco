@@ -1,0 +1,19 @@
+<html layout:decorate="~{cmp_layout}">
+<main class = "container" layout:fragment="content">
+    <form action = "/cmp/login" method = "post">
+        <input type = "text" name = "cmp_id" class = "form-control mb-3" 
+        placeholder = "ID" required value = "company25">
+        <input type = "password" name = "cmp_pwd" class = "form-control mb-3" 
+        placeholder = "PWD" required value = "1234">
+        <input type = "submit" value = "LOGIN" class = "form-control btn btn-custom">
+    </form>
+    <style>
+	main{
+		display:flex;
+		justify-content: center;
+		margin-top: 20%;
+	}
+	</style>
+</main>
+
+</html>
