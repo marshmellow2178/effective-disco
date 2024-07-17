@@ -37,6 +37,17 @@ table th{
 	flex-wrap: wrap;
 	gap: 10px;
 }
+.receipt_list{
+	width: 100%;
+	display:flex;
+	flex-wrap:wrap;
+	justify-content:between;
+	gap:10px;
+}
+.receipt{
+	width: 300px;
+	height: fit-content;
+}
 .btn-custom{
 	background-color: #563d7c;
 	color: white;

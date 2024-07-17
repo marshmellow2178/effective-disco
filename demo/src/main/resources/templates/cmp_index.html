@@ -1,34 +1,19 @@
 <html layout:decorate="~{cmp_layout}">
-<main class = "container"  layout:fragment="content">
+<main class = "container-fluid mx-3"  layout:fragment="content">
+	<hr>
 	<section id = "cmp_info">
-		<h3 th:text = "${session.placeInfo.placename}"></h3>
+		<h3 th:text = "${session.cmpInfo.name}"></h3>
 	</section>
+	<nav th:replace="~{cmp_nav :: cmpNavFragment}"></nav>
 	<th:block th:if = "${session.cmpInfo.state} == 'c'">
-		<a href = "/cmp/state"
-    	class = "btn btn-sm btn-custom">운영 시작</a>
+		<a href = "/cmp/open"
+    	class = "btn btn-sm btn-custom">영업 시작</a>
 	</th:block>
-    
+	
     <th:block th:if = "${session.cmpInfo.state} == 'o'">
-    	<a href = "/cmp/state"
-    	class = "btn btn-sm btn-custom">운영 종료</a>
-    	<hr>
-	    <ul>
-	        <li class = "card col-3">
-	            <button>X</button>
-	            <img src = "/img/product.png">
-	            <b>상품명</b>
-	            <span>수량</span><span>가격</span>
-	            <p>구매자</p>
-	            <span>예약시간 hh:mm</span>
-	            <button>접수</button>
-	        </li>
-	        
-	    </ul>
-	    
-	    <ul class = "pagination">
-	        <li class = "page-item">
-	            <a href = "page-link">1</a>
-	        </li>
-    	</ul>
+    	<p>현재 영업 중</p>
+    	<a href = "/cmp/close"
+    	class = "btn btn-sm btn-custom">영업 종료</a>
 	</th:block>
+	
 </main>

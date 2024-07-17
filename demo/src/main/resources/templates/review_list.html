@@ -133,14 +133,13 @@
 	 	</ul>
  	</div>
  	<hr>
+ 	<script src = "/js/review.js"></script>
  	<script>
 	let delBtn = document.querySelector("#del_btn");
 	let reviewSearchForm = document.querySelector('#review_search_form');
 	let pageInput = document.querySelector("#page_input");
 	let orderInput = document.querySelector('#order_input');
 	let pageLinks = document.querySelectorAll(".page-link");
-	let reviewContents = document.querySelectorAll(".review_content");
-	let showClass = 'show';
 	let recommends = document.querySelectorAll('.recommend');
 	
 	recommends.forEach(function(r){
@@ -169,29 +168,6 @@
 				recSpan.innerText = recValue + 1; 
 			}
 		})
-	});
-	
-	reviewContents.forEach(function(p){
-		if(p.offsetHeight >= 72 && p.id != "") { //1rem = 10px
-			let btn = document.createElement("span");
-			btn.classList.add('btn');
-			btn.classList.add('btn-sm');
-			btn.classList.add('btn-toggle');
-			btn.innerText = "more";
-			btn.setAttribute('id','more'+p.id.substring(7));
-			btn.addEventListener('click', function(event){
-				let btnId = event.target.id.substring(4);
-				let targetContent = document.querySelector('#content'+btnId);
-				if(targetContent.classList.contains(showClass)){
-					targetContent.classList.remove(showClass);
-					event.target.innerText = "more";
-				}else{
-					targetContent.classList.add(showClass);
-					event.target.innerText = "hide";
-				}
-			})
-			p.parentElement.appendChild(btn);
-		}
 	});
 	
 	orderInput.addEventListener('change', function(){

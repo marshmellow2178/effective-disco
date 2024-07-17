@@ -23,6 +23,9 @@ public class Company {
 	@Column(name = "cmp_state")
 	private String state;
 	
+	@Column(name = "cmp_name")
+	private String name;
+	
 	@Column(name = "place_id")
 	private String placeId;
 	
@@ -32,6 +35,7 @@ public class Company {
 	
 	public void setPlace(Place place) {
 		this.place = place;
+		this.name = place.getPlacename();
 		this.placeId = place.getId();
 	}
 	

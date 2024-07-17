@@ -1,31 +1,51 @@
-<main class="container">
-    <h3>리뷰</h3>
+<html layout:decorate="~{cmp_layout}">
+<main class="container-fluid mx-3" layout:fragment="content">
     <hr>
-    <ul>
-        <li>
-            <span>평점</span>
-            <b>사용자</b>
-            <p>내용</p>
-            <span>날짜</span>
-            <button>more</button>
-        </li>
-        <li>
-            <span>평점</span>
-            <b>사용자</b>
-            <p>내용</p>
-            <span>날짜</span>
-        </li>
-        <li>
-            <span>평점</span>
-            <b>사용자</b>
-            <p>내용</p>
-            <span>날짜</span>
-        </li>
-    </ul>
-
-    <ul class = "pagination">
-        <li class = "page-item">
-            <a href = "page-link">1</a>
-        </li>
-    </ul>
+	<section class = "m-3">
+		<h3 th:text = "${session.cmpInfo.name}"></h3>
+	</section>
+	<nav th:replace="~{cmp_nav :: cmpNavFragment}"></nav>
+	<p th:text = "|${reviewPage.totalElements}개의 리뷰가 있습니다|"></p>
+	<th:block th:if = "${reviewPage} != null">
+	    <ul class = "list-group container-fluid my-3">
+	        <li th:each = "review: ${reviewPage}" class = "list-group-item">
+	        	<div class = "review_title">
+		            <span th:text = "|⭐ ${review.score}|"></span>
+		            <b th:text = "${review.uid}" class = "user_id">사용자</b>
+		            <span th:if = "${review.modifyDate == null}" th:text = "${#temporals.format(review.createDate, 'yy/MM/dd')}"></span>
+	 				<span th:unless= "${review.modifyDate == null}" th:text = "|${#temporals.format(review.modifyDate, 'yy/MM/dd')} (수정됨)|"></span>
+	            </div>
+	            <p th:text = "${review.content}" class = "review_content"
+	            th:id = "|content${review.id}|" >내용</p>
+	        </li>
+	    </ul>
+	    
+	    <ul class = "pagination justify-content-center" 
+	 	th:with = "block = 10,
+	 	total = ${reviewPage.totalPages},
+	 	number = ${reviewPage.number+1},
+	 	sidx = ${(number/block)*block+1}, 
+	 	eidx = ${(total > sidx+(block-1) ? sidx+(block-1) : total)}">
+	 		<li class = "page-item" th:classappend="${number} == 1 ? disabled">
+	 			<a class = "page-link" 
+	 			th:href = "@{|/cmp/review/list?page=${number-1}|}">&lt;</a>
+	 		</li>
+	 		<th:block th:each = "idx:${#numbers.sequence(sidx, eidx)}">
+	 		<li class = "page-item" th:classappend="${number}==${idx} ? active">
+	 			<a class = "page-link" th:text = "${idx}" 
+	 			th:href = "@{|/cmp/review/list?page=${idx}|}" ></a>
+	 		</li>
+	 		</th:block>
+	 		<li class = "page-item" th:classappend="!${reviewPage.hasNext} ? disabled">
+	 			<a class = "page-link" th:href = "@{|/cmp/review/list?page=${number+1}|}">&gt;</a>
+	 		</li>
+	 	</ul>
+ 	</th:block>
+ 	<script src = "/js/review.js"></script>
+ 	<script>
+ 	let navReview = document.querySelector('#nav_review');
+ 	navReview.classList.add('active');
+ 	
+ 	</script>
 </main>
+</html>

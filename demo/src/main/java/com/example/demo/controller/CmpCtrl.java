@@ -1,18 +1,13 @@
 package com.example.demo.controller;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.Repo.CompanyRepo;
-import com.example.demo.Repo.PlaceRepo;
 import com.example.demo.entity.Company;
-import com.example.demo.entity.Place;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -22,21 +17,13 @@ import lombok.RequiredArgsConstructor;
 public class CmpCtrl {
 	
 	private final CompanyRepo cmpRepo;
-	private final PlaceRepo placeRepo;
 	
 	@GetMapping("/")
-	public String index(HttpSession session,
-			Model model,
-			@PageableDefault(size = 12, sort = "date") Pageable pageable) {
+	public String index(HttpSession session) {
 		Company cmpInfo = (Company)session.getAttribute("cmpInfo");
 		if(cmpInfo==null) {
 			return "redirect:/cmp/login";
 		}
-		Place place = placeRepo.findById(cmpInfo.getPlaceId()).get();
-		if(cmpInfo.getState().equals("o")) {
-			
-		}
-		session.setAttribute("placeInfo", place);
 		return "cmp_index";
 	}
 	
@@ -64,16 +51,19 @@ public class CmpCtrl {
 		return "redirect:/cmp/login";
 	}
 	
-	@GetMapping("/state")
+	@GetMapping("/open")
 	public String open(HttpSession session) {
 		Company cmp = (Company)session.getAttribute("cmpInfo");
-		if(cmp.getState().equals("o")) {
-			cmp.setState("c");
-		}else {
-			cmp.setState("o");
-		}
-		cmpRepo.save(cmp);
-		session.setAttribute("cmpInfo", cmp);
+		cmp.setState("o");
+		session.setAttribute("cmpInfo", cmpRepo.save(cmp));
+		return "redirect:/cmp/";
+	}
+	
+	@GetMapping("/close")
+	public String close(HttpSession session) {
+		Company cmp = (Company)session.getAttribute("cmpInfo");
+		cmp.setState("c");
+		session.setAttribute("cmpInfo", cmpRepo.save(cmp));
 		return "redirect:/cmp/";
 	}
 

@@ -5,11 +5,13 @@
 		<h3 th:text = "${session.cmpInfo.name}"></h3>
 	</section>
 	<nav th:replace="~{cmp_nav :: cmpNavFragment}"></nav>
-	<p th:text = "|${orderPage.totalElements}개의 주문 완료됨|"></p>
+	<p th:text = "|${orderPage.totalElements}개의 주문 대기중|"></p>
 	<ul th:if = "${orderPage} != null" class = "receipt_list container-fluid">
         <li th:each = "order: ${orderPage}" class = "receipt card p-3">
        		<div class = "d-flex justify-content-between align-items-center">
         		<b th:text = "|${order.userId}의 주문서|"></b>
+        		<a th:href = "@{|/cmp/order/cancel?id=${order.id}|}" 
+            	class = "btn btn-sm btn-danger col-2">X</a>
         	</div>
             <table class = "purchase_info table table-sm mt-3" th:id = "|order_${order.id}|">
             	<tr>
@@ -19,9 +21,12 @@
             	</tr>
             </table>
             <p th:text = "|총 ${order.price} 원|"></p>
+            <a th:if = "${order.state}==0" th:href = "@{|/cmp/order/accept?id=${order.id}|}"
+            	class = "btn btn-custom">접수</a>
+            <a th:if = "${order.state}==1" th:href = "@{|/cmp/order/done?id=${order.id}|}"
+           	 class = "btn btn-info">완료</a>
         </li>
     </ul>
-    
     <ul class = "pagination justify-content-center" 
     th:if = "${orderPage} != null"
  	th:with = "block = 10,
@@ -43,11 +48,10 @@
  			<a class = "page-link" th:href = "@{|/cmp/order/list?page=${number+1}|}">&gt;</a>
  		</li>
  	</ul>
- 	 <script>
-	 let navSales = document.querySelector('#nav_sales');
-	 navSales.classList.add('active');
-	 </script>
-	 <script src = "/js/purchase.js"></script>
- </main>
-
- </html>
+ 	<script type="text/javascript">
+	let navOrder = document.querySelector('#nav_order');
+	navOrder.classList.add('active');
+	</script>
+	<script src = "/js/purchase.js"></script>
+</main>
+</html>

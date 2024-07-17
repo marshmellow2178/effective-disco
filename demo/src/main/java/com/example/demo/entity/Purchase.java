@@ -24,7 +24,7 @@ public class Purchase {
 	private int orderId;
 	
 	@Column(name = "PURCHASE_NAME")
-	private int name;
+	private String name;
 	
 	@Column(name = "PURCHASE_COUNT")
 	private int count;
@@ -33,10 +33,10 @@ public class Purchase {
 	private int price;
 	
 	@Column(name = "PURCHASE_IMG")
-	private int img;
+	private String img;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "order_id", insertable = false, updatable = false)
+	@JoinColumn(name = "ORDER_ID", insertable = false, updatable = false)
 	private OrderInfo order;
 	
 	public void setUser(OrderInfo order) {
