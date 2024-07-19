@@ -181,7 +181,7 @@ public class ReviewCtrl {
 		}
 	}
 	
-	@GetMapping("/recommend/mypage")
+	@GetMapping("/recommend/list")
 	public String mypage(
 			@RequestParam(value = "page", defaultValue = "1") int page,
 			HttpSession session,
@@ -196,5 +196,19 @@ public class ReviewCtrl {
 		return "mypage_review";
 	}
 	
-	
+	@GetMapping("/cmp")
+	public String getReviewList(
+			@RequestParam(value = "page", defaultValue = "1") int page,
+			HttpSession session,
+			Model model) {
+		Company cmp = (Company)session.getAttribute("cmpInfo");
+		if(cmp==null) {
+			return "redirect:/cmp/login";
+		}
+		if(page <= 0) { page = 1; }
+		Pageable pageable = PageRequest.of(page-1, 10, Direction.DESC, "createDate");
+		Page<Review> reviewPage = reviewRepo.findByCmpId(cmp.getCmpName(), pageable);
+		model.addAttribute("reviewPage", reviewPage);
+		return "cmp_review_list";
+	}
 }

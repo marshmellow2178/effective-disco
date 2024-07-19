@@ -1,19 +1,20 @@
 package com.example.demo.controller;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
+import java.util.Optional;
+
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.demo.Repo.BrandRepo;
 import com.example.demo.Repo.CompanyRepo;
+import com.example.demo.entity.Brand;
 import com.example.demo.entity.Company;
-import com.example.demo.entity.Review;
+import com.example.demo.vo.PlaceVO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class CmpCtrl {
 	
 	private final CompanyRepo cmpRepo;
+	private final BrandRepo bRepo;
 	
 	@GetMapping("/")
 	public String index(HttpSession session) {
@@ -74,19 +76,37 @@ public class CmpCtrl {
 		return "redirect:/cmp/";
 	}
 
-	@GetMapping("/review")
-	public String getReviewList(
-			@RequestParam(value = "page", defaultValue = "1") int page,
-			HttpSession session,
-			Model model) {
-		Company cmp = (Company)session.getAttribute("cmpInfo");
-		if(cmp==null) {
-			return "redirect:/cmp/login";
+	@ResponseBody
+	@PostMapping("/save")
+	public void save(
+			@RequestBody PlaceVO pvo) {
+		Optional<Brand> option = bRepo.findById(pvo.getBrand());
+		if(option.isEmpty()) {
+			Brand brand = new Brand();
+			brand.setCtgr(pvo.getCtgr());
+			brand.setName(pvo.getBrand());
+			bRepo.save(brand);
 		}
-		if(page <= 0) { page = 1; }
-		Pageable pageable = PageRequest.of(page-1, 10, Direction.DESC, "createDate");
-		Page<Review> reviewPage = reviewRepo.findByPlaceId(cmp.getName(), pageable);
-		model.addAttribute("reviewPage", reviewPage);
-		return "cmp_review_list";
+		Optional<Company> cOption = cmpRepo.findById(pvo.getName());
+		if(cOption.isEmpty()) {
+			Company cmp = new Company();
+			cmp.setCmpName(pvo.getName());
+			cmp.setBrandName(pvo.getBrand());
+			cmp.setCtgrName(pvo.getCtgr());
+			cmp.setCmpId(pvo.getName());
+			cmpRepo.save(cmp);
+		}
+	}
+	
+	@ResponseBody
+	@GetMapping("/check")
+	public int check(
+			@RequestParam(value="name")String cmpName
+			) {
+		Optional<Company> option = cmpRepo.findById(cmpName);
+		if(option.isEmpty()) {
+			return 0;
+		}
+		return 1;
 	}
 }

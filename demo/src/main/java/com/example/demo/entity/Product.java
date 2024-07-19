@@ -31,8 +31,8 @@ public class Product {
 	@Column(name = "product_count")
 	private int count;
 	
-	@Column(name = "cmp_id")
-	private String cmpId;
+	@Column(name = "cmp_name")
+	private String cmpName;
 	
 	@Column(name = "create_date")
 	private LocalDateTime createDate;
