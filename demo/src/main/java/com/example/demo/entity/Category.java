@@ -9,12 +9,11 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Brand {
+public class Category {
 	@Id
-	@Column(name = "brand_name")
-	private String name;
-	@Column(name = "brand_img")
-	private String img;
 	@Column(name = "ctgr_name")
-	private String ctgr;
+	private String name;
+	
+	@Column(name = "ctgr_text")
+	private String text;
 }

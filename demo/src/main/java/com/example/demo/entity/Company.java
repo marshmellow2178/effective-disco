@@ -2,10 +2,7 @@ package com.example.demo.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,8 +11,8 @@ import lombok.Setter;
 @Setter
 public class Company {
 	@Id
-	@Column(name = "cmp_id")
-	private String id;
+	@Column(name = "cmp_name")
+	private String cmpName;
 	
 	@Column(name = "cmp_pwd")
 	private String pwd;
@@ -23,20 +20,15 @@ public class Company {
 	@Column(name = "cmp_state")
 	private String state;
 	
-	@Column(name = "cmp_name")
-	private String name;
+	@Column(name = "brand_name")
+	private String brandName;
 	
-	@Column(name = "place_id")
-	private String placeId;
+	@Column(name = "ctgr_name")
+	private String ctgrName;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "place_id", insertable = false, updatable = false)
-	private Place place;
+	@Column(name = "cmp_score")
+	private String score;
 	
-	public void setPlace(Place place) {
-		this.place = place;
-		this.name = place.getPlacename();
-		this.placeId = place.getId();
-	}
-	
+	@Column(name = "cmp_id")
+	private String cmpId;
 }

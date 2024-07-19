@@ -11,11 +11,11 @@ import com.example.demo.entity.Review;
 public interface ReviewRepo extends JpaRepository<Review, Integer> {
 	Review findById(int id);
 	
-	List<Review> findByPlaceId(String placeId);
+	List<Review> findByCmpId(String cmpId);
 	
-	Page<Review> findByPlaceId(String placeId, Pageable pageable); 
+	Page<Review> findByCmpId(String cmpId, Pageable pageable); 
 	
 	Page<Review> findByUid(String uid, Pageable pageable); //회원의 모든 리뷰
 	
-	Review findByUidAndPlaceId(String uid, String placeId); //특정한 장소의 내 리뷰 찾기
+	Review findByUidAndCmpId(String uid, String cmpId); //특정한 장소의 내 리뷰 찾기
 }

@@ -31,9 +31,9 @@ public class Cart {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = false, updatable = false)
-	private Userinfo user;
+	private UserInfo user;
 	
-	public void setUser(Userinfo user) {
+	public void setUser(UserInfo user) {
 		this.user = user;
 		this.userId = user.getId();
 	}

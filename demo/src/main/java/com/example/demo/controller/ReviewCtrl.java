@@ -11,20 +11,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.demo.Repo.PlaceRepo;
+import com.example.demo.Repo.CompanyRepo;
 import com.example.demo.Repo.RecommendRepo;
 import com.example.demo.Repo.ReviewRepo;
-import com.example.demo.entity.Place;
+import com.example.demo.entity.Company;
 import com.example.demo.entity.Recommend;
 import com.example.demo.entity.Review;
-import com.example.demo.entity.Userinfo;
-import com.example.demo.vo.RecommendVO;
-
+import com.example.demo.entity.UserInfo;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -33,35 +30,35 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/review")
 public class ReviewCtrl {
 	
-	private final PlaceRepo placeRepo;
+	private final CompanyRepo cmpRepo;
 	private final ReviewRepo reviewRepo;
 	private final RecommendRepo rcRepo;
 
 	@PostMapping("/create")
 	public String create(
-			@RequestParam(value = "placeid") String placeId,
+			@RequestParam(value = "cmpId") String cmpId,
 			@RequestParam(value = "content") String content,
 			@RequestParam(value = "score") int score,
 			HttpSession session
 			) {
-		Userinfo user = (Userinfo) session.getAttribute("userInfo");
+		UserInfo user = (UserInfo) session.getAttribute("userInfo");
 		if(user==null) {
 			return "redirect:/login";
 		}
-		Place place = placeRepo.findById(placeId).get();
+		Company cmp = cmpRepo.findById(cmpId).get();
 		Review review = new Review();
 		review.setContent(content);
 		review.setScore(score);
-		review.setUser(user);
-		review.setPlace(place);
+		review.setUid(user.getId());
+		review.setCmpId(cmp.getCmpId());
 		review.setCreateDate(LocalDateTime.now());
 		reviewRepo.save(review);
-		return "redirect:/review/list?id="+placeId;
+		return "redirect:/review/list?id="+cmpId;
 	}
 	
 	@GetMapping("/list")
 	public String getList(
-			@RequestParam(value = "id") String placeid,
+			@RequestParam(value = "id") String cmpId,
 			@RequestParam(value = "page", defaultValue = "1") int page,
 			@RequestParam(value = "sort", defaultValue = "r") String sort,
 			Model model,
@@ -71,9 +68,9 @@ public class ReviewCtrl {
 		if(sort.equals("d")) {
 			pageable = PageRequest.of(page-1, 10, Direction.ASC, "createDate");
 		}
-		Userinfo user = (Userinfo)session.getAttribute("userInfo");
-		Place place = placeRepo.findById(placeid).get();
-		List<Review> reviewList = reviewRepo.findByPlaceId(placeid);		
+		UserInfo user = (UserInfo)session.getAttribute("userInfo");
+		Company cmp = cmpRepo.findById(cmpId).get();
+		List<Review> reviewList = reviewRepo.findByCmpId(cmpId);		
 		int[] scores = new int[6];
 		double avgScore = 0.0;
 		for(int i = 0;i<reviewList.size();i++) {
@@ -95,11 +92,11 @@ public class ReviewCtrl {
 		avgScore /=10;
 		
 		if(user!=null) {
-			Review myReview = reviewRepo.findByUidAndPlaceId(user.getId(), placeid);
+			Review myReview = reviewRepo.findByUidAndCmpId(user.getId(), cmpId);
 			model.addAttribute("myReview", myReview);
 		}
-		model.addAttribute("place", place);
-		model.addAttribute("reviewPage", reviewRepo.findByPlaceId(placeid, pageable));
+		model.addAttribute("cmp", cmp);
+		model.addAttribute("reviewPage", reviewRepo.findByCmpId(cmpId, pageable));
 		model.addAttribute("scoreInfo", scores);
 		model.addAttribute("avgScore", avgScore);
 		return "review_list";
@@ -123,7 +120,7 @@ public class ReviewCtrl {
 			@RequestParam(value = "score") Integer score,
 			HttpSession session
 			) {
-		Userinfo user = (Userinfo) session.getAttribute("userInfo");
+		UserInfo user = (UserInfo) session.getAttribute("userInfo");
 		if(user==null) {
 			return "redirect:/login";
 			
@@ -141,13 +138,13 @@ public class ReviewCtrl {
 			@RequestParam(value = "id") int id,
 			HttpSession session
 			) {
-		Userinfo user = (Userinfo)session.getAttribute("userInfo");
+		UserInfo user = (UserInfo)session.getAttribute("userInfo");
 		if(user==null) {
 			return "redirect:/login";
 		}
 		Review review = reviewRepo.findById(id);
 		reviewRepo.delete(review);
-		return "redirect:/review/list?id="+review.getPlaceId();
+		return "redirect:/review/list?id="+review.getCmpId();
 	}
 	
 	@GetMapping("/mypage")
@@ -156,7 +153,7 @@ public class ReviewCtrl {
 			Model model,
 			@RequestParam(value = "page", defaultValue = "1") int page
 			) {
-		Userinfo user = (Userinfo)session.getAttribute("userInfo");
+		UserInfo user = (UserInfo)session.getAttribute("userInfo");
 		if(user==null) {
 			return "login_form";
 		}
@@ -169,18 +166,17 @@ public class ReviewCtrl {
 	@ResponseBody
 	@PostMapping("/recommend")
 	public void recommend(
-			@RequestBody RecommendVO revo,
+			@RequestParam(value = "id")int reviewId,
 			HttpSession session
 			) {
-		Userinfo user = (Userinfo)session.getAttribute("userInfo");
-		Review review = reviewRepo.findById(revo.getReviewId());
-		Recommend rc = rcRepo.findByReviewIdAndUid(revo.getReviewId(), user.getId());
+		UserInfo user = (UserInfo)session.getAttribute("userInfo");
+		Recommend rc = rcRepo.findByReviewIdAndUid(reviewId, user.getId());
 		if(rc!=null) {
 			rcRepo.delete(rc);
 		}else {
 			rc = new Recommend();
-			rc.setUser(user);
-			rc.setReview(review);
+			rc.setUid(user.getId());
+			rc.setReviewId(reviewId);
 			rcRepo.save(rc);
 		}
 	}
@@ -190,7 +186,7 @@ public class ReviewCtrl {
 			@RequestParam(value = "page", defaultValue = "1") int page,
 			HttpSession session,
 			Model model) {
-		Userinfo user = (Userinfo) session.getAttribute("userInfo");
+		UserInfo user = (UserInfo) session.getAttribute("userInfo");
 		if(user==null) {
 			return "redirect:/login";
 		}
@@ -199,4 +195,6 @@ public class ReviewCtrl {
 		model.addAttribute("reviewPage", reviewPage);
 		return "mypage_review";
 	}
+	
+	
 }

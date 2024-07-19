@@ -6,4 +6,5 @@ import com.example.demo.entity.Company;
 
 public interface CompanyRepo extends JpaRepository<Company, String> {
 	Company findByIdAndPwd(String id, String pwd);
+	Company findByCmpId(String cmpId);
 }

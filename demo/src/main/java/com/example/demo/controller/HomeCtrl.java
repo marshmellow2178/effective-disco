@@ -7,12 +7,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.demo.Repo.MyplaceRepo;
+import com.example.demo.Repo.BrandRepo;
+import com.example.demo.Repo.CtgrRepo;
+import com.example.demo.Repo.FavoriteRepo;
 import com.example.demo.Repo.UserRepo;
-import com.example.demo.entity.Myplace;
-import com.example.demo.entity.Userinfo;
-
+import com.example.demo.entity.Brand;
+import com.example.demo.entity.Category;
+import com.example.demo.entity.Favorite;
+import com.example.demo.entity.UserInfo;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -21,20 +25,31 @@ import lombok.RequiredArgsConstructor;
 public class HomeCtrl {
 	
 	private final UserRepo userRepo;
-	private final MyplaceRepo mpRepo;
+	private final FavoriteRepo favRepo;
+	private final CtgrRepo ctgrRepo;
+	private final BrandRepo bRepo;
 	
 	@GetMapping("/")
 	public String index(
 			HttpSession session,
 			Model model) {
-		Userinfo user = (Userinfo)session.getAttribute("userInfo");
+		UserInfo user = (UserInfo)session.getAttribute("userInfo");
 		if(user!=null) {
-			List<Myplace> myPlaceList = mpRepo.findByUid(user.getId());
-			model.addAttribute("myPlaceList", myPlaceList);
+			List<Favorite> favList = favRepo.findByUid(user.getId());
+			model.addAttribute("favList", favList);
 		}
+		List<Category> ctgrList = ctgrRepo.findAll();
+		model.addAttribute("ctgrList", ctgrList);
 		return "index";
 	}
-
+	
+	@GetMapping("/brand/list")
+	@ResponseBody
+	public List<Brand> list(
+			@RequestParam(value = "ctgr") String ctgr) {
+		return bRepo.findByCtgr(ctgr.toUpperCase());
+	}
+	
 	@GetMapping("/login")
 	public String login() {
 		return "login_form";
@@ -51,7 +66,7 @@ public class HomeCtrl {
 			HttpSession session,
 			@RequestParam(value = "userId") String userId,
 			@RequestParam(value = "pwd") String pwd) {
-		Userinfo user = userRepo.findByIdAndPwd(userId, pwd);
+		UserInfo user = userRepo.findByIdAndPwd(userId, pwd);
 		if(user==null) {
 			return "login_form";
 		}
@@ -62,7 +77,7 @@ public class HomeCtrl {
 	@GetMapping("/mypage")
 	public String mypage(
 			HttpSession session) {
-		Userinfo user = (Userinfo)session.getAttribute("userInfo");
+		UserInfo user = (UserInfo)session.getAttribute("userInfo");
 		if(user==null) {
 			return "login_form";
 		}

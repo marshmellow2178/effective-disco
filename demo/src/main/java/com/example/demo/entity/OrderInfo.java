@@ -4,12 +4,9 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,21 +34,15 @@ public class OrderInfo {
 	@Column(name = "cmp_id")
 	private String cmpId;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "cmp_id", insertable = false, updatable = false)
-	private Company company;
+	@Column(name = "product_id")
+	private int productId;
 	
-	public void setCompany(Company cmp) {
-		this.company = cmp;
-		this.cmpId = cmp.getId();
-	}
+	@Column(name = "product_name")
+	private String productName;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", insertable = false, updatable = false)
-	private Userinfo user;
+	@Column(name = "product_count")
+	private int productCount;
 	
-	public void setUser(Userinfo user) {
-		this.user = user;
-		this.userId = user.getId();
-	}
+	@Column(name = "product_price")
+	private int productPrice;
 }

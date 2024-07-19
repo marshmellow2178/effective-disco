@@ -11,13 +11,16 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Recommend {
+public class Favorite {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
+	@Column(name="uid")
 	private String uid;
 	
-	@Column(name = "review_id")
-	private int reviewId;
+	@Column(name="cmp_id")
+	private String cmpId;
+
 }

@@ -9,33 +9,38 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.example.demo.Repo.ReviewRepo;
+import com.example.demo.Repo.OrderRepo;
 import com.example.demo.entity.Company;
-import com.example.demo.entity.Review;
-
+import com.example.demo.entity.OrderInfo;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/cmp/review")
-public class CmpReviewCtrl {
-	private final ReviewRepo reviewRepo;
+@RequestMapping("/order")
+public class OrderCtrl {
+
+	private final OrderRepo orderRepo;
+	
+	@GetMapping("/cancel")
+	public String cancel(@RequestParam(value = "id") int orderId) {
+		OrderInfo order = orderRepo.findById(orderId);
+		orderRepo.delete(order);
+		return "redirect:/cmp/order/list";
+	}
 	
 	@GetMapping("/list")
-	public String getReviewList(
+	public String getOrderList(HttpSession session,
 			@RequestParam(value = "page", defaultValue = "1") int page,
-			HttpSession session,
 			Model model) {
-		Company cmp = (Company)session.getAttribute("cmpInfo");
-		if(cmp==null) {
+		if(session.getAttribute("cmpInfo")==null) {
 			return "redirect:/cmp/login";
 		}
-		if(page <= 0) { page = 1; }
-		Pageable pageable = PageRequest.of(page-1, 10, Direction.DESC, "createDate");
-		Page<Review> reviewPage = reviewRepo.findByPlaceId(cmp.getPlaceId(), pageable);
-		model.addAttribute("reviewPage", reviewPage);
-		return "cmp_review_list";
+		if(page <= 1) { page = 1; }
+		Pageable pageable = PageRequest.of(page-1, 9, Direction.DESC, "date");
+		String cmpId = ((Company)session.getAttribute("cmpInfo")).getId();
+		Page<OrderInfo> orderPage = orderRepo.findByCmpIdAndStateNot(cmpId, 2, pageable);
+		model.addAttribute("orderPage", orderPage);
+		return "cmp_order";
 	}
 }
