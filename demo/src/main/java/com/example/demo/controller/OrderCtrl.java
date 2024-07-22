@@ -1,5 +1,9 @@
 package com.example.demo.controller;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,9 +14,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.example.demo.Repo.CartRepo;
 import com.example.demo.Repo.OrderRepo;
+import com.example.demo.Repo.ProductRepo;
+import com.example.demo.entity.Cart;
 import com.example.demo.entity.Company;
 import com.example.demo.entity.OrderInfo;
+import com.example.demo.entity.Product;
 import com.example.demo.entity.UserInfo;
 import com.example.demo.vo.GlobalVO;
 
@@ -25,6 +34,8 @@ import lombok.RequiredArgsConstructor;
 public class OrderCtrl {
 
 	private final OrderRepo orderRepo;
+	private final ProductRepo pdRepo;
+	private final CartRepo cartRepo;
 	
 	@GetMapping("/cmp/accept")
 	public String accept(@RequestParam(value = "id") int orderId) {
@@ -65,8 +76,8 @@ public class OrderCtrl {
 		}
 		if(page <= 1) { page = 1; }
 		Pageable pageable = PageRequest.of(page-1, 9, Direction.DESC, "date");
-		String cmpId = ((Company)session.getAttribute("cmpInfo")).getCmpId();
-		Page<OrderInfo> orderPage = orderRepo.findByCmpIdAndStateNot(cmpId, 2, pageable);
+		String cmpName = ((Company)session.getAttribute("cmpInfo")).getCmpName();
+		Page<OrderInfo> orderPage = orderRepo.findByCmpNameAndStateNot(cmpName, 2, pageable);
 		model.addAttribute("orderPage", orderPage);
 		return "cmp_order";
 	}
@@ -95,20 +106,77 @@ public class OrderCtrl {
 		}
 		if(page <= 1) { page = 1; }
 		Pageable pageable = PageRequest.of(page-1, 10, Direction.DESC, "date");
-		String cmpId = ((Company)session.getAttribute("cmpInfo")).getCmpId();
-		Page<OrderInfo> orderPage = orderRepo.findByCmpIdAndState(cmpId,2, pageable);
+		String cmpName = ((Company)session.getAttribute("cmpInfo")).getCmpName();
+		Page<OrderInfo> orderPage = orderRepo.findByCmpNameAndState(cmpName,2, pageable);
 		model.addAttribute("orderPage", orderPage);
 		return "sales_list";
 	}
 	
-	@PostMapping("/create")
-	public String createOrder(
-			HttpSession  session
+	@GetMapping("/instant") //바로구매
+	public String createInstant(
+			HttpSession  session,
+			@RequestParam(value = "id") int pid,
+			Model model
 			) {
 		if(session.getAttribute("userInfo")==null) {
 			return "redirect:/login";
 		}
-		//우저, 회사, 상품 DTO
-		return "redirect:/order_list";
+		int[] cntArr = {1};
+		List<Product> productList = new ArrayList<>();
+		Product p = pdRepo.findById(pid).get();
+		productList.add(p);
+		model.addAttribute("productList", productList);
+		model.addAttribute("cntArr", cntArr);
+		return "order_form";
+	}
+	
+	@PostMapping("/cart") //장바구니 구매
+	public String createOrder(
+			HttpSession  session,
+			@RequestParam(value = "pid") int[] pid,
+			@RequestParam(value = "count") int[] cnt,
+			Model model
+			) {
+		if(session.getAttribute("userInfo")==null) {
+			return "redirect:/login";
+		}
+		List<Cart> cartList = new ArrayList<>();
+		for(int i = 1;i<pid.length;i++) {
+			Cart c = new Cart();
+			c.setProduct(pdRepo.findById(pid[i]).get());
+			c.setCount(cnt[i]);
+			cartList.add(c);
+		}
+		model.addAttribute("cartList", cartList);
+		return "order_form";
+	}
+	
+	@PostMapping("/create")
+	public String createOrder(
+			HttpSession  session,
+			@RequestParam(value = "pid") int[] pid,
+			@RequestParam(value = "count") int[] count
+			) {
+		UserInfo user = (UserInfo)session.getAttribute("userInfo");
+		for(int i = 1;i<pid.length;i++) {
+			Cart c = cartRepo.findByUserIdAndProductId(user.getId(), pid[i]);
+			if(c!=null) {
+				cartRepo.delete(c);
+			}
+			Product p = pdRepo.findById(pid[i]).get();
+			OrderInfo order = new OrderInfo();
+			order.setUserId(user.getId());
+			order.setCmpName(p.getCmpName());
+			order.setDate(LocalDateTime.now());
+			order.setProductId(pid[i]);
+			order.setProductCount(count[i]);
+			order.setProductName(p.getName());
+			order.setProductPrice(p.getPrice());
+			order.setPrice(count[i] * p.getPrice());
+			orderRepo.save(order);
+			p.setCount(p.getCount()-count[i]);
+			pdRepo.save(p);
+		}
+		return "redirect:/order/list";
 	}
 }

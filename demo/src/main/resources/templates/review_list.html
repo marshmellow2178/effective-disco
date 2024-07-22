@@ -3,7 +3,7 @@
 	th:with = "reviewCounts = ${reviewPage.getTotalElements}">
 	<!-- ${values}
 	myReview	내 리뷰
-	place		장소
+	cmp		장소
 	reviewPage	리뷰(페이징)
 	scoreInfo	평점정보 배열[총점, 1, 2, 3, 4, 5]
 	avgScore	평균평점
@@ -12,15 +12,15 @@
     
     <!--장소 정보 -->
     
-    <section class="place_info">
-		<img th:unless= "${place.ctgr == ''}" th:src="@{${'/img/'+place.ctgr+'.png'}}" id = "dest_img">
-		<img th:if = "${place.ctgr==''}" src="/img/all.png" id = "dest_img">
+    <section class="cmp_info">
+		<img th:src="@{|/img/${cmp.ctgrName}.png|}" 
+		id = "dest_img">
 		<div>
-			<b th:text = "${place.placename}"></b>
+			<b th:text = "${cmp.cmpName}"></b>
 			<br>
-			<a th:href = "@{|/place/route?id=${place.id}|}"
-			class = "btn btn-sm btn-outline-custom">길찾기</a>
-			<p th:text = "${place.addr}"></p>
+			<a class = "btn btn-sm btn-outline-custom" th:href = "@{|/product/list?cmp=${cmp.cmpName}|}">상품</a>
+			<a class = "btn btn-sm btn-outline-custom" th:href = "@{|/review/list?name=${cmp.cmpName}|}">리뷰</a>
+			<p th:text = "${cmp.cmpAddr}"></p>
 			<span th:text = "|⭐ ${avgScore} (💬 ${reviewCounts})|"></span>
 		</div>
 		<table class = "table table-sm col-4 table-borderless">
@@ -38,7 +38,7 @@
 		<a href = "/login">로그인</a>해 주세요
 	</div>
  	<form th:if = "${session.userInfo!=null && myReview == null}" action = "/review/create" method = "post">
- 		<input type = "hidden" th:value = "${param.id}" name = "placeid">
+ 		<input type = "hidden" th:value = "${param.id}" name = "cmpid">
  		<div class = "input-group">
  			<span class = "input-group-text">평점</span>
  			<input type = "number" min = "1" max = "5" name = "score" class = "form-control col-2">
@@ -54,7 +54,7 @@
 	 	
  		<p th:text = "${myReview.content}" class = "review_content show"></p>
  		<span class = "btn btn-sm btn-outline-disabled" th:text = "|👍 ${myReview.recCount}|"></span>
- 		<a th:href = "@{|/review/modify?id=${myReview.id}&place=${place.id}|}" role = "button" class = "btn btn-sm btn-custom">수정</a>
+ 		<a th:href = "@{|/review/modify?id=${myReview.id}&cmp=${cmp.id}|}" role = "button" class = "btn btn-sm btn-custom">수정</a>
  		<a href = "javascript:void(0);" role = "button" class = "btn btn-sm btn-danger" id = "del_btn" 
  		th:data-uri = "@{|/review/delete?id=${myReview.id}|}">삭제</a>
  	</div>
@@ -101,7 +101,7 @@
  				</div>
  				<div th:if = "${session.userInfo != null && review.uid == session.userInfo.getId}">
  					<span class = "btn btn-sm btn-outline-disabled" th:text = "|👍 ${review.recCount}|"></span>
-					<a th:href = "@{|/review/modify?id=${review.id}&place=${place.id}|}" role = "button" class = "btn btn-sm btn-custom">수정</a>
+					<a th:href = "@{|/review/modify?id=${review.id}&cmp=${cmp.id}|}" role = "button" class = "btn btn-sm btn-custom">수정</a>
 					<a href = "javascript:void(0);" role = "button" class = "btn btn-sm btn-danger" id = "del_btn" 
 						th:data-uri = "@{|/review/delete?id=${review.id}|}">삭제</a>
 				</div>

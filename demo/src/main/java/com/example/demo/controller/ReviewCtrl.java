@@ -58,7 +58,7 @@ public class ReviewCtrl {
 	
 	@GetMapping("/list")
 	public String getList(
-			@RequestParam(value = "id") String cmpId,
+			@RequestParam(value = "name") String cmpName,
 			@RequestParam(value = "page", defaultValue = "1") int page,
 			@RequestParam(value = "sort", defaultValue = "r") String sort,
 			Model model,
@@ -69,8 +69,8 @@ public class ReviewCtrl {
 			pageable = PageRequest.of(page-1, 10, Direction.ASC, "createDate");
 		}
 		UserInfo user = (UserInfo)session.getAttribute("userInfo");
-		Company cmp = cmpRepo.findById(cmpId).get();
-		List<Review> reviewList = reviewRepo.findByCmpId(cmpId);		
+		Company cmp = cmpRepo.findById(cmpName).get();
+		List<Review> reviewList = reviewRepo.findByCmpId(cmpName);		
 		int[] scores = new int[6];
 		double avgScore = 0.0;
 		for(int i = 0;i<reviewList.size();i++) {
@@ -92,11 +92,11 @@ public class ReviewCtrl {
 		avgScore /=10;
 		
 		if(user!=null) {
-			Review myReview = reviewRepo.findByUidAndCmpId(user.getId(), cmpId);
+			Review myReview = reviewRepo.findByUidAndCmpId(user.getId(), cmpName);
 			model.addAttribute("myReview", myReview);
 		}
 		model.addAttribute("cmp", cmp);
-		model.addAttribute("reviewPage", reviewRepo.findByCmpId(cmpId, pageable));
+		model.addAttribute("reviewPage", reviewRepo.findByCmpId(cmpName, pageable));
 		model.addAttribute("scoreInfo", scores);
 		model.addAttribute("avgScore", avgScore);
 		return "review_list";
@@ -196,19 +196,5 @@ public class ReviewCtrl {
 		return "mypage_review";
 	}
 	
-	@GetMapping("/cmp")
-	public String getReviewList(
-			@RequestParam(value = "page", defaultValue = "1") int page,
-			HttpSession session,
-			Model model) {
-		Company cmp = (Company)session.getAttribute("cmpInfo");
-		if(cmp==null) {
-			return "redirect:/cmp/login";
-		}
-		if(page <= 0) { page = 1; }
-		Pageable pageable = PageRequest.of(page-1, 10, Direction.DESC, "createDate");
-		Page<Review> reviewPage = reviewRepo.findByCmpId(cmp.getCmpName(), pageable);
-		model.addAttribute("reviewPage", reviewPage);
-		return "cmp_review_list";
-	}
+	
 }

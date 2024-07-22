@@ -1,25 +1,35 @@
 <html layout:decorate="~{layout}">
 <main class = "container"  layout:fragment="content">
-	<p th:text = "|${orderPage.totalElements}개의 주문 대기중|"></p>
-	<ul th:if = "${orderPage} != null" class = "receipt_list container-fluid">
-        <li th:each = "order: ${orderPage}" class = "receipt card p-3">
+	<p th:text = "|${orderPage.totalElements}개의 주문 내역|"></p>
+	<ul th:if = "${orderPage} != null" 
+	class = "receipt_list container-fluid">
+        <li th:each = "order: ${orderPage}" 
+        class = "receipt card p-3">
        		<div class = "d-flex justify-content-between align-items-center">
-        		<b th:text = "|${order.userId}의 주문서|"></b>
+        		<b th:text = "|${order.cmpName}|"></b>
         		<a th:href = "@{|/order/cancel?id=${order.id}|}" 
             	class = "btn btn-sm btn-danger col-2">X</a>
         	</div>
-            <table class = "purchase_info table table-sm mt-3" th:id = "|order_${order.id}|">
+            <table class = "purchase_info table table-sm mt-3" 
+            th:id = "|order_${order.id}|">
             	<tr>
             		<th>상품</th>
             		<th>수량</th>
             		<th>가격</th>
             	</tr>
+            	<tr>
+            		<td th:text = "${order.productName}"></td>
+            		<td th:text = "${order.productCount}"></td>
+            		<td th:text = "${order.productPrice}"></td>
+            	</tr>
             </table>
             <p th:text = "|총 ${order.price} 원|"></p>
-            <a th:if = "${order.state}==0" th:href = "@{|/order/accept?id=${order.id}|}"
-            	class = "btn btn-custom">접수</a>
-            <a th:if = "${order.state}==1" th:href = "@{|/order/done?id=${order.id}|}"
-           	 class = "btn btn-info">완료</a>
+            <a th:if = "${order.state}==0" 
+            th:href = "@{|/order/accept?id=${order.id}|}"
+            class = "btn btn-custom">대기중</a>
+            <a th:if = "${order.state}==1" 
+            th:href = "@{|/order/done?id=${order.id}|}"
+           	class = "btn btn-info">완료</a>
         </li>
     </ul>
     <ul class = "pagination justify-content-center" 
@@ -32,20 +42,20 @@
  		<li class = "page-item" 
  		th:classappend="${number} == 1 ? disabled">
  			<a class = "page-link" 
- 			th:href = "@{|/order/cmp/list?page=${number-1}|}">&lt;</a>
+ 			th:href = "@{|/order/list?page=${number-1}|}">&lt;</a>
  		</li>
  		<th:block th:each = "idx:${#numbers.sequence(sidx, eidx)}">
  		<li class = "page-item" 
  		th:classappend="${number}==${idx} ? active">
  			<a class = "page-link" 
  			th:text = "${idx}" 
- 			th:href = "@{|/order/cmp/list?page=${idx}|}" ></a>
+ 			th:href = "@{|/order/list?page=${idx}|}" ></a>
  		</li>
  		</th:block>
  		<li class = "page-item" 
  		th:classappend="!${orderPage.hasNext} ? disabled">
  			<a class = "page-link" 
- 			th:href = "@{|/order/cmp/list?page=${number+1}|}">&gt;</a>
+ 			th:href = "@{|/order/list?page=${number+1}|}">&gt;</a>
  		</li>
  	</ul>
  	<script type="text/javascript">

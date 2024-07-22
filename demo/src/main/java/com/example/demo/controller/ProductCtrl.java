@@ -33,7 +33,7 @@ public class ProductCtrl {
 	public String productList(
 			Model model,
 			@RequestParam(value = "cmp") String cmpName,
-			@RequestParam(value = "page") int page) {
+			@RequestParam(value = "page", defaultValue = "1") int page) {
 		Pageable pageable = PageRequest.of(page-1, 9, Direction.DESC, "createDate");
 		Page<Product> products =pdRepo.findByCmpName(cmpName, pageable);
 		model.addAttribute("products", products);

@@ -31,8 +31,8 @@ public class OrderInfo {
 	@Column(name = "ORDER_DATE")
 	private LocalDateTime date;
 	
-	@Column(name = "cmp_id")
-	private String cmpId;
+	@Column(name = "cmp_name")
+	private String cmpName;
 	
 	@Column(name = "product_id")
 	private int productId;

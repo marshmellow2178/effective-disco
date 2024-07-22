@@ -1,10 +1,8 @@
-<html layout:decorate="~{cmp_layout}">
-<main class = "container-fluid mx-3"  layout:fragment="content">
-	<hr>
+<html layout:decorate="~{layout}">
+<main class = "container"  layout:fragment="content">
 	<section id = "cmp_info">
-		<h3 th:text = "${session.cmpInfo.name}"></h3>
+		<h3 th:text = "${session.cmpInfo.cmpName}"></h3>
 	</section>
-	<nav th:replace="~{cmp_nav :: cmpNavFragment}"></nav>
 	<th:block th:if = "${session.cmpInfo.state} == 'c'">
 		<a href = "/cmp/open"
     	class = "btn btn-sm btn-custom">영업 시작</a>

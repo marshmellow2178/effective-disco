@@ -5,10 +5,10 @@
 		<div class = "input-group">
 		<label class = "col-form-label mr-3">🔰 출발</label>
 		<th:block th:if = "${start != null}">
-			<input type = "hidden" id = "start_x" th:value = "${start.longitude}">
-			<input type= "hidden" id = "start_y" th:value = "${start.latitude}">
-			<input type = "text" class = "form-control col-3" th:value = "${start.placename}">
-			<input type = "text" class = "form-control col-6 ml-3" th:value = "${start.addr}" disabled>
+			<input type = "hidden" id = "start_x" th:value = "${start.cmpLng}">
+			<input type= "hidden" id = "start_y" th:value = "${start.cmpLat}">
+			<input type = "text" class = "form-control col-3" th:value = "${start.cmpName}">
+			<input type = "text" class = "form-control col-6 ml-3" th:value = "${start.cmpAddr}" disabled>
 		</th:block>
 		<th:block th:if = "${start == null}">
 			<input type = "hidden" id = "start_x" value = "">
@@ -19,8 +19,8 @@
 		</div>
 		<div class = "input-group mt-3">
 		<label class = "col-form-label mr-3">🔍 검색</label>
-		<input type = "text" class = "form-control col-3" th:value = "${place.placename}">
-		<input type = "text" class = "form-control col-6 ml-3" th:value = "${place.addr}" disabled>
+		<input type = "text" class = "form-control col-3" th:value = "${end.cmpName}">
+		<input type = "text" class = "form-control col-6 ml-3" th:value = "${end.cmpAddr}" disabled>
 		</div>
 	</form>
 	<hr>
@@ -30,17 +30,18 @@
 	<hr>
 
 	<section class="place_info">
-		<input type= "hidden" id = "place_x" th:value = "${place.longitude}">
-		<input type= "hidden" id = "place_y" th:value = "${place.latitude}">
-		<img th:if = "${place.ctgr==''}" src="/img/all.png" id = "dest_img">
-		<img th:unless = "${place.ctgr==''}" th:src="@{${'/img/'+place.ctgr+'.png'}}" id = "dest_img">
+		<div class = "d-none">
+			<input type= "number" id = "place_x" th:value = "${end.cmpLng}">
+			<input type= "number" id = "place_y" th:value = "${end.cmpLat}">
+		</div>
+		<img th:src="@{${'/img/'+end.ctgrName+'.png'}}" id = "dest_img">
 		<div>
-			<b th:text = "${place.placename}"></b>
+			<b th:text = "${end.cmpName}"></b>
 			<div class = "my-1">
-				<a class = "btn btn-sm btn-outline-custom" href = "javascript:history.back();">목록</a>
-				<a class = "btn btn-sm btn-outline-custom" th:href = "@{|/review/list?id=${place.id}|}">리뷰</a>
+				<a class = "btn btn-sm btn-outline-custom" th:href = "@{|/product/list?cmp=${end.cmpName}|}">상품</a>
+				<a class = "btn btn-sm btn-outline-custom" th:href = "@{|/review/list?name=${end.cmpName}|}">리뷰</a>
 			</div>
-			<p th:text = "${place.addr}"></p>
+			<p th:text = "${end.cmpAddr}"></p>
 		</div>
 	</section>
 	<script src= "/js/map.js"></script>

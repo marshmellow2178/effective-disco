@@ -1,0 +1,56 @@
+<html layout:decorate="~{layout}">
+<main class = "container"  layout:fragment="content">
+	<p th:text = "|${cartList.size}개의 상품이 있습니다|"></p>
+	<form action = "/order/create" method = "post">
+		<div class = "d-none">
+			<input type = "number" name = "pid" value = "0">
+			<input type = "number" name = "count" value = "0">
+		</div>
+		<p>주문내역</p>
+		<table th:if = "${cartList.size} != 0" 
+		class = "table">
+			<tr>
+				<th>상품</th>
+				<th>수량</th>
+				<th>가격</th>
+	        <tr th:each = "cart: ${cartList}">
+	        	<td>
+	        		<input type = "hidden" name = "pid" th:value = "${cart.product.id}">
+	        		<img th:src = "@{|/img/product.png|}">
+	        		<b th:text = "|${cart.product.name}|"></b>
+	        		<span th:text = "${cart.product.cmpName}"></span>
+	        	</td>
+	        	<td>
+	        		<input type = "number" name = "count" th:value = "${cart.count}">
+	        	</td>
+	        	<td>
+	        		<span th:text = "|${cart.product.price}원|"></span>
+	        	</td>
+	        </tr>
+	        <tr>
+	        	<td colspan = 5>
+	        		<b>총 가격:
+	        			<span id = "total_price">0</span>원
+	        		</b>
+	        	</td>
+	    </table>
+	    <p>결제방식</p>
+	    <span>카드</span>
+	    <p>수령하기</p>
+	    <span>배송</span>
+	    <span>픽업</span>
+	    <input type = "submit" 
+	    class = "btn btn-custom"
+	    value = "주문하기">
+    </form>
+	<style>
+		img{
+			width: 80px;
+		}
+	</style>
+ 	<script type="text/javascript">
+	let navOrder = document.querySelector('#nav_order');
+	navOrder.classList.add('active');
+	</script>
+</main>
+</html>

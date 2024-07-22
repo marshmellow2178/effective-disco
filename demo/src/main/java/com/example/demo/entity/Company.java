@@ -27,8 +27,17 @@ public class Company {
 	private String ctgrName;
 	
 	@Column(name = "cmp_score")
-	private String score;
+	private double score;
 	
 	@Column(name = "cmp_id")
 	private String cmpId;
+	
+	@Column(name = "cmp_addr")
+	private String cmpAddr;
+	
+	@Column(name = "cmp_lat")
+	private String cmpLat;
+	
+	@Column(name = "cmp_lng")
+	private String cmpLng;
 }

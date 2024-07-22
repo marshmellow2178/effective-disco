@@ -1,29 +1,43 @@
 <html layout:decorate="~{layout}">
 <main class="container" layout:fragment="content">
-	<hr>
-	<form id = "start_form">
-	<div class = "input-group">
-		<label class = "col-form-label">🔰 출발</label>
-		<select class="form-control col-4" id = "start_select">
-			<option value = "0">현재 위치</option>
-			<option th:each = "myplace : ${myPlaceList}" th:if = "${session.userInfo!=null}"
-			 th:value = "${myplace.placeId}" 
-			th:text = "${myplace.name}" th:data-addr = "${myplace.addr}"></option>
-		</select>
-		<input type="search" class="form-control ml-3" id="start_addr" readonly>
-	</div>
+	<form>
+		<div class = "input-group">
+			<label class = "col-form-label">🔰 출발</label>
+			<select class="form-control col-4" 
+			id = "start_select">
+				<option value = "현재 위치">현재 위치</option>
+				<option th:each = "fav : ${favList}" 
+				th:if = "${session.userInfo!=null}"
+				th:value = "${fav.cmpName}" 
+				th:text = "${fav.cmpName}"></option>
+			</select>
+			<input type="text"
+			class="form-control ml-3" 
+			id="start_addr" 
+			readonly>
+		</div>
 	</form>
-	
 	<form id = "dest_form">
 		<div class = "input-group mt-3">
 			<label class = "col-form-label">🔍 검색</label>
-			<select class="form-control col-2" id="category"></select>
-			<select class="form-control col-2 mr-3" id="brand">
+			<select class="form-control col-2"
+			id = "ctgr_select">
+				<option value = "all">전체</option>
+				<option th:each = "ctgr: ${ctgrList}" 
+				th:value = "${ctgr.name}"
+				th:text = "${ctgr.text}"></option>
+			</select>
+			<select class="form-control col-2 mr-3" 
+			id="brand_select">
 				<option value = "0">브랜드</option>
 			</select>
-
-			<input type="search" class="form-control" id="keyword_input">
-			<input type="submit" value="검색" class="btn btn-custom">
+			<input type="search" 
+			class="form-control" 
+			id="keyword_input">
+			
+			<input type="submit" 
+			value="검색" 
+			class="btn btn-custom">
 		</div>
 	</form>
 	<hr>
@@ -33,99 +47,56 @@
 	<hr>
 	
 	<section class="place_info">
-		<img id="dest_img" src="/img/ALL.png">
+		<img id="dest_img" 
+		src="/img/all.png">
 		<div>
 			<b id = "dest_name">목적지를 검색하세요</b>
 			<br>
-			<div id = "dest_links" class = "d-none my-1">
-				<a class = "btn btn-sm" id ="is_fav" href = "#">📍 북마크</a>
-				<a class = "btn btn-sm btn-outline-custom" id = "dest_id" href = "#">길찾기</a>
-				<a class = "btn btn-sm btn-outline-custom" href = "#" id = "dest_detail">리뷰</a>
+			<div id = "dest_links" 
+			class = "d-none my-1">
+				<a class = "btn btn-sm btn-outline-custom" 
+				id ="fav_link" 
+				href = "#">📍 북마크</a>
+				<a class = "btn btn-sm btn-outline-custom" 
+				id = "route_link" 
+				href = "#">길찾기</a>
+				<a class = "btn btn-sm btn-outline-custom" 
+				href = "#" 
+				id = "review_link">리뷰</a>
 			</div>
 			<span id="dest_addr"></span>
 			<br>
-			<span id="dest_distance"></span>
+			<span id="dest_dist"></span>
 		</div>
 	</section>
 	<script src = "/js/map.js"></script>
 	<script>
-	const ctgr_code = ['', 'MT1', 'CS2', 'PS3', 'SC4', 'AC5', 'PK6', 'OL7', 'SW8', 'BK9',
-	    'CT1', 'AG2', 'PO3', 'AT4', 'AD5', 'FD6', 'CE7', 'HP8', 'PM9'];
-	const ctgr_name = ['전체', '대형마트', '편의점', '어린이집/유치원', '학교', '학원', '주차장', '주유소/충전소',
-	    '지하철역', '은행', '문화시설', '중개업소', '공공기관', '관광명소', '숙박', '음식점', '카페', '병원', '약국'];
-
-	let category = document.querySelector("#category");
-	let brand = document.querySelector("#brand");
-	let ps = new kakao.maps.services.Places();
-	let form = document.querySelector('#dest_form');
-	let keywordInput = document.querySelector("#keyword_input");
-	let placeMarkers = []; //검색된 장소 마커
-	let mapRange = 500; //검색 범위
+	
 	let startAddr = document.querySelector("#start_addr");
+	let startSelect = document.querySelector("#start_select");
+	
+	let destForm = document.querySelector("#dest_form");
+	let category = document.querySelector("#ctgr_select ");
+	let brand = document.querySelector("#brand_select ");
+	let keywordInput = document.querySelector("#keyword_input");
+	
+	let destImg = document.querySelector('#dest_img');
+	let destName = document.querySelector('#dest_name');
 	
 	let destLinks = document.querySelector("#dest_links");
-	let destImg = document.querySelector('#dest_img');
-	let destId = document.querySelector("#dest_id");
-	let destName = document.querySelector('#dest_name');
-	let isFav = document.querySelector('#is_fav');
-	let destDetail = document.querySelector('#dest_detail');
+	let favLink = document.querySelector('#fav_link');
+	let routeLink = document.querySelector('#route_link');
+	let reviewLink = document.querySelector("#review_link");
 	let destAddr = document.querySelector('#dest_addr');
-	let destDist = document.querySelector('#dest_distance');
-	
-	let startSelect = document.querySelector("#start_select");
-	let sid="0";
+	let destDist = document.querySelector('#dest_dist');
 	
 	navigator.geolocation.getCurrentPosition(success);
 	startSelect.addEventListener('change', onStartSelect);
-	isFav.addEventListener('click', placeFav);
-	form.addEventListener('submit', onFormSubmit);
-	for (let i = 0; i < ctgr_code.length; i++) {
-	    let option = document.createElement('option');
-	    option.value = ctgr_code[i].toLowerCase();
-	    option.innerText = ctgr_name[i];
-	    category.appendChild(option);
-	}// 카테고리 메뉴 생성하기
+	destForm.addEventListener('submit', destFormSubmit);
 	category.addEventListener('change', onSelect);
 	brand.addEventListener('change', function(event){
 		keywordInput.value = event.target.selectedOptions[0].innerText;
 	});
-	
-	function onStartSelect(event){
-		sid = event.target.value;
-		fetch("/place/load?id="+sid, {
-	    	method: 'get',
-	    	headers: {
-	            'content-type': 'text'
-	        },
-	    })
-	    .then((response)=>response.json())
-	    .then((data)=>{
-	    	startAddr.value = data.addr;
-	    	currentPos = new kakao.maps.LatLng(data.latitude, data.longitude);
-	    	drawMap(currentPos);
-	    });
-	}
-	
-	function placeFav(){
-		fetch('/place/favorite?id='+this.dataset.id, {
-	    	method: 'get',
-	    	headers: {
-	            'content-type': 'text'
-	        },
-	    })
-	    .then((response)=>response.json())
-	    .then((result)=>{
-	    	if(result == 1){
-	    		isFav.classList.remove('btn-outline-custom');
-		    	isFav.classList.add('btn-custom');
-	    	}else if(result == 0){
-	    		isFav.classList.remove('btn-custom');
-				isFav.classList.add('btn-outline-custom');
-	    	}else{
-	    		location.href('/redirect:login');
-	    	}
-	    });
-	}
 	
 	function drawMap(pos){
 		let options = {
@@ -163,11 +134,111 @@
 	    });
 	}//현재위치 로드
 	
-	function searchAddrFromCoords(coords, callback) {
-	    geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
-	}//지도에 현재위치와 주소표시하기
-		
-	function onSelect(event){ 
+	function destFormSubmit(event){
+	    event.preventDefault();
+	    if(keywordInput.value == ''){
+	    	ps.categorySearch(category.value, placesSearchCB, {
+	            location: currentPos,
+	            radius: mapRange
+	        });
+	    }else{
+	    	 ps.keywordSearch(keywordInput.value, placesSearchCB, {
+	 	        category_group_code: category.value,
+	 	        location: currentPos,
+	 	        radius: mapRange
+	 	    });
+	    }
+	}//키워드 || 카테고리 검색
+
+ 	 function displayMarker(place) {
+		var marker = new kakao.maps.Marker({
+	        map: map,
+	        position: new kakao.maps.LatLng(place.y, place.x)
+	    });
+	    placeMarkers.push(marker);
+	    kakao.maps.event.addListener(marker, 'click', async function () {
+	    	let check = await checkPlace(place);
+			check = JSON.parse(check);
+	    	if(check == 0){
+				savePlace(place);
+			}
+	    	destName.innerText = place.place_name;
+			destDist.innerText = place.distance+"미터";
+	        showPlaceInfo(place);
+	    });
+	}//마커 목록 표시, 이벤트리스너(장소정보 표시 & 저장)
+	
+	function onStartSelect(event) {
+		let sName = event.target.value;
+		fetch("/cmp/get?name=" + sName, {
+			method: 'get',
+			headers: {
+				'content-type': 'text'
+			},
+		})
+		.then((response) => response.json())
+		.then((data) => {
+			startAddr.value = data.cmpAddr;
+			currentPos = new kakao.maps.LatLng(Number(data.cmpLat), 
+			Number(data.cmpLng));
+			drawMap(currentPos);
+		});
+	}
+
+	function checkPlace(place) {
+		return new Promise((resolve) => {
+			fetch("/cmp/check?name=" + place.place_name, {
+				method: 'get',
+				headers: {
+					'content-type': 'text'
+				},
+			})
+			.then(response => response.json())
+			.then(data => resolve(data))
+		});
+	}
+
+	function savePlace(place) {
+		fetch("/cmp/save", {
+			method: 'post',
+			headers: {
+				'content-type': 'application/json'
+			},
+			body: JSON.stringify({
+				ctgr: place.category_group_code.toLowerCase(),
+				name: place.place_name,
+				addr: place.address_name,
+				brand: place.category_name.split(" > ").reverse()[0],
+				latitude: place.y,
+				longitude: place.x,
+			}),
+		})
+		.then(response=>{
+			if(response.ok){
+				showPlaceInfo();
+			}
+		});
+	}//클릭 시 장소 저장
+
+	function showPlaceInfo(){
+		fetch("/cmp/get?name=" + destName.innerText, {
+			method: 'get',
+			headers: {
+				'content-type': 'text'
+			},
+		})
+		.then((response) => response.json())
+		.then((result) => {
+			destImg.setAttribute('src', `/img/${result.ctgrName}.png`);
+			destLinks.classList.remove('d-none');
+			favLink.href = `/fav/add?name=${result.cmpName}`;
+			routeLink.href = `/cmp/route?sname=${startSelect.value}&ename=${result.cmpName}`;
+			reviewLink.href = `/review/cmp?name=${result.cmpName}`;
+			destAddr = result.cmpAddr;
+		});
+	} //장소 정보 표시
+
+	function onSelect(){ 
 		brand.replaceChildren();
 		let option = document.createElement('option');
 		option.value = 0;
@@ -189,104 +260,7 @@
 	    		brand.appendChild(option);
 	    	});
 	    });
-		keywordInput.value = event.target.selectedOptions[0].innerText;
 	}
-
-	function onFormSubmit(event){
-	    event.preventDefault();
-	    if(keywordInput.value == ''){
-	    	ps.categorySearch(category.value, placesSearchCB, {
-	            location: currentPos,
-	            radius: mapRange
-	        });
-	    }
-	    ps.keywordSearch(keywordInput.value, placesSearchCB, {
-	        category_group_code: category.value,
-	        location: currentPos,
-	        radius: mapRange
-	    });
-	}//키워드 || 카테고리 검색
-
-	function placesSearchCB(data, status) {
-	    placeMarkers.forEach(m => {
-	        m.setMap(null); //이전 마커 클리어
-	    });
-	    if (status === kakao.maps.services.Status.OK) {
-	        for (var i = 0; i < data.length; i++) {
-	            displayMarker(data[i]);
-	        }
-	    }
-	}//검색된 목록 -> 마커
-	
- 	 function displayMarker(place) {
-		var marker = new kakao.maps.Marker({
-	        map: map,
-	        position: new kakao.maps.LatLng(place.y, place.x)
-	    });
-	    placeMarkers.push(marker);
-	    kakao.maps.event.addListener(marker, 'click', async function () {
-	    	let check = await checkPlace(place);
-			check = JSON.parse(check);
-	    	if(check == 0){
-				savePlace(place);
-			}
-	        showPlaceInfo(place, check);
-	    });
-	}//마커 목록 표시, 이벤트리스너(장소정보 표시 & 저장)
-	
-	function checkPlace(place){
-		return new Promise((resolve, reject) => {
-			fetch("/place/check?id="+place.id, {
-		    	method: 'get',
-		    	headers: {
-		            'content-type': 'text'
-		        },
-		    })
-		    .then(response => response.json())
-		    .then(data =>resolve(data))
-		});
-	}
-
-	function savePlace(place){
-		fetch("/place/save", {
-	    	method: 'post',
-	    	headers: {
-	            'content-type': 'application/json'
-	        },
-	    	body: JSON.stringify({
-	    		id: place.id,
-	    		ctgr: place.category_group_code,
-	    		name: place.place_name,
-	    		addr: place.address_name,
-				brand: place.category_name.split(" > ").reverse()[0],
-				latitude: place.y,
-				longitude: place.x,
-	    	}),
-	    })
-	    .then((response)=>{
-	    	if(response.ok){return;}
-	    })
-	}//클릭 시 장소 저장
-
-	function showPlaceInfo(place, check){
-		console.log(check);
-		isFav.dataset.id = place.id;
-		destLinks.classList.remove("d-none");
-	    destName.innerText = place.place_name;
-		destId.href = '/place/route?sd='+sid+'&id='+place.id;
-	    destAddr.innerText = place.address_name;
-	    destDetail.href = '/review/list?id='+place.id;
-	    destDist.innerText = '현재 위치에서 '+place.distance+'m';
-	    destImg.setAttribute('src', '/img/'+place.category_group_code.toLowerCase()+'.png');
-	    if(check==2){
-	    	isFav.classList.remove('btn-outline-custom');
-	    	isFav.classList.add('btn-custom');
-	    }else{
-	    	isFav.classList.remove('btn-custom');
-	    	isFav.classList.add('btn-outline-custom');
-	    }
-	} //장소 정보 표시
-
 	</script>
 </main>
 </html>

@@ -15,6 +15,7 @@ import com.example.demo.Repo.FavoriteRepo;
 import com.example.demo.Repo.UserRepo;
 import com.example.demo.entity.Brand;
 import com.example.demo.entity.Category;
+import com.example.demo.entity.Company;
 import com.example.demo.entity.Favorite;
 import com.example.demo.entity.UserInfo;
 import jakarta.servlet.http.HttpSession;
@@ -47,7 +48,7 @@ public class HomeCtrl {
 	@ResponseBody
 	public List<Brand> list(
 			@RequestParam(value = "ctgr") String ctgr) {
-		return bRepo.findByCtgr(ctgr.toUpperCase());
+		return bRepo.findByCtgr(ctgr);
 	}
 	
 	@GetMapping("/login")
@@ -83,4 +84,14 @@ public class HomeCtrl {
 		}
 		return "mypage";
 	}
+	
+	@GetMapping("/cmp")
+	public String index(HttpSession session) {
+		Company cmpInfo = (Company)session.getAttribute("cmpInfo");
+		if(cmpInfo==null) {
+			return "redirect:/cmp/login";
+		}
+		return "cmp_index";
+	}
+
 }

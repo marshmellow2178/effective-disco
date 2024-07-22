@@ -1,0 +1,60 @@
+<html layout:decorate="~{layout}">
+<main class = "container"  layout:fragment="content">
+	<p th:text = "|${cartPage.totalElements}개의 상품이 있습니다|"></p>
+	<form action = "/order/cart" method = "post">
+		<div class = "d-none">
+			<input type = "number" name = "pid" value = "0">
+			<input type = "number" name = "count" value = "0">
+		</div>
+
+		<table th:if = "${cartPage} != null" 
+		class = "table">
+			<tr>
+				<th>
+					<input type = "checkbox" id = "check_all">
+				</th>
+				<th>상품</th>
+				<th>수량</th>
+				<th>가격</th>
+				<th></th>
+	        <tr th:each = "cart: ${cartPage}">
+	        	<td>
+	        		<input type = "checkbox" name = "pid" th:value = "${cart.product.id}">
+	        	</td>
+	        	<td>
+	        		<img th:src = "@{|/img/product.png|}">
+	        		<b th:text = "|${cart.product.name}|"></b>
+	        		<span th:text = "${cart.product.cmpName}"></span>
+	        	</td>
+	        	<td>
+	        		<input type = "number" name = "count" th:value = "${cart.count}">
+	        	</td>
+	        	<td>
+	        		<span th:text = "|${cart.product.price}원|"></span>
+	        	</td>
+	        	<td>
+	        		<a th:href = "@{|/cart/del?id=${cart.id}|}">X</a>
+	        	<td>
+	        </tr>
+	        <tr>
+	        	<td colspan = 5>
+	        		<b>총 가격:
+	        			<span id = "total_price">0</span>원
+	        		</b>
+	        	</td>
+	    </table>
+	    <input type = "submit" 
+	    class = "btn btn-custom"
+	    value = "주문하기">
+    </form>
+	<style>
+		img{
+			width: 80px;
+		}
+	</style>
+ 	<script type="text/javascript">
+	let navCart = document.querySelector('#nav_cart');
+	navCart.classList.add('active');
+	</script>
+</main>
+</html>

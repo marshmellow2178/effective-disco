@@ -1,15 +1,23 @@
 <header th:fragment="headerFragment" class = "container">
-    <h3><a class="nav-link" href="/">Home</a></h3>
+    <h3>
+    	<a class="nav-link" href="/" th:if = "${session.cmpInfo==null}">Home</a>
+    	<a class="nav-link" 
+    	href="/cmp/" 
+    	th:if = "${session.cmpInfo!=null}"
+    	th:text = "${session.cmpInfo.cmpName}"></a>
+    </h3>
     <ol class="nav">
         <li class="nav-item">
             <a th:if="${session.userInfo==null}"
-            class="nav-link" th:href="@{|login|}">Login</a>
+            class="nav-link" href="/login">Login</a>
             <a th:unless ="${session.userInfo==null}"
             class = "nav-link" href = "/logout">Logout</a>
         </li>
-        <li class="nav-item">
-            <a th:unless ="${session.userInfo==null}"
-            class = "nav-link" href = "/mypage">MyPage</a>
-        </li>
+        <li class="nav-item" th:if = "${session.cmpInfo==null}">
+    		<a href = "/cmp/login" class="nav-link">Company</a>
+    	</li>
+    	<li class="nav-item" th:if = "${session.cmpInfo!=null}">
+    		<a href = "/cmp/logout" class="nav-link">Logout</a>
+    	</li>
     </ol>
 </header>

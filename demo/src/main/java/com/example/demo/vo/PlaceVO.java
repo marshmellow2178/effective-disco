@@ -7,7 +7,6 @@ import lombok.Setter;
 @Setter
 public class PlaceVO {
 	private String name;
-	private String id;
 	private String ctgr;
 	private String addr;
 	private String brand;

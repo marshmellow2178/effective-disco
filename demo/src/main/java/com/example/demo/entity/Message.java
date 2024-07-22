@@ -23,6 +23,6 @@ public class Message {
 	@Column(name="msg_content")
 	private String content;
 	
-	@Column(name="msg_content")
-	private String cmp_id;
+	@Column(name="cmp_id")
+	private String cmpId;
 }

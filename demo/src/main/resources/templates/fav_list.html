@@ -1,0 +1,50 @@
+<html layout:decorate="~{layout}">
+<main class = "container"  layout:fragment="content">
+	<p th:text = "|${favPage.totalElements}개의 즐겨찾기|"></p>
+	<ul th:if = "${favPage} != null" 
+	class = "receipt_list container-fluid">
+        <li th:each = "fav: ${favPage}" 
+        class = "receipt card p-3">
+       		<div class = "d-flex justify-content-between align-items-center">
+        		<a th:href = "@{|/fav/del?id=${fav.id}|}" 
+            	class = "btn btn-sm btn-danger col-2">X</a>
+        	</div>
+        	<img th:src = "@{|/img/${fav.cmp.ctgrName}.png|}">
+        	<a th:href = "@{|/product/list?cmp=${fav.cmpName}|}">
+        		<b th:text = "|${fav.cmpName}|"></b>
+        	</a>
+			
+        </li>
+    </ul>
+    <ul class = "pagination justify-content-center" 
+    th:if = "${favPage.totalPages} != 0"
+ 	th:with = "block = 10,
+ 	total = ${favPage.totalPages},
+ 	number = ${favPage.number+1},
+ 	sidx = ${(number/block)*block+1}, 
+ 	eidx = ${(total > sidx+(block-1) ? sidx+(block-1) : total)}">
+ 		<li class = "page-item" 
+ 		th:classappend="${number} == 1 ? disabled">
+ 			<a class = "page-link" 
+ 			th:href = "@{|/fav/list?page=${number-1}|}">&lt;</a>
+ 		</li>
+ 		<th:block th:each = "idx:${#numbers.sequence(sidx, eidx)}">
+ 		<li class = "page-item" 
+ 		th:classappend="${number}==${idx} ? active">
+ 			<a class = "page-link" 
+ 			th:text = "${idx}" 
+ 			th:href = "@{|/fav/list?page=${idx}|}" ></a>
+ 		</li>
+ 		</th:block>
+ 		<li class = "page-item" 
+ 		th:classappend="!${favPage.hasNext} ? disabled">
+ 			<a class = "page-link" 
+ 			th:href = "@{|/fav/list?page=${number+1}|}">&gt;</a>
+ 		</li>
+ 	</ul>
+ 	<script type="text/javascript">
+	let navFav = document.querySelector('#nav_fav');
+	navFav.classList.add('active');
+	</script>
+</main>
+</html>
