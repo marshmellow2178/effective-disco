@@ -25,11 +25,11 @@
             </table>
             <p th:text = "|총 ${order.price} 원|"></p>
             <a th:if = "${order.state}==0" 
-            th:href = "@{|/order/accept?id=${order.id}|}"
+            href = "#"
             class = "btn btn-custom">대기중</a>
             <a th:if = "${order.state}==1" 
-            th:href = "@{|/order/done?id=${order.id}|}"
-           	class = "btn btn-info">완료</a>
+            href = "#"
+           	class = "btn btn-info">처리중</a>
         </li>
     </ul>
     <ul class = "pagination justify-content-center" 

@@ -1,0 +1,25 @@
+<html layout:decorate="~{layout}">
+<main class = "container"  layout:fragment="content">
+<table class = "table table-borderless" th:if = "${session.userInfo!=null}">
+	<tr>
+		<th>아이디</th>
+		<td th:text = "${session.userInfo.id}"></td>
+	</tr>
+</table>
+<table class = "table table-borderless" th:if = "${session.cmpInfo!=null}"
+th:with = "cmp = ${session.cmpInfo}">
+	<tr>
+		<th>상호명</th>
+		<td th:text = "${cmp.cmpName}"></td>
+	</tr>
+	<tr>
+		<th>주소</th>
+		<td th:text = "${cmp.cmpAddr}"></td>
+	</tr>
+</table>
+<script type="text/javascript">
+	let navMyPage = document.querySelector('#nav_mypage');
+	navMyPage.classList.add('active');
+	</script>
+</main>
+</html>

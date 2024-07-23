@@ -107,7 +107,7 @@ public class OrderCtrl {
 		if(page <= 1) { page = 1; }
 		Pageable pageable = PageRequest.of(page-1, 10, Direction.DESC, "date");
 		String cmpName = ((Company)session.getAttribute("cmpInfo")).getCmpName();
-		Page<OrderInfo> orderPage = orderRepo.findByCmpNameAndState(cmpName,2, pageable);
+		Page<OrderInfo> orderPage = orderRepo.findByCmpNameAndState(cmpName,GlobalVO.ORDER_DONE, pageable);
 		model.addAttribute("orderPage", orderPage);
 		return "sales_list";
 	}
@@ -115,18 +115,18 @@ public class OrderCtrl {
 	@GetMapping("/instant") //바로구매
 	public String createInstant(
 			HttpSession  session,
-			@RequestParam(value = "id") int pid,
+			@RequestParam(value = "pid") int pid,
 			Model model
 			) {
 		if(session.getAttribute("userInfo")==null) {
 			return "redirect:/login";
 		}
-		int[] cntArr = {1};
-		List<Product> productList = new ArrayList<>();
-		Product p = pdRepo.findById(pid).get();
-		productList.add(p);
-		model.addAttribute("productList", productList);
-		model.addAttribute("cntArr", cntArr);
+		List<Cart> cartList = new ArrayList<>();
+		Cart c = new Cart();
+		c.setProduct(pdRepo.findById(pid).get());
+		c.setCount(1);
+		cartList.add(c);
+		model.addAttribute("cartList", cartList);
 		return "order_form";
 	}
 	

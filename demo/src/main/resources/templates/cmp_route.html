@@ -1,6 +1,5 @@
 <html layout:decorate="~{layout}">
 <main class="container" layout:fragment="content">
-	<hr>
 	<form name = "searchForm" class="input-group mt-3">
 		<div class = "input-group">
 		<label class = "col-form-label mr-3">🔰 출발</label>
@@ -52,6 +51,7 @@
 	let placeY = document.querySelector("#place_y");
 	let startName = document.querySelector("#start_name");
 	let startAddr = document.querySelector("#start_addr");
+	let navStore = document.querySelector("#nav_store");
 	
 	navigator.geolocation.getCurrentPosition(success);
 	

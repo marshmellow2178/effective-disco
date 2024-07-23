@@ -8,4 +8,5 @@ import com.example.demo.entity.Product;
 
 public interface ProductRepo extends JpaRepository<Product, Integer> {
 	Page<Product> findByCmpName(String cmpName, Pageable pageable);
+	Product findByCmpNameAndName(String cmpName, String name);
 }

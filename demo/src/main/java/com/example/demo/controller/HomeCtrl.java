@@ -67,6 +67,7 @@ public class HomeCtrl {
 			HttpSession session,
 			@RequestParam(value = "userId") String userId,
 			@RequestParam(value = "pwd") String pwd) {
+		session.removeAttribute("cmpInfo");
 		UserInfo user = userRepo.findByIdAndPwd(userId, pwd);
 		if(user==null) {
 			return "login_form";

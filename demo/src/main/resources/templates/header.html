@@ -2,7 +2,7 @@
     <h3>
     	<a class="nav-link" href="/" th:if = "${session.cmpInfo==null}">Home</a>
     	<a class="nav-link" 
-    	href="/cmp/" 
+    	href="/cmp" 
     	th:if = "${session.cmpInfo!=null}"
     	th:text = "${session.cmpInfo.cmpName}"></a>
     </h3>

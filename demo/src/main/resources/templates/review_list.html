@@ -1,17 +1,9 @@
 <html layout:decorate = "~{layout}">
 <main class="container" layout:fragment = "content"
 	th:with = "reviewCounts = ${reviewPage.getTotalElements}">
-	<!-- ${values}
-	myReview	내 리뷰
-	cmp		장소
-	reviewPage	리뷰(페이징)
-	scoreInfo	평점정보 배열[총점, 1, 2, 3, 4, 5]
-	avgScore	평균평점
-	 -->
-    <hr>
-    
+
     <!--장소 정보 -->
-    
+    <th:block th:if = "${session.cmpInfo == null}">
     <section class="cmp_info">
 		<img th:src="@{|/img/${cmp.ctgrName}.png|}" 
 		id = "dest_img">
@@ -21,13 +13,13 @@
 			<a class = "btn btn-sm btn-outline-custom" th:href = "@{|/product/list?cmp=${cmp.cmpName}|}">상품</a>
 			<a class = "btn btn-sm btn-outline-custom" th:href = "@{|/review/list?name=${cmp.cmpName}|}">리뷰</a>
 			<p th:text = "${cmp.cmpAddr}"></p>
-			<span th:text = "|⭐ ${avgScore} (💬 ${reviewCounts})|"></span>
+			<span th:text = "|⭐ ${cmp.score} (💬 ${cmp.cmpReviewCnt})|"></span>
 		</div>
 		<table class = "table table-sm col-4 table-borderless">
-			<tr th:each = "idx:${#numbers.sequence(5, 1)}">
+			<tr th:each = "idx:${#numbers.sequence(4, 0)}">
 				<th scope = "row" class = "col-2" th:text = "${idx}"></th>
-				<td><input type = "range" min = 0 th:max = "${reviewCounts}" th:value = ${scoreInfo[idx]} disabled></td>
-				<td th:text = "${scoreInfo[idx]}"></td>
+				<td><input type = "range" min = 0 th:max = "${reviewCounts}" th:value = ${scoreArr[idx]} disabled></td>
+				<td th:text = "${scoreArr[idx]}"></td>
 			</tr>
 		</table>
 	</section>
@@ -54,12 +46,12 @@
 	 	
  		<p th:text = "${myReview.content}" class = "review_content show"></p>
  		<span class = "btn btn-sm btn-outline-disabled" th:text = "|👍 ${myReview.recCount}|"></span>
- 		<a th:href = "@{|/review/modify?id=${myReview.id}&cmp=${cmp.id}|}" role = "button" class = "btn btn-sm btn-custom">수정</a>
+ 		<a th:href = "@{|/review/modify?id=${myReview.id}&cmp=${cmp.cmpName}|}" role = "button" class = "btn btn-sm btn-custom">수정</a>
  		<a href = "javascript:void(0);" role = "button" class = "btn btn-sm btn-danger" id = "del_btn" 
  		th:data-uri = "@{|/review/delete?id=${myReview.id}|}">삭제</a>
  	</div>
  	<hr>
- 	
+ 	</th:block>
  	<!--리뷰 정렬 폼 -->
  	
  	<form id = "review_search_form" class = "input-group align-items-center justify-content-between">
@@ -89,12 +81,10 @@
 	 			</div>
 	 			<div th:if = "${session.userInfo != null && review.uid != session.userInfo.getId}">		
 					<span class = "btn btn-custom btn-sm recommend" 
-					th:if="${review.isRecommend}" 
 					th:data-id = "${review.id}" >
 	 				👍 <span th:text = "${review.recCount}"></span>
 	 				</span>
 	 				<span class = "btn btn-outline-custom btn-sm recommend" 
-					th:unless="${review.isRecommend}" 
 					th:data-id = "${review.id}" >
 	 				👍 <span th:text = "${review.recCount}"></span>
 	 				</span>
@@ -104,6 +94,11 @@
 					<a th:href = "@{|/review/modify?id=${review.id}&cmp=${cmp.id}|}" role = "button" class = "btn btn-sm btn-custom">수정</a>
 					<a href = "javascript:void(0);" role = "button" class = "btn btn-sm btn-danger" id = "del_btn" 
 						th:data-uri = "@{|/review/delete?id=${review.id}|}">삭제</a>
+				</div>
+				<div th:if = "${session.userInfo == null}">
+						<span class = "btn btn-outline-custom btn-sm recommend" >
+		 				👍 <span th:text = "${review.recCount}"></span>
+	 				</span>
 				</div>
 	 		</li>
 	 	</ul>
@@ -123,7 +118,7 @@
 	 		</li>
 	 		<th:block th:each = "idx:${#numbers.sequence(sidx, eidx)}">
 	 		<li class = "page-item"
-	 			th:classappend = "${number == param.page} ? active">
+	 			th:classappend = "${number == idx} ? active">
 	 			<a class = "page-link" th:text = "${idx}" th:data-page = "${idx}"></a>
 	 		</li>
 	 		</th:block>
@@ -133,7 +128,6 @@
 	 	</ul>
  	</div>
  	<hr>
- 	<script src = "/js/review.js"></script>
  	<script>
 	let delBtn = document.querySelector("#del_btn");
 	let reviewSearchForm = document.querySelector('#review_search_form');
@@ -141,6 +135,8 @@
 	let orderInput = document.querySelector('#order_input');
 	let pageLinks = document.querySelectorAll(".page-link");
 	let recommends = document.querySelectorAll('.recommend');
+	let navReview = document.querySelector('#nav_review');
+	navReview.classList.add('active');
 	
 	recommends.forEach(function(r){
 		r.addEventListener('click', function(event){
@@ -184,6 +180,32 @@
 	delBtn.addEventListener('click', function(){
 		if(confirm('정말 삭제하시겠습니까?')){
 			location.href = this.dataset.uri;
+		}
+	});
+	
+	let reviewContents = document.querySelectorAll(".review_content");
+	let showClass = 'show';
+
+	reviewContents.forEach(function(p){
+		if(p.offsetHeight >= 72 && p.id != "") { //1rem = 10px
+			let btn = document.createElement("span");
+			btn.classList.add('btn');
+			btn.classList.add('btn-sm');
+			btn.classList.add('btn-toggle');
+			btn.innerText = "more";
+			btn.setAttribute('id','more'+p.id.substring(7)); //p태그 id 필수
+			btn.addEventListener('click', function(event){
+				let btnId = event.target.id.substring(4);
+				let targetContent = document.querySelector('#content'+btnId);
+				if(targetContent.classList.contains(showClass)){
+					targetContent.classList.remove(showClass);
+					event.target.innerText = "more";
+				}else{
+					targetContent.classList.add(showClass);
+					event.target.innerText = "hide";
+				}
+			})
+			p.parentElement.appendChild(btn);
 		}
 	});
  	</script>

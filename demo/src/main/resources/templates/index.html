@@ -46,14 +46,19 @@
 	</div>
 	<hr>
 	
-	<section class="place_info">
-		<img id="dest_img" 
-		src="/img/all.png">
-		<div>
-			<b id = "dest_name">목적지를 검색하세요</b>
+	<section class="cmp_info d-flex">
+		<figure>
+			<img src="/img/all.png"
+			id = "dest_img">
+		</figure>
+		
+		<div class = "cmp_details col-4">
+			<a href = "#"
+			id = "product_list">
+			<b id = "dest_name">목적지를 검색하세요</b></a>
 			<br>
 			<div id = "dest_links" 
-			class = "d-none my-1">
+			class = "btn-group d-none my-1">
 				<a class = "btn btn-sm btn-outline-custom" 
 				id ="fav_link" 
 				href = "#">📍 북마크</a>
@@ -64,9 +69,22 @@
 				href = "#" 
 				id = "review_link">리뷰</a>
 			</div>
+			<br>
+			<span id = "dest_ctgr"></span>
+			<br>
 			<span id="dest_addr"></span>
 			<br>
-			<span id="dest_dist"></span>
+			<span id = "dest_score"></span>
+			<p id="dest_dist"></p>
+		</div>
+		<figure>
+			<img src="/img/message.png"
+			id = "msg_img">
+		</figure>
+		<div class = "cmp_msg col-3">
+			
+			<b id = "msg_type">메시지가 없습니다</b>
+			<p id = "msg_content d-none"></p>
 		</div>
 	</section>
 	<script src = "/js/map.js"></script>
@@ -89,6 +107,10 @@
 	let reviewLink = document.querySelector("#review_link");
 	let destAddr = document.querySelector('#dest_addr');
 	let destDist = document.querySelector('#dest_dist');
+	let prodLink = document.querySelector("#product_list");
+	let destCtgr = document.querySelector("#dest_ctgr");
+	let destScore = document.querySelector("#dest_score");
+	let navStore = document.querySelector("#nav_store");
 	
 	navigator.geolocation.getCurrentPosition(success);
 	startSelect.addEventListener('change', onStartSelect);
@@ -163,7 +185,7 @@
 				savePlace(place);
 			}
 	    	destName.innerText = place.place_name;
-			destDist.innerText = place.distance+"미터";
+			destDist.innerText = '현재 위치에서 '+place.distance+"미터";
 	        showPlaceInfo(place);
 	    });
 	}//마커 목록 표시, 이벤트리스너(장소정보 표시 & 저장)
@@ -233,8 +255,11 @@
 			destLinks.classList.remove('d-none');
 			favLink.href = `/fav/add?name=${result.cmpName}`;
 			routeLink.href = `/cmp/route?sname=${startSelect.value}&ename=${result.cmpName}`;
-			reviewLink.href = `/review/cmp?name=${result.cmpName}`;
-			destAddr = result.cmpAddr;
+			reviewLink.href = `/review/list?name=${result.cmpName}`;
+			prodLink.href = `/product/list?cmp=${result.cmpName}`;
+			destAddr.innerText = result.cmpAddr;
+			destScore.innerText = `⭐ ${result.score}`;
+			destCtgr.innerText = `${result.brandName}`;
 		});
 	} //장소 정보 표시
 

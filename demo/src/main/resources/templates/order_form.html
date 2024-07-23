@@ -1,6 +1,5 @@
 <html layout:decorate="~{layout}">
 <main class = "container"  layout:fragment="content">
-	<p th:text = "|${cartList.size}개의 상품이 있습니다|"></p>
 	<form action = "/order/create" method = "post">
 		<div class = "d-none">
 			<input type = "number" name = "pid" value = "0">
@@ -15,7 +14,7 @@
 				<th>가격</th>
 	        <tr th:each = "cart: ${cartList}">
 	        	<td>
-	        		<input type = "hidden" name = "pid" th:value = "${cart.product.id}">
+	        		<input type = "hidden" name = "pid" th:value = "${cart.productId}">
 	        		<img th:src = "@{|/img/product.png|}">
 	        		<b th:text = "|${cart.product.name}|"></b>
 	        		<span th:text = "${cart.product.cmpName}"></span>

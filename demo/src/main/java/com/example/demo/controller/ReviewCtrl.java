@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
@@ -45,14 +43,24 @@ public class ReviewCtrl {
 		if(user==null) {
 			return "redirect:/login";
 		}
-		Company cmp = cmpRepo.findById(cmpId).get();
+		Company cmp = cmpRepo.findByCmpName(cmpId);
 		Review review = new Review();
 		review.setContent(content);
 		review.setScore(score);
 		review.setUid(user.getId());
-		review.setCmpId(cmp.getCmpId());
+		review.setCmpName(cmp.getCmpName());
 		review.setCreateDate(LocalDateTime.now());
 		reviewRepo.save(review);
+		cmp.setCmpReviewCnt(reviewRepo.countByCmpName(cmpId));
+		int tempScore = 0;
+		for(int i = 1;i<=5;i++) {
+			tempScore += (reviewRepo.countByCmpNameAndScore(cmpId, i)*i);
+		}
+		double dscore = (double)tempScore;
+		dscore /= cmp.getCmpReviewCnt();
+		dscore = (Math.round(dscore*100));
+		cmp.setScore(dscore/100);
+		cmpRepo.save(cmp);
 		return "redirect:/review/list?id="+cmpId;
 	}
 	
@@ -69,36 +77,44 @@ public class ReviewCtrl {
 			pageable = PageRequest.of(page-1, 10, Direction.ASC, "createDate");
 		}
 		UserInfo user = (UserInfo)session.getAttribute("userInfo");
-		Company cmp = cmpRepo.findById(cmpName).get();
-		List<Review> reviewList = reviewRepo.findByCmpId(cmpName);		
-		int[] scores = new int[6];
-		double avgScore = 0.0;
-		for(int i = 0;i<reviewList.size();i++) {
-			Review review = reviewList.get(i);
-			int score = review.getScore();
-			scores[0] += score;
-			scores[score]++; //[총점, 1점인원, 2점인원, 3점인원, 4점인원, 5점인원]
-			if(user!=null && review.getRecCount()>0) {
-				List<Recommend> rList = rcRepo.findByReviewId(review.getId());
-				for(Recommend r: rList) {
-					if(r.getUid().equals(user.getId())) {
-						review.setRecommend(true);
-						break;
-					}
-				}
-			} //리뷰 추천 여부 확인하기
-		}
-		avgScore = Math.round((double)scores[0]/reviewList.size()*10);
-		avgScore /=10;
+		Company cmp = cmpRepo.findById(cmpName).get();	
 		
 		if(user!=null) {
-			Review myReview = reviewRepo.findByUidAndCmpId(user.getId(), cmpName);
+			Review myReview = reviewRepo.findByUidAndCmpName(user.getId(), cmpName);
 			model.addAttribute("myReview", myReview);
 		}
+		int[] scoreArr = new int[5];
+		for(int i = 0;i<5;i++) {
+			scoreArr[i] = reviewRepo.countByCmpNameAndScore(cmpName, i+1);
+		}
 		model.addAttribute("cmp", cmp);
-		model.addAttribute("reviewPage", reviewRepo.findByCmpId(cmpName, pageable));
-		model.addAttribute("scoreInfo", scores);
-		model.addAttribute("avgScore", avgScore);
+		model.addAttribute("scoreArr", scoreArr);
+		model.addAttribute("reviewPage", reviewRepo.findByCmpName(cmpName, pageable));
+		return "review_list";
+	}
+	
+	@GetMapping("/cmp/list")
+	public String getCmpReviewList(
+			@RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "sort", defaultValue = "r") String sort,
+			Model model,
+			HttpSession session) {
+		Company cmp = (Company) session.getAttribute("cmpInfo");
+		if(cmp==null) {
+			return "redirect:/cmp/login";
+		}
+		if(page<=0) { page = 1; }
+		Pageable pageable = PageRequest.of(page-1, 10, Direction.DESC, "recCount");
+		if(sort.equals("d")) {
+			pageable = PageRequest.of(page-1, 10, Direction.ASC, "createDate");
+		}
+		int[] scoreArr = new int[5];
+		for(int i = 0;i<5;i++) {
+			scoreArr[i] = reviewRepo.countByCmpNameAndScore(cmp.getCmpName(), i+1);
+		}
+		model.addAttribute("cmp", cmp);
+		model.addAttribute("scoreArr", scoreArr);
+		model.addAttribute("reviewPage", reviewRepo.findByCmpName(cmp.getCmpName(), pageable));
 		return "review_list";
 	}
 	
@@ -144,7 +160,7 @@ public class ReviewCtrl {
 		}
 		Review review = reviewRepo.findById(id);
 		reviewRepo.delete(review);
-		return "redirect:/review/list?id="+review.getCmpId();
+		return "redirect:/review/list?id="+review.getCmpName();
 	}
 	
 	@GetMapping("/mypage")
@@ -170,6 +186,7 @@ public class ReviewCtrl {
 			HttpSession session
 			) {
 		UserInfo user = (UserInfo)session.getAttribute("userInfo");
+		Review review = reviewRepo.findById(reviewId);
 		Recommend rc = rcRepo.findByReviewIdAndUid(reviewId, user.getId());
 		if(rc!=null) {
 			rcRepo.delete(rc);
@@ -179,6 +196,8 @@ public class ReviewCtrl {
 			rc.setReviewId(reviewId);
 			rcRepo.save(rc);
 		}
+		review.setRecCount(rcRepo.countByReviewId(reviewId));
+		reviewRepo.save(review);
 	}
 	
 	@GetMapping("/recommend/list")

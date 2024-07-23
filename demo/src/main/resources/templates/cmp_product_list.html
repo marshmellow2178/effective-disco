@@ -1,7 +1,6 @@
 <html layout:decorate="~{layout}">
-<main class = "container"  layout:fragment="content"
-th:with = "cmpName = ${param.cmp}">
-	<p th:text = "|${cmpName}의 상품 ${products.totalElements}개|"></p>
+<main class = "container"  layout:fragment="content">
+	<p th:text = "|상품 ${products.totalElements}개|"></p>
 	<ul th:if = "${products} != null" 
 	class = "receipt_list container-fluid">
         <li th:each = "product: ${products}" 
@@ -9,19 +8,23 @@ th:with = "cmpName = ${param.cmp}">
         	<img th:src = "@{|/img/product.png|}">
         	<b th:text = "|${product.name}|"></b>
         	<span th:text = "|${product.price}원|"></span>
+        	<p th:if = "${session.cmpInfo!=null}"
+        	th:text = "|재고 ${product.count}개|"></p>
         	<div class = "btn-group">
-	        	<button th:id = "${product.id}"
-	        	class = "add_cart btn btn-custom col-6">
-	        		카트담기
-	        	</button>
-	        	<a th:href = "@{|/order/instant?pid=${product.id}|}"
-	        	class = "btn btn-warning col-6">
-	        		바로구매
+	        	<a th:href = "@{|/product/cmp/update?pid=${product.id}|}"
+	        	class = "btn btn-custom col-6">
+	        		수정
 	        	</a>
+	        	<button class = "del_product btn btn-danger col-6"
+	        	th:id = "${product.id}">
+	        		삭제
+	        	</button>
         	</div>
         </li>
     </ul>
-
+    <a th:if =  "${session.cmpInfo!=null}"
+    class = "btn btn-custom"
+    href = "/product/cmp/create">등록하기</a>
     <ul class = "pagination justify-content-center" 
     th:if = "${products.totalPages} != 0"
  	th:with = "block = 10,
@@ -32,46 +35,34 @@ th:with = "cmpName = ${param.cmp}">
  		<li class = "page-item" 
  		th:classappend="${number} == 1 ? disabled">
  			<a class = "page-link" 
- 			th:href = "@{|/product/list?cmp=cmpName&page=${number-1}|}">&lt;</a>
+ 			th:href = "@{|/product/list?page=${number-1}|}">&lt;</a>
  		</li>
  		<th:block th:each = "idx:${#numbers.sequence(sidx, eidx)}">
  		<li class = "page-item" 
  		th:classappend="${number}==${idx} ? active">
  			<a class = "page-link" 
  			th:text = "${idx}" 
- 			th:href = "@{|/product/list?cmp=cmpName&page=${idx}|}" ></a>
+ 			th:href = "@{|/product/list?page=${idx}|}" ></a>
  		</li>
  		</th:block>
  		<li class = "page-item" 
  		th:classappend="!${products.hasNext} ? disabled">
  			<a class = "page-link" 
- 			th:href = "@{|/product/list?cmp=cmpName&page=${number+1}|}">&gt;</a>
+ 			th:href = "@{|/product/list?page=${number+1}|}">&gt;</a>
  		</li>
  	</ul>
  	<script type="text/javascript">
-	let navStore = document.querySelector('#nav_store');
-	let addCartLinks = document.querySelectorAll('.add_cart');
+	let navProduct = document.querySelector('#nav_product');
+	let delProdBtn = document.querySelectorAll('.del_product');
 	
-	navStore.classList.add('active');
-	for(let i = 0;i<addCartLinks.length;i++){
-		let e = addCartLinks[i];
+	navProduct.classList.add('active');
+	for(let i = 0;i<delProdBtn.length;i++){
+		let e = delProdBtn[i];
 		e.addEventListener('click', function(event){
-			let pid = event.target.id;
-			fetch('/cart/add?id='+pid, {
-				method: 'post',
-				headers: {
-					'content-type': 'application/json'
-				},
-				body: JSON.stringify({
-					productId: pid,
-					count: 1,
-				}),
-			})
-			.then(response=>{
-				if(response.ok){
-					alert('카트에 상품을 넣었습니다');
-				}
-			});
+			if(confirm('정말 삭제하시겠습니까?')){
+				let pid = event.target.id;
+				location.href = "/product/cmp/delete?pid="+pid;
+			}
 		})
 	}
 	</script>

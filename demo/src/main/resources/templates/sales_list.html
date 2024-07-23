@@ -1,10 +1,5 @@
-<html layout:decorate="~{cmp_layout}">
+<html layout:decorate="~{layout}">
 <main class = "container-fluid mx-3"  layout:fragment="content">
-	<hr>
-	<section class = "m-3">
-		<h3 th:text = "${session.cmpInfo.name}"></h3>
-	</section>
-	<nav th:replace="~{cmp_nav :: cmpNavFragment}"></nav>
 	<p th:text = "|${orderPage.totalElements}개의 주문 완료됨|"></p>
 	<ul th:if = "${orderPage} != null" class = "receipt_list container-fluid">
         <li th:each = "order: ${orderPage}" class = "receipt card p-3">
@@ -17,13 +12,18 @@
             		<th>수량</th>
             		<th>가격</th>
             	</tr>
+            	<tr>
+            		<td th:text = "${order.productName}"></td>
+            		<td th:text = "${order.productCount}"></td>
+            		<td th:text = "${order.productPrice}"></td>
+            	</tr>
             </table>
             <p th:text = "|총 ${order.price} 원|"></p>
         </li>
     </ul>
     
     <ul class = "pagination justify-content-center" 
-    th:if = "${orderPage} != null"
+    th:if = "${orderPage.totalPages} != 0"
  	th:with = "block = 10,
  	total = ${orderPage.totalPages},
  	number = ${orderPage.number+1},
@@ -31,16 +31,16 @@
  	eidx = ${(total > sidx+(block-1) ? sidx+(block-1) : total)}">
  		<li class = "page-item" th:classappend="${number} == 1 ? disabled">
  			<a class = "page-link" 
- 			th:href = "@{|/cmp/order/list?page=${number-1}|}">&lt;</a>
+ 			th:href = "@{|/order/cmp/sales?page=${number-1}|}">&lt;</a>
  		</li>
  		<th:block th:each = "idx:${#numbers.sequence(sidx, eidx)}">
  		<li class = "page-item" th:classappend="${number}==${idx} ? active">
  			<a class = "page-link" th:text = "${idx}" 
- 			th:href = "@{|/cmp/order/list?page=${idx}|}" ></a>
+ 			th:href = "@{|/order/cmp/sales?page=${idx}|}" ></a>
  		</li>
  		</th:block>
  		<li class = "page-item" th:classappend="!${orderPage.hasNext} ? disabled">
- 			<a class = "page-link" th:href = "@{|/cmp/order/list?page=${number+1}|}">&gt;</a>
+ 			<a class = "page-link" th:href = "@{|/order/cmp/sales?page=${number+1}|}">&gt;</a>
  		</li>
  	</ul>
  	 <script>

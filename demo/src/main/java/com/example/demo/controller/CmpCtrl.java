@@ -37,6 +37,7 @@ public class CmpCtrl {
 			@RequestParam(value = "cmp_id") String cmpId,
 			@RequestParam(value = "cmp_pwd") String cmpPwd,
 			HttpSession session) {
+		session.removeAttribute("userInfo");
 		Company cmp = cmpRepo.findByCmpIdAndPwd(cmpId, cmpPwd);
 		if(cmp==null) {
 			return "redirect:/cmp/login";
@@ -58,7 +59,7 @@ public class CmpCtrl {
 		if(cmpInfo==null) {
 			return "redirect:/cmp/login";
 		}
-		return "cmp_page";
+		return "mypage";
 	}
 	
 	@GetMapping("/open")
@@ -109,10 +110,13 @@ public class CmpCtrl {
 	@ResponseBody
 	@GetMapping("/check")
 	public int check(
-			@RequestParam(value="name")String cmpName
+			@RequestParam(value="name")String cmpName,
+			HttpSession session
 			) {
-		Optional<Company> option = cmpRepo.findById(cmpName);
-		if(option.isEmpty()) {
+		Company cmp = cmpRepo.findByCmpName(cmpName);
+		session.removeAttribute("cmp");
+		session.setAttribute("cmp", cmpName);
+		if(cmp==null) {
 			return 0;
 		}
 		return 1;
@@ -123,20 +127,21 @@ public class CmpCtrl {
 	public Company getCmp(
 			@RequestParam(value="name")String cmpName
 			) {
-
 		return cmpRepo.findByCmpName(cmpName);
 	}
 	
 	@GetMapping("/route")
 	public String findRoute(
-			@RequestParam(value="sname")String startName,
+			@RequestParam(value="sname", defaultValue = "현재 위치")String startName,
 			@RequestParam(value="ename")String cmpName,
+			HttpSession session,
 			Model model) {
 		if(!startName.equals("현재 위치")) {
 			Company start = cmpRepo.findByCmpName(startName);
 			model.addAttribute("start", start);
 		}
 		Company end = cmpRepo.findByCmpName(cmpName);
+		session.setAttribute("cmp", cmpName);
 		model.addAttribute("end", end);
 		return "cmp_route";
 	}

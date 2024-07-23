@@ -27,15 +27,15 @@ table th{
 	text-align:center;
 	font-weight: bold;
 }
-#dest_img {
-	width: 100px;
-	height: 100px;
-	margin: 0 1rem;
+.cmp_info figure{
+	width: 150px;
+	height: 150px;
+	padding: 1rem;
+	border: 1px solid grey;
+	margin-right: 1rem;
 }
-.place_info{
-	display: flex;
-	flex-wrap: wrap;
-	gap: 10px;
+.cmp_info img{
+	width: 100%;
 }
 .receipt_list{
 	width: 100%;
@@ -45,7 +45,7 @@ table th{
 	gap:10px;
 }
 .receipt{
-	width: 300px;
+	width:250px;
 	height: fit-content;
 }
 .btn-custom{
@@ -108,4 +108,14 @@ table th{
 .show{
 	max-height: fit-content;
 	display:block;
+}
+.dropdown_btn{
+	position:relative;
+}
+.dropdown{
+	position:absolute;
+	z-index : 1;
+	background-color: white;
+	width: 100%;
+	bottom: -300%;
 }

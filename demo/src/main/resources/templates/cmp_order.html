@@ -16,9 +16,11 @@
             	</tr>
             </table>
             <p th:text = "|총 ${order.price} 원|"></p>
-            <a th:if = "${order.state}==0" th:href = "@{|/order/accept?id=${order.id}|}"
+            <a th:if = "${order.state}==0" 
+            th:href = "@{|/order/cmp/accept?id=${order.id}|}"
             	class = "btn btn-custom">접수</a>
-            <a th:if = "${order.state}==1" th:href = "@{|/order/done?id=${order.id}|}"
+            <a th:if = "${order.state}==1" 
+            th:href = "@{|/order/cmp/done?id=${order.id}|}"
            	 class = "btn btn-info">완료</a>
         </li>
     </ul>

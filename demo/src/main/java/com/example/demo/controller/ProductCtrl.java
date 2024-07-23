@@ -32,12 +32,31 @@ public class ProductCtrl {
 	@GetMapping("/list")
 	public String productList(
 			Model model,
+			HttpSession session,
 			@RequestParam(value = "cmp") String cmpName,
 			@RequestParam(value = "page", defaultValue = "1") int page) {
 		Pageable pageable = PageRequest.of(page-1, 9, Direction.DESC, "createDate");
 		Page<Product> products =pdRepo.findByCmpName(cmpName, pageable);
 		model.addAttribute("products", products);
+		session.removeAttribute("cmp");
+		session.setAttribute("cmp", cmpName);
 		return "product_list";
+	}
+	
+	@GetMapping("/cmp/list")
+	public String cmpProductList(
+			Model model,
+			HttpSession session,
+			@RequestParam(value = "page", defaultValue = "1") int page) {
+		Company cmp = (Company)session.getAttribute("cmpInfo");
+		if(cmp==null) {
+			return "redirect:/cmp/login";
+		}
+		Pageable pageable = PageRequest.of(page-1, 9, Direction.DESC, "createDate");
+		Page<Product> products =pdRepo.findByCmpName(cmp.getCmpName(), pageable);
+		model.addAttribute("products", products);
+		
+		return "cmp_product_list";
 	}
 	
 	@GetMapping("/cmp/create")
@@ -59,20 +78,23 @@ public class ProductCtrl {
 		if(cmp==null) {
 			return "redirect:/cmp/login";
 		}
-		Product p = new Product();
-		p.setCmpName(cmp.getCmpName());
-		p.setName(pd.getName());
-		p.setImg(pd.getImg());
-		p.setPrice(pd.getPrice());
-		p.setCount(pd.getCount());
-		p.setCreateDate(LocalDateTime.now());
+		Product p = pdRepo.findByCmpNameAndName(cmp.getCmpName(), pd.getName());
+		if(p==null) {
+			p = new Product();
+			p.setCmpName(cmp.getCmpName());
+			p.setName(pd.getName());
+			p.setPrice(pd.getPrice());
+			p.setCount(pd.getCount());
+			p.setCreateDate(LocalDateTime.now());
+		}
+		p.setCount(pd.getCount()+pd.getCount());
 		pdRepo.save(p);
 		return "redirect:/product/cmp/list";
 	}
 	
 	@GetMapping("/cmp/update")
 	public String update(
-			@RequestParam(value = "id") int pid,
+			@RequestParam(value = "pid") int pid,
 			HttpSession session,
 			Model model
 			) {
@@ -84,7 +106,7 @@ public class ProductCtrl {
 		if(p.isPresent()) {
 			model.addAttribute("product", p.get());
 		}
-		return "product_update";
+		return "product_form";
 	}
 	
 	@PostMapping("/cmp/update")
@@ -99,11 +121,26 @@ public class ProductCtrl {
 		Product p = new Product();
 		p.setCmpName(cmp.getCmpName());
 		p.setName(pd.getName());
-		p.setImg(pd.getImg());
 		p.setPrice(pd.getPrice());
 		p.setCount(pd.getCount());
 		p.setCreateDate(LocalDateTime.now());
 		pdRepo.save(p);
+		return "redirect:/product/cmp/list";
+	}
+	
+	@GetMapping("/cmp/delete")
+	public String deleteProduct(
+			@RequestParam(value = "pid") int pid,
+			HttpSession session
+			) {
+		Company cmp = (Company)session.getAttribute("cmpInfo");
+		if(cmp==null) {
+			return "redirect:/cmp/login";
+		}
+		Optional<Product> p = pdRepo.findById(pid);
+		if(p.isPresent()) {
+			pdRepo.delete(p.get());
+		}
 		return "redirect:/product/cmp/list";
 	}
 }
