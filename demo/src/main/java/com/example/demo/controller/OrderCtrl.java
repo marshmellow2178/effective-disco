@@ -141,7 +141,7 @@ public class OrderCtrl {
 			return "redirect:/login";
 		}
 		List<Cart> cartList = new ArrayList<>();
-		for(int i = 1;i<pid.length;i++) {
+		for(int i = 0;i<pid.length;i++) {
 			Cart c = new Cart();
 			c.setProduct(pdRepo.findById(pid[i]).get());
 			c.setCount(cnt[i]);

@@ -1,8 +1,7 @@
 <html layout:decorate = "~{layout}">
 <main class="container" layout:fragment = "content">
-    <hr>
     <form action = "/review/modify" method = "post">
- 		<input type = "hidden" th:value = "${param.place}" name = "placeid">
+ 		<input type = "hidden" th:value = "${myReview.cmpName}" name = "cmp">
  		<input type = "hidden" th:value = "${myReview.id}" name = "id">
 		<div class = "input-group">
 			<span class = "input-group-text">평점</span>

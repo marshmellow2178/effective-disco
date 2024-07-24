@@ -1,51 +1,96 @@
 <html layout:decorate="~{layout}">
 <main class = "container"  layout:fragment="content">
-	<p th:text = "|${cartPage.totalElements}개의 상품이 있습니다|"></p>
-	<form action = "/order/cart" method = "post">
-		<div class = "d-none">
-			<input type = "number" name = "pid" value = "0">
-			<input type = "number" name = "count" value = "0">
-		</div>
-
-		<table th:if = "${cartPage} != null" 
-		class = "table">
-			<tr>
-				<th>
-					<input type = "checkbox" id = "check_all">
-				</th>
-				<th>상품</th>
-				<th>수량</th>
-				<th>가격</th>
-				<th></th>
-	        <tr th:each = "cart: ${cartPage}">
-	        	<td>
-	        		<input type = "checkbox" name = "pid" th:value = "${cart.product.id}">
-	        	</td>
-	        	<td>
-	        		<img th:src = "@{|/img/product.png|}">
-	        		<b th:text = "|${cart.product.name}|"></b>
-	        		<span th:text = "${cart.product.cmpName}"></span>
-	        	</td>
-	        	<td>
-	        		<input type = "number" name = "count" th:value = "${cart.count}">
-	        	</td>
-	        	<td>
-	        		<span th:text = "|${cart.product.price}원|"></span>
-	        	</td>
-	        	<td>
-	        		<a th:href = "@{|/cart/del?id=${cart.id}|}">X</a>
-	        	<td>
-	        </tr>
-	        <tr>
-	        	<td colspan = 5>
-	        		<b>총 가격:
-	        			<span id = "total_price">0</span>원
-	        		</b>
-	        	</td>
-	    </table>
-	    <input type = "submit" 
-	    class = "btn btn-custom"
-	    value = "주문하기">
+	<form action = "/order/cart" 
+	method = "post"
+	class = "d-flex flex-wrap flex-row">
+		<ul class = "list-group col-7"
+		th:if = "${cartPage} != null" >
+			<li class = "list-group-item d-flex justify-content-between">
+				<div class = "btn-group">
+					<span class = "btn btn-outline-custom"
+					id = "check_all">전체선택</span>
+					<span class = "btn btn-outline-custom"
+					id = "del_all">전체삭제</span>
+				</div>
+				<div class = "btn-group">
+					<span class = "btn-borderless"
+					id = "free_ship">/40,000</span>
+					<span class = "btn btn-outline-success" 
+					id = "ship_btn">무료배송</span>
+				</div>
+				
+			</li>
+			<li th:each = "cart: ${cartPage}"
+			class = "list-group-item d-flex flex-wrap flex-row align-items-center ">
+				<input type = "checkbox" 
+				name = "pid" 
+				class = "check_cart"
+				th:value = "${cart.product.id}"
+				checked
+				>
+				<figure class = "col-6">
+					<img th:src = "@{|/img/product.png|}" 
+					class = "col-12">
+				</figure>
+				<div class = "product_detail col-5">
+					<b th:text = "|${cart.product.name}|"></b>
+					<br>
+	        		<span th:text = "${cart.product.cmpName}"
+	        		class = "badge text-bg-secondary"></span>
+	        		<br>
+	        		<span th:text = "|${cart.product.price}|"
+	        		class = "product_price"></span>원
+	        		<br>
+	        		<div class = "input-group input-group-sm my-1">
+						<span
+						class = "btn btn-addon minus"
+						>-</span>
+						<input type = "number" 
+			        	name = "count" 
+			        	th:value = "${cart.count}"
+			        	class = "form-control col-4 p_count"
+			        	min = 0 max = 99
+			        	>
+			        	<span 
+			        	class = "btn btn-addon plus"
+			        	>+</span>
+					</div>
+				</div>
+			</li>
+		</ul>
+		<aside class = "col-4">
+			<div class = "card p-3">
+				<h5><b>주문 예상 금액</b></h5>
+				<div class = "input-group">
+					<span class = "btn-borderless">총 상품 가격</span>
+					<input type = number 
+					id = "total_product"
+					class = "form-control form-control-plaintext">
+					<span class = "btn-borderless">원</span>
+				</div>
+				<div class = "input-group">
+					<span class = "btn-borderless">총 배송비</span>
+					<input type = number 
+					id = "ship_price"
+					class = "form-control form-control-plaintext"
+					value = 3000>
+					<span class = "btn-borderless">원</span>
+				</div>
+				<hr>
+				<div class = "input-group">
+					<span class = "btn-borderless">총 가격</span>
+					<input type = number 
+					id = "total_price"
+					class = "form-control form-control-plaintext" 
+					>
+					<span class = "btn-borderless">원</span>
+				</div>
+				<input type = "submit" 
+				value = "구매하기"
+				class = "btn btn-custom mt-3"
+				>
+			</div>
+		</aside>
     </form>
 	<style>
 		img{
@@ -54,7 +99,94 @@
 	</style>
  	<script type="text/javascript">
 	let navCart = document.querySelector('#nav_cart');
+	let checkAll = document.querySelector("#check_all");
+	let delAll = document.querySelector("#del_all");
+	let checkBoxes = document.querySelectorAll(".check_cart");
+	let plusBtns = document.querySelectorAll(".plus");
+	let minusBtns = document.querySelectorAll(".minus");
+	let countInputs = document.querySelectorAll(".p_count");
+	let prodPrices = document.querySelectorAll(".product_price");
+	let totalProduct = document.querySelector("#total_product");
+	let freeShipPer = document.querySelector("#free_ship");
+	let shipPrice = document.querySelector("#ship_price");
+	let shipFreeBtn = document.querySelector("#ship_btn");
+	let totalPrice = document.querySelector("#total_price");
+	let ship = 3000;
+	let free = 40000;
+	
+	window.addEventListener('load', setTotalProduct);
+
+	plusBtns.forEach(function(p, idx){
+		p.addEventListener('click', function(){
+			let value = Number(countInputs[idx].value) + 1;
+			if(value >= 99 ) {
+				value = 99;
+			}
+			countInputs[idx].value = value;
+			setTotalProduct();
+		});
+	});
+	
+	minusBtns.forEach(function(m, idx){
+		m.addEventListener('click', function(){
+			let value = countInputs[idx].value - 1;
+			if(value < 1 ) {
+				value = 1;
+			}
+			countInputs[idx].value = value;
+			setTotalProduct();
+		});
+	});
+	
+	checkBoxes.forEach(function(c, idx){
+		c.addEventListener('input', function(){
+			if(c.checked == true){
+				countInputs[idx].disabled = false;
+			}else{
+				countInputs[idx].disabled = true;
+			}
+			setTotalProduct();
+		});
+	});
+	
+	checkAll.addEventListener('click', function(){
+		checkBoxes.forEach(function(c, idx){
+			c.checked = true;
+			countInputs[idx].disabled = false;
+		})
+	});
+	delAll.addEventListener('click', function(){
+		checkBoxes.forEach(function(c, idx){
+			c.checked = false;
+			countInputs[idx].disabled = true;
+		})
+	});
 	navCart.classList.add('active');
+
+	function setTotalProduct(){
+		let sum = 0;
+		countInputs.forEach(function(ci, idx){
+			if(ci.disabled == false){
+				sum += (Number(ci.value) * Number(prodPrices[idx].innerText));
+			}
+		});
+		
+		totalProduct.value = sum;
+		freeShipPer.innerText = sum + " / " + free;
+		
+		if(sum >= free){
+			shipFreeBtn.classList.remove('btn-outline-success');
+			shipFreeBtn.classList.add('btn-success');
+			shipPrice.value = 0;
+		}else{
+			shipFreeBtn.classList.remove('btn-success');
+			shipFreeBtn.classList.add('btn-outline-success');
+			shipPrice.value = ship;
+		}
+		totalPrice.value = sum + Number(shipPrice.value);
+	}
+	
+	
 	</script>
 </main>
 </html>

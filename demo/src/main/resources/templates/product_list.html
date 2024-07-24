@@ -32,20 +32,20 @@ th:with = "cmpName = ${param.cmp}">
  		<li class = "page-item" 
  		th:classappend="${number} == 1 ? disabled">
  			<a class = "page-link" 
- 			th:href = "@{|/product/list?cmp=cmpName&page=${number-1}|}">&lt;</a>
+ 			th:href = "@{|/product/list?cmp=${cmpName}&page=${number-1}|}">&lt;</a>
  		</li>
  		<th:block th:each = "idx:${#numbers.sequence(sidx, eidx)}">
  		<li class = "page-item" 
  		th:classappend="${number}==${idx} ? active">
  			<a class = "page-link" 
  			th:text = "${idx}" 
- 			th:href = "@{|/product/list?cmp=cmpName&page=${idx}|}" ></a>
+ 			th:href = "@{|/product/list?cmp=${cmpName}&page=${idx}|}" ></a>
  		</li>
  		</th:block>
  		<li class = "page-item" 
  		th:classappend="!${products.hasNext} ? disabled">
  			<a class = "page-link" 
- 			th:href = "@{|/product/list?cmp=cmpName&page=${number+1}|}">&gt;</a>
+ 			th:href = "@{|/product/list?cmp=${cmpName}&page=${number+1}|}">&gt;</a>
  		</li>
  	</ul>
  	<script type="text/javascript">

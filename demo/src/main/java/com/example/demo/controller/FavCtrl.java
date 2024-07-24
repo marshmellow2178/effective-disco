@@ -26,6 +26,9 @@ public class FavCtrl {
 			@RequestParam(value = "name") String cmpName,
 			HttpSession session) {
 		UserInfo user = (UserInfo) session.getAttribute("userInfo");
+		if(user==null) {
+			return "redirect:/login";
+		}
 		Favorite fav = favRepo.findByUidAndCmpName(user.getId(), cmpName);
 		if(fav==null) {
 			fav = new Favorite();

@@ -18,6 +18,8 @@
 		</div>
 		<div class = "input-group mt-3">
 		<label class = "col-form-label mr-3">🔍 검색</label>
+		<input type = "hidden" id = "place_x" th:value = "${end.cmpLng}">
+		<input type= "hidden" id = "place_y" th:value = "${end.cmpLat}">
 		<input type = "text" class = "form-control col-3" th:value = "${end.cmpName}">
 		<input type = "text" class = "form-control col-6 ml-3" th:value = "${end.cmpAddr}" disabled>
 		</div>
@@ -28,19 +30,40 @@
 	</div>
 	<hr>
 
-	<section class="place_info">
-		<div class = "d-none">
-			<input type= "number" id = "place_x" th:value = "${end.cmpLng}">
-			<input type= "number" id = "place_y" th:value = "${end.cmpLat}">
-		</div>
-		<img th:src="@{${'/img/'+end.ctgrName+'.png'}}" id = "dest_img">
-		<div>
-			<b th:text = "${end.cmpName}"></b>
-			<div class = "my-1">
-				<a class = "btn btn-sm btn-outline-custom" th:href = "@{|/product/list?cmp=${end.cmpName}|}">상품</a>
-				<a class = "btn btn-sm btn-outline-custom" th:href = "@{|/review/list?name=${end.cmpName}|}">리뷰</a>
+	<section class="cmp_info d-flex">
+		<figure>
+			<img th:src="@{|/img/${end.ctgrName}.png|}" 
+			id = "dest_img">
+		</figure>
+		
+		<div class = "cmp_details col-4">
+			<a th:href = "@{|/product/list?cmp=${end.cmpName}|}"
+			id = "product_list">
+			<b id = "dest_name" 
+			th:text = "${end.cmpName}"></b></a>
+			<br>
+			<div id = "dest_links" 
+			class = "btn-group my-1">
+				<a class = "btn btn-sm btn-outline-custom" 
+				id ="fav_link" 
+				th:href = "@{|/fav/add?name=${end.cmpName}|}">📍 북마크</a>
+				<span class = "btn btn-sm btn-outline-custom" 
+				id = "route_link" 
+				>길찾기</span>
+				<a class = "btn btn-sm btn-outline-custom" 
+				id = "review_link"
+				th:href = "@{|/review/list?name=${end.cmpName}|}">리뷰</a>
 			</div>
-			<p th:text = "${end.cmpAddr}"></p>
+			<br>
+			<span id = "dest_ctgr"
+			th:text = "${end.brandName}"
+			class = "badge text-bg-secondary"></span>
+			<br>
+			<span id="dest_addr"
+			th:text = "${end.cmpAddr}"></span>
+			<br>
+			<span id = "dest_score"
+			th:text = "|⭐ ${end.score} (💬 ${end.cmpReviewCnt})|"></span>
 		</div>
 	</section>
 	<script src= "/js/map.js"></script>

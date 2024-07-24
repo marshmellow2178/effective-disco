@@ -66,11 +66,14 @@ public class ReviewCtrl {
 	
 	@GetMapping("/list")
 	public String getList(
-			@RequestParam(value = "name") String cmpName,
+			@RequestParam(value = "name", defaultValue = "") String cmpName,
 			@RequestParam(value = "page", defaultValue = "1") int page,
 			@RequestParam(value = "sort", defaultValue = "r") String sort,
 			Model model,
 			HttpSession session) {
+		if(cmpName.equals("")) {
+			cmpName = session.getAttribute("cmp").toString();
+		}
 		if(page<=0) { page = 1; }
 		Pageable pageable = PageRequest.of(page-1, 10, Direction.DESC, "recCount");
 		if(sort.equals("d")) {
@@ -131,7 +134,7 @@ public class ReviewCtrl {
 	@PostMapping("/modify")
 	public String modify(
 			@RequestParam(value = "id") int id,
-			@RequestParam(value = "placeid") String placeId,
+			@RequestParam(value = "cmp") String cmp,
 			@RequestParam(value = "content") String content,
 			@RequestParam(value = "score") Integer score,
 			HttpSession session
@@ -146,7 +149,7 @@ public class ReviewCtrl {
 		review.setScore(score);
 		review.setModifyDate(LocalDateTime.now());
 		reviewRepo.save(review);
-		return "redirect:/review/list?id="+placeId;
+		return "redirect:/review/list?name=";
 	}
 	
 	@GetMapping("/delete")
@@ -179,13 +182,15 @@ public class ReviewCtrl {
 		return "mypage_review";
 	}
 	
-	@ResponseBody
-	@PostMapping("/recommend")
-	public void recommend(
+	@GetMapping("/recommend")
+	public String recommend(
 			@RequestParam(value = "id")int reviewId,
 			HttpSession session
 			) {
 		UserInfo user = (UserInfo)session.getAttribute("userInfo");
+		if(user==null) {
+			return "redirect:/login";
+		}
 		Review review = reviewRepo.findById(reviewId);
 		Recommend rc = rcRepo.findByReviewIdAndUid(reviewId, user.getId());
 		if(rc!=null) {
@@ -198,6 +203,7 @@ public class ReviewCtrl {
 		}
 		review.setRecCount(rcRepo.countByReviewId(reviewId));
 		reviewRepo.save(review);
+		return "redirect:/review/list?name=";
 	}
 	
 	@GetMapping("/recommend/list")

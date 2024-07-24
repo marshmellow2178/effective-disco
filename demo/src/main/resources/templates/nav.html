@@ -29,6 +29,27 @@
 	
 	<ul th:if = "${session.userInfo!=null}" 
 	class="nav nav-tabs my-3">
+		
+		<li class="nav-item">
+			<a href="/fav/list" 
+			class="nav-link" 
+			id = "nav_fav">북마크</a>
+		</li>
+		<li class="nav-item">
+			<a href="/cart/list" 
+			class="nav-link" 
+			id = "nav_cart">카트</a>
+		</li>
+		<li class="nav-item">
+			<a href="/order/list" 
+			class="nav-link" 
+			id = "nav_order">내 주문내역</a>
+		</li>
+		<li class="nav-item">
+			<a href="/mypage" 
+			class="nav-link" 
+			id = "nav_mypage">마이페이지</a>
+		</li>
 		<li class="nav-item d-flex flex-column dropdown_btn">
 			<a href = "#" 
 			class="nav-link"
@@ -48,29 +69,9 @@
 				리뷰</a>
 			</div>
 		</li>
-		<li class="nav-item">
-			<a href="/fav/list" 
-			class="nav-link" 
-			id = "nav_fav">북마크</a>
-		</li>
-		<li class="nav-item">
-			<a href="/cart/list" 
-			class="nav-link" 
-			id = "nav_product">카트</a>
-		</li>
-		<li class="nav-item">
-			<a href="/order/list" 
-			class="nav-link" 
-			id = "nav_order">내 주문내역</a>
-		</li>
-		<li class="nav-item">
-			<a href="/mypage" 
-			class="nav-link" 
-			id = "nav_mypage">마이페이지</a>
-		</li>
 	</ul>
 	<hr th:if = "${session.userInfo==null}">
-	<script>
+	<script th:if = "${session.userInfo!=null}">
 		let dropDownBtn = document.querySelector(".dropdown_btn");
 		let dropDown = document.querySelector(".dropdown");
 		dropDownBtn.addEventListener('click', function(){
