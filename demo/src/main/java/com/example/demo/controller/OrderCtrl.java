@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,16 +14,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.Repo.CartRepo;
+import com.example.demo.Repo.OrderDetailRepo;
 import com.example.demo.Repo.OrderRepo;
 import com.example.demo.Repo.ProductRepo;
 import com.example.demo.entity.Cart;
 import com.example.demo.entity.Company;
+import com.example.demo.entity.OrderDetail;
 import com.example.demo.entity.OrderInfo;
-import com.example.demo.entity.Product;
 import com.example.demo.entity.UserInfo;
 import com.example.demo.vo.GlobalVO;
-
+import com.example.demo.vo.OrderFormVO;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -34,8 +33,8 @@ import lombok.RequiredArgsConstructor;
 public class OrderCtrl {
 
 	private final OrderRepo orderRepo;
+	private final OrderDetailRepo odRepo;
 	private final ProductRepo pdRepo;
-	private final CartRepo cartRepo;
 	
 	@GetMapping("/cmp/accept")
 	public String accept(@RequestParam(value = "id") int orderId) {
@@ -92,7 +91,7 @@ public class OrderCtrl {
 		if(page <= 1) { page = 1; }
 		Pageable pageable = PageRequest.of(page-1, 9, Direction.DESC, "date");
 		String userId = ((UserInfo)session.getAttribute("userInfo")).getId();
-		Page<OrderInfo> orderPage = orderRepo. findByUserId(userId, pageable);
+		Page<OrderInfo> orderPage = orderRepo.findByUserId(userId, pageable);
 		model.addAttribute("orderPage", orderPage);
 		return "order_list";
 	}
@@ -116,6 +115,7 @@ public class OrderCtrl {
 	public String createInstant(
 			HttpSession  session,
 			@RequestParam(value = "pid") int pid,
+			@RequestParam(value = "cnt", defaultValue = "1") int count,
 			Model model
 			) {
 		if(session.getAttribute("userInfo")==null) {
@@ -124,7 +124,7 @@ public class OrderCtrl {
 		List<Cart> cartList = new ArrayList<>();
 		Cart c = new Cart();
 		c.setProduct(pdRepo.findById(pid).get());
-		c.setCount(1);
+		c.setCount(c.getCount()+count);
 		cartList.add(c);
 		model.addAttribute("cartList", cartList);
 		return "order_form";
@@ -154,28 +154,22 @@ public class OrderCtrl {
 	@PostMapping("/create")
 	public String createOrder(
 			HttpSession  session,
-			@RequestParam(value = "pid") int[] pid,
-			@RequestParam(value = "count") int[] count
+			OrderFormVO ofvo
 			) {
 		UserInfo user = (UserInfo)session.getAttribute("userInfo");
+		OrderInfo order = new OrderInfo();
+		order.setUser(user);
+		order.createOrder(ofvo);
+		orderRepo.save(order);
+		
+		int[] pid = ofvo.getPid();
+		int[] count = ofvo.getCount();
 		for(int i = 1;i<pid.length;i++) {
-			Cart c = cartRepo.findByUserIdAndProductId(user.getId(), pid[i]);
-			if(c!=null) {
-				cartRepo.delete(c);
-			}
-			Product p = pdRepo.findById(pid[i]).get();
-			OrderInfo order = new OrderInfo();
-			order.setUserId(user.getId());
-			order.setCmpName(p.getCmpName());
-			order.setDate(LocalDateTime.now());
-			order.setProductId(pid[i]);
-			order.setProductCount(count[i]);
-			order.setProductName(p.getName());
-			order.setProductPrice(p.getPrice());
-			order.setPrice(count[i] * p.getPrice());
-			orderRepo.save(order);
-			p.setCount(p.getCount()-count[i]);
-			pdRepo.save(p);
+			OrderDetail od = new OrderDetail();
+			od.setOrder(order);
+			od.setProduct(pdRepo.findById(pid[i]).get());
+			od.setProductCount(count[i]);
+			odRepo.save(od);
 		}
 		return "redirect:/order/list";
 	}

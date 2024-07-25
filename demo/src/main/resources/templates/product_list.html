@@ -6,18 +6,32 @@ th:with = "cmpName = ${param.cmp}">
 	class = "receipt_list container-fluid">
         <li th:each = "product: ${products}" 
         class = "receipt card p-3">
-        	<img th:src = "@{|/img/product.png|}">
+        	<img th:src = "@{|/img/products/${product.img}|}">
         	<b th:text = "|${product.name}|"></b>
         	<span th:text = "|${product.price}원|"></span>
+        	<div class = "input-group input-group-sm my-1">
+				<span
+				class = "btn btn-addon minus"
+				>-</span>
+				<input type = "number" 
+	        	name = "count" 
+	        	value = 1
+	        	class = "form-control col-4 p_count"
+	        	min = 0 max = 99
+	        	>
+	        	<span 
+	        	class = "btn btn-addon plus"
+	        	>+</span>
+			</div>
         	<div class = "btn-group">
 	        	<button th:id = "${product.id}"
 	        	class = "add_cart btn btn-custom col-6">
-	        		카트담기
+	        		카트
 	        	</button>
-	        	<a th:href = "@{|/order/instant?pid=${product.id}|}"
-	        	class = "btn btn-warning col-6">
-	        		바로구매
-	        	</a>
+	        	<button th:data-id = "${product.id}"
+	        	class = "btn btn-warning col-6 insta_order">
+	        		구매
+	        	</button>
         	</div>
         </li>
     </ul>
@@ -51,21 +65,28 @@ th:with = "cmpName = ${param.cmp}">
  	<script type="text/javascript">
 	let navStore = document.querySelector('#nav_store');
 	let addCartLinks = document.querySelectorAll('.add_cart');
+	let plusBtns = document.querySelectorAll(".plus");
+	let minusBtns = document.querySelectorAll(".minus");
+	let countInputs = document.querySelectorAll(".p_count");
+	let instaOrders = document.querySelectorAll(".insta_order");
 	
-	navStore.classList.add('active');
+	for(let i = 0;i<instaOrders.length;i++){
+		let orderBtn = instaOrders[i];
+		orderBtn.addEventListener('click', function(event){
+			let qs = '/order/instant?pid='+this.dataset.id + 
+			"&cnt="+countInputs[i].value;
+			location.href = qs;
+		});
+	}
+	
 	for(let i = 0;i<addCartLinks.length;i++){
 		let e = addCartLinks[i];
 		e.addEventListener('click', function(event){
-			let pid = event.target.id;
-			fetch('/cart/add?id='+pid, {
-				method: 'post',
+			fetch('/cart/add?pid='+event.target.id+"&cnt="+countInputs[i].value, {
+				method: 'get',
 				headers: {
 					'content-type': 'application/json'
 				},
-				body: JSON.stringify({
-					productId: pid,
-					count: 1,
-				}),
 			})
 			.then(response=>{
 				if(response.ok){
@@ -74,6 +95,26 @@ th:with = "cmpName = ${param.cmp}">
 			});
 		})
 	}
+	
+	plusBtns.forEach(function(p, idx){
+		p.addEventListener('click', function(){
+			let value = Number(countInputs[idx].value) + 1;
+			if(value >= 99 ) {
+				value = 99;
+			}
+			countInputs[idx].value = value;
+		});
+	});
+	
+	minusBtns.forEach(function(m, idx){
+		m.addEventListener('click', function(){
+			let value = countInputs[idx].value - 1;
+			if(value < 1 ) {
+				value = 1;
+			}
+			countInputs[idx].value = value;
+		});
+	});
 	</script>
 </main>
 </html>

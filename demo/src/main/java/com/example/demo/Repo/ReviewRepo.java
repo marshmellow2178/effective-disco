@@ -1,5 +1,7 @@
 package com.example.demo.Repo;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +14,8 @@ public interface ReviewRepo extends JpaRepository<Review, Integer> {
 	int countByCmpName(String cmpName);
 	
 	Page<Review> findByCmpName(String cmpName, Pageable pageable); 
+	
+	List<Review> findByCmpName(String cmpName);
 	
 	Page<Review> findByUid(String uid, Pageable pageable); //회원의 모든 리뷰
 	

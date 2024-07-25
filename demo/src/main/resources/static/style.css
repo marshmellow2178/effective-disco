@@ -7,7 +7,7 @@ header{
 	flex-wrap: wrap;
 }
 main{
-	min-height: calc(100vh - 150px);
+	min-height: calc(100vh - 240px);
 }
 footer{
 	display: flex;
@@ -22,17 +22,15 @@ ul{
 input[type=number], .btn-addon{
 	height: 38px;
 	background-color: white;
-
 }
 .list_2{
-	display:flex;
 	flex-wrap:wrap;
 	flex-direction: row;
-	justify-content: center;
 	gap:1rem;
+	padding: 0 1rem;
 }
 .list_2 li{
-	width: 45%;
+	width: 49%;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -41,18 +39,21 @@ input::-webkit-inner-spin-button {
 }
 input[type=number]{
 	text-align: right;
+	vertical-align:middle;
 }
-
+.input-group-text{
+	background: transparent;
+	border:none;
+}
+.row{
+	align-items: center;
+}
 #map {
 	width: 100%;
 	height: 600px;
 	margin: 0 auto;
 }
-.col-form-label{
-	width: 80px;
-	text-align:center;
-	font-weight: bold;
-}
+
 .cmp_info figure{
 	width: 150px;
 	height: 150px;
@@ -103,7 +104,6 @@ input[type=number]{
 	padding: .375rem .75rem;
 	text-align: center;
 	font-size: 1rem;
-    font-weight: 400;
     line-height: 1.5;
 }
 .btn-addon{
@@ -115,24 +115,9 @@ input[type=number]{
 .map_wrap{
 	position: relative;
 }
-.custom_zoomctrl{
-	width: 20%;
-	position: absolute;
-	z-index: 1;
-	top:10px;
-	right:10px;
-	background-color: white;
-}
+
 .table-borderless th, .table-borderless td{
 	border: none;
-}
-.user_id{
-	display: inline-block;
-	width: 4rem;
-	margin-left: 1rem;
-}
-.review_title{
-	margin-bottom:0.5rem;
 }
 .review_content{
 	margin: 0 0.5rem;

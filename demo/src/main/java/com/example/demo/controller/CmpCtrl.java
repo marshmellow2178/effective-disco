@@ -1,6 +1,10 @@
 package com.example.demo.controller;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,8 +17,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.Repo.BrandRepo;
 import com.example.demo.Repo.CompanyRepo;
+import com.example.demo.Repo.ProductRepo;
+import com.example.demo.Repo.ReviewRepo;
 import com.example.demo.entity.Brand;
 import com.example.demo.entity.Company;
+import com.example.demo.entity.Product;
+import com.example.demo.entity.Review;
 import com.example.demo.vo.PlaceVO;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +34,8 @@ public class CmpCtrl {
 	
 	private final CompanyRepo cmpRepo;
 	private final BrandRepo bRepo;
+	private final ProductRepo pdRepo;
+	private final ReviewRepo rRepo;
 	
 	@GetMapping("/login")
 	public String cmpLogin() {
@@ -104,6 +114,8 @@ public class CmpCtrl {
 			cmp.setScore(0.0);
 			cmp.setState("c");
 			cmpRepo.save(cmp);
+			
+			
 		}
 	}
 	
@@ -127,7 +139,70 @@ public class CmpCtrl {
 	public Company getCmp(
 			@RequestParam(value="name")String cmpName
 			) {
-		return cmpRepo.findByCmpName(cmpName);
+		List<String> ctgrNames = new ArrayList<>();
+		ctgrNames.add("ce7");
+		ctgrNames.add("ct1");
+		ctgrNames.add("fd6");
+		ctgrNames.add("mt1");
+		ctgrNames.add("pm9");
+		ctgrNames.add("cs2");
+		Company cmp = cmpRepo.findByCmpName(cmpName);
+		Random r = new Random();
+		int randNum = r.nextInt(40);
+		String pname = "product_"+cmp.getCtgrName().substring(0, 2)+".png";
+		if(ctgrNames.contains(cmp.getCtgrName())) {
+			List<Product> pList = pdRepo.findByCmpName(cmpName);
+			if(pList.size()==0) {
+				for(int i = 0;i<=randNum;i++) {
+					Product p = new Product();
+					p.setCmpName(cmpName);
+					p.setName("상품"+i);
+					p.setCount(100);
+					p.setCreateDate(LocalDateTime.now());
+					p.setPrice(1000*i);
+					p.setImg(pname);
+					pdRepo.save(p);
+				}
+			}else {
+				for(Product p: pList){
+					
+					if(p.getImg().equals(pname)) {break;}
+					p.setImg(pname);
+					pdRepo.save(p);
+				}
+			}
+		}	
+		
+		List<Review> rList = rRepo.findByCmpName(cmpName);
+		if(rList.size()==0) {
+			randNum = r.nextInt(25)+1;
+			for(int i = 1;i<=randNum;i++) {
+				Review review = new Review();
+				review.setCmpName(cmp.getCmpName());
+				review.setCreateDate(LocalDateTime.now());
+				review.setUid("user"+i);
+				int scoreNum = r.nextInt(5)+1;
+				review.setScore(scoreNum);
+				try {
+					rRepo.save(review);
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}else if(cmp.getScore()==0){
+			int totalScore = 0;
+			for(int i = 0;i<rList.size();i++) {
+				totalScore += rList.get(i).getScore();
+			}
+			double tempScore = (double)totalScore;
+			tempScore /=rList.size();
+			tempScore = Math.round(tempScore*100);
+			cmp.setScore(tempScore/100);
+		}
+		
+		cmp.setCmpReviewCnt(rList.size());
+		cmpRepo.save(cmp);
+		return cmp;
 	}
 	
 	@GetMapping("/route")

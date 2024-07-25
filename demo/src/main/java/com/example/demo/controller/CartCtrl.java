@@ -6,13 +6,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.Repo.CartRepo;
+import com.example.demo.Repo.ProductRepo;
 import com.example.demo.entity.Cart;
+import com.example.demo.entity.Product;
 import com.example.demo.entity.UserInfo;
 
 import jakarta.servlet.http.HttpSession;
@@ -23,23 +24,26 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/cart")
 public class CartCtrl {
 	private final CartRepo cartRepo;
+	private final ProductRepo pdRepo;
 	
 	@ResponseBody
-	@PostMapping("/add")
+	@GetMapping("/add")
 	public void addCart(
 			HttpSession session,
-			@RequestParam(value = "id") int pid,
+			@RequestParam(value = "pid") int pid,
 			@RequestParam(value = "cnt", defaultValue = "1") int count
 			) {
 		UserInfo user = (UserInfo)session.getAttribute("userInfo");
+		Product p = pdRepo.findById(pid).get();
 		Cart cart = cartRepo.findByUserIdAndProductId(user.getId(), pid);
 		if(cart!=null) {
 			cart.setCount(cart.getCount()+count);
 		}else {
 			cart = new Cart();
 			cart.setCount(count);
-			cart.setProductId(pid);
-			cart.setUserId(user.getId());
+			cart.setProduct(p);
+			cart.setUser(user);
+			cart.setCmpName(p.getCmpName());
 		}
 		cartRepo.save(cart);
 	}

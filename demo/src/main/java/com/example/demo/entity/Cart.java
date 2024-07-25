@@ -23,6 +23,9 @@ public class Cart {
 	@Column(name = "user_id")
 	private String userId;
 	
+	@Column(name = "cmp_name")
+	private String cmpName;
+	
 	@Column(name = "product_id")
 	private int productId;
 	
@@ -45,5 +48,14 @@ public class Cart {
 	public void setProduct(Product product) {
 		this.product = product;
 		this.productId = product.getId();
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "cmp_name", insertable = false, updatable = false)
+	private Company cmp;
+	
+	public void setCmp(Company cmp) {
+		this.cmp = cmp;
+		this.cmpName = cmp.getCmpName();
 	}
 }

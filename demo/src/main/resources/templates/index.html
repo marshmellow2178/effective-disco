@@ -2,7 +2,7 @@
 <main class="container" layout:fragment="content">
 	<form>
 		<div class = "input-group">
-			<label class = "col-form-label">🔰 출발</label>
+			<b class = "btn-borderless">출발</b>
 			<select class="form-control col-4" 
 			id = "start_select">
 				<option value = "현재 위치">현재 위치</option>
@@ -19,7 +19,7 @@
 	</form>
 	<form id = "dest_form">
 		<div class = "input-group mt-3">
-			<label class = "col-form-label">🔍 검색</label>
+			<b class = "btn-borderless">검색</b>
 			<select class="form-control col-2"
 			id = "ctgr_select">
 				<option value = "all">전체</option>
@@ -68,6 +68,8 @@
 				<a class = "btn btn-sm btn-outline-custom" 
 				href = "#" 
 				id = "review_link">리뷰</a>
+				<span class = "btn btn-sm btn-outline-custom" 
+				id = "cmp_state"></span>
 			</div>
 			<br>
 			<span id = "dest_ctgr"></span>
@@ -110,6 +112,7 @@
 	let prodLink = document.querySelector("#product_list");
 	let destCtgr = document.querySelector("#dest_ctgr");
 	let destScore = document.querySelector("#dest_score");
+	let cmpState = document.querySelector("#cmp_state");
 	let navStore = document.querySelector("#nav_store");
 	
 	navigator.geolocation.getCurrentPosition(success);
@@ -258,8 +261,9 @@
 			reviewLink.href = `/review/list?name=${result.cmpName}`;
 			prodLink.href = `/product/list?cmp=${result.cmpName}`;
 			destAddr.innerText = result.cmpAddr;
-			destScore.innerText = `⭐ ${result.score}`;
+			destScore.innerText = `⭐ ${result.score} (💬 ${result.cmpReviewCnt})`;
 			destCtgr.innerText = `${result.brandName}`;
+			cmpState.innerText = `${result.state =='c' ? '영업 종료' : '영업 중'}`;
 		});
 	} //장소 정보 표시
 

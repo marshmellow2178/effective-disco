@@ -5,7 +5,7 @@
 	class = "receipt_list container-fluid">
         <li th:each = "product: ${products}" 
         class = "receipt card p-3">
-        	<img th:src = "@{|/img/product.png|}">
+        	<img th:src = "@{|/img/products/${product.img}.png|}">
         	<b th:text = "|${product.name}|"></b>
         	<span th:text = "|${product.price}원|"></span>
         	<p th:if = "${session.cmpInfo!=null}"

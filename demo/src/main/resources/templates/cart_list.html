@@ -29,7 +29,7 @@
 				checked
 				>
 				<figure class = "col-6">
-					<img th:src = "@{|/img/product.png|}" 
+					<img th:src = "@{|/img/products/${cart.product.img}|}" 
 					class = "col-12">
 				</figure>
 				<div class = "product_detail col-5">
@@ -56,6 +56,7 @@
 			        	>+</span>
 					</div>
 				</div>
+				<a th:href = "@{|/cart/del?id=${cart.id}|}" class = "btn btn-sm btn-danger">X</a>
 			</li>
 		</ul>
 		<aside class = "col-4">
@@ -87,7 +88,7 @@
 				</div>
 				<input type = "submit" 
 				value = "구매하기"
-				class = "btn btn-custom mt-3"
+				class = "btn btn-custom mt-3 submit"
 				>
 			</div>
 		</aside>
@@ -111,6 +112,7 @@
 	let shipPrice = document.querySelector("#ship_price");
 	let shipFreeBtn = document.querySelector("#ship_btn");
 	let totalPrice = document.querySelector("#total_price");
+	let submit = document.querySelector(".submit");
 	let ship = 3000;
 	let free = 40000;
 	
@@ -153,13 +155,15 @@
 		checkBoxes.forEach(function(c, idx){
 			c.checked = true;
 			countInputs[idx].disabled = false;
-		})
+		});
+		setTotalProduct();
 	});
 	delAll.addEventListener('click', function(){
 		checkBoxes.forEach(function(c, idx){
 			c.checked = false;
 			countInputs[idx].disabled = true;
-		})
+		});
+		setTotalProduct();
 	});
 	navCart.classList.add('active');
 
@@ -173,15 +177,22 @@
 		
 		totalProduct.value = sum;
 		freeShipPer.innerText = sum + " / " + free;
-		
-		if(sum >= free){
+		if(sum == 0){
+			shipFreeBtn.classList.remove('btn-success');
+			shipFreeBtn.classList.add('btn-outline-success');
+			shipPrice.value = 0;
+			submit.disabled = true;
+		}
+		else if(sum >= free){
 			shipFreeBtn.classList.remove('btn-outline-success');
 			shipFreeBtn.classList.add('btn-success');
 			shipPrice.value = 0;
+			submit.disabled = false;
 		}else{
 			shipFreeBtn.classList.remove('btn-success');
 			shipFreeBtn.classList.add('btn-outline-success');
 			shipPrice.value = ship;
+			submit.disabled = false;
 		}
 		totalPrice.value = sum + Number(shipPrice.value);
 	}
