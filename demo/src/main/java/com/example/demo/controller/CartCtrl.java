@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,24 +30,39 @@ public class CartCtrl {
 	
 	@ResponseBody
 	@GetMapping("/add")
-	public void addCart(
+	public int addCart(
 			HttpSession session,
 			@RequestParam(value = "pid") int pid,
 			@RequestParam(value = "cnt", defaultValue = "1") int count
 			) {
 		UserInfo user = (UserInfo)session.getAttribute("userInfo");
 		Product p = pdRepo.findById(pid).get();
+		List<Cart> cartList = cartRepo.findByUserId(user.getId());
 		Cart cart = cartRepo.findByUserIdAndProductId(user.getId(), pid);
-		if(cart!=null) {
-			cart.setCount(cart.getCount()+count);
+		if(cartList.size()!=0){
+			if(cart!=null) {
+				cart.setCount(cart.getCount()+count);
+				cartRepo.save(cart);
+				return 0;
+			}
+			if(p.getCmpName().equals(cartList.get(0).getProduct().getCmpName())) {
+				cart = new Cart();
+				cart.setCount(count);
+				cart.setProduct(p);
+				cart.setUser(user);
+				cartRepo.save(cart);
+				return 0;
+			}else {
+				return -1;
+			}
 		}else {
 			cart = new Cart();
 			cart.setCount(count);
 			cart.setProduct(p);
 			cart.setUser(user);
-			cart.setCmpName(p.getCmpName());
+			cartRepo.save(cart);
+			return 0;
 		}
-		cartRepo.save(cart);
 	}
 	
 	@GetMapping("/list")

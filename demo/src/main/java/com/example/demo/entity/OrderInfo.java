@@ -59,6 +59,11 @@ public class OrderInfo {
 	@OneToMany(mappedBy="order")
 	private List<OrderDetail> odList = new ArrayList<>();
 	
+	public void setUser(UserInfo user) {
+		this.user = user;
+		this.userId = user.getId();
+	}
+	
 	public void createOrder(OrderFormVO ofvo) {
 		this.cmpName = ofvo.getCmp_name();
 		this.date = LocalDateTime.now();

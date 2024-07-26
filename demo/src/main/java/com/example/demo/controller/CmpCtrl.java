@@ -114,8 +114,6 @@ public class CmpCtrl {
 			cmp.setScore(0.0);
 			cmp.setState("c");
 			cmpRepo.save(cmp);
-			
-			
 		}
 	}
 	
@@ -165,7 +163,6 @@ public class CmpCtrl {
 				}
 			}else {
 				for(Product p: pList){
-					
 					if(p.getImg().equals(pname)) {break;}
 					p.setImg(pname);
 					pdRepo.save(p);

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.demo.Repo.CartRepo;
 import com.example.demo.Repo.OrderDetailRepo;
 import com.example.demo.Repo.OrderRepo;
 import com.example.demo.Repo.ProductRepo;
@@ -35,6 +36,7 @@ public class OrderCtrl {
 	private final OrderRepo orderRepo;
 	private final OrderDetailRepo odRepo;
 	private final ProductRepo pdRepo;
+	private final CartRepo cartRepo;
 	
 	@GetMapping("/cmp/accept")
 	public String accept(@RequestParam(value = "id") int orderId) {
@@ -137,14 +139,15 @@ public class OrderCtrl {
 			@RequestParam(value = "count") int[] cnt,
 			Model model
 			) {
-		if(session.getAttribute("userInfo")==null) {
+		UserInfo user = (UserInfo)session.getAttribute("userInfo");
+		if(user==null) {
 			return "redirect:/login";
 		}
 		List<Cart> cartList = new ArrayList<>();
 		for(int i = 0;i<pid.length;i++) {
-			Cart c = new Cart();
-			c.setProduct(pdRepo.findById(pid[i]).get());
+			Cart c = cartRepo.findByUserIdAndProductId(user.getId(), pid[i]);
 			c.setCount(cnt[i]);
+			cartRepo.save(c);
 			cartList.add(c);
 		}
 		model.addAttribute("cartList", cartList);
@@ -170,6 +173,8 @@ public class OrderCtrl {
 			od.setProduct(pdRepo.findById(pid[i]).get());
 			od.setProductCount(count[i]);
 			odRepo.save(od);
+			Cart c = cartRepo.findByUserIdAndProductId(user.getId(), pid[i]);
+			if(c!=null) {cartRepo.delete(c);}
 		}
 		return "redirect:/order/list";
 	}

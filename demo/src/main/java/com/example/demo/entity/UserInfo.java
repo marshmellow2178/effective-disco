@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -15,4 +17,6 @@ public class UserInfo {
 	private String id;
 	@Column(name = "user_pwd")
 	private String pwd;
+	@Column(name = "join_date")
+	private LocalDateTime joinDate;
 }

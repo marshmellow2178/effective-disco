@@ -1,19 +1,17 @@
 <html layout:decorate="~{layout}">
 <main class = "container d-flex"  
 layout:fragment="content">
-<ul th:replace = "~{mypage_menu :: mypageFragment}"
-></ul>
 <div class = "col-6">
-	<table class = "table table-sm table-borderless" >
+	<table class = "table table-borderless"
+	th:if = "${session.cmpInfo!=null}"
+	th:with = "cmp = ${session.cmpInfo}">
 		<tr>
-			<th scope = "col"
-			class = "col-2">아이디</th>
-			<td th:text = "${session.userInfo.id}"></td>
+			<th>상호명</th>
+			<td th:text = "${cmp.cmpName}"></td>
 		</tr>
 		<tr>
-			<th scope = "col"
-			class = "col-2">가입일</th>
-			<td th:text = "${#temporals.format(session.userInfo.joinDate, 'yy/MM/dd')}"></td>
+			<th>주소</th>
+			<td th:text = "${cmp.cmpAddr}"></td>
 		</tr>
 	</table>
 </div>

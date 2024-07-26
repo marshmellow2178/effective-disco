@@ -174,9 +174,9 @@ public class ReviewCtrl {
 		if(user==null) {
 			return "login_form";
 		}
-		Pageable pageable = PageRequest.of(page-1, 10, Direction.DESC, "createdate");
-		Page<Review> myReviewPage = reviewRepo.findByUid(user.getId(), pageable);
-		model.addAttribute("myReviewPage", myReviewPage);
+		Pageable pageable = PageRequest.of(page-1, 10, Direction.DESC, "createDate");
+		Page<Review> reviewPage = reviewRepo.findByUid(user.getId(), pageable);
+		model.addAttribute("reviewPage", reviewPage);
 		return "mypage_review";
 	}
 	
@@ -213,10 +213,11 @@ public class ReviewCtrl {
 		if(user==null) {
 			return "redirect:/login";
 		}
-		Pageable pageable = PageRequest.of(page, 10, Direction.DESC, "createdate");
-		Page<Review> reviewPage = reviewRepo.findByUid(user.getId(), pageable);
+		if(page<=0) { page = 1; }
+		Pageable pageable = PageRequest.of(page-1, 10);
+		Page<Recommend> reviewPage = rcRepo.findByUid(user.getId(), pageable);
 		model.addAttribute("reviewPage", reviewPage);
-		return "mypage_review";
+		return "my_rec";
 	}
 	
 	

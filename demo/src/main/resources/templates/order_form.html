@@ -2,70 +2,83 @@
 <main class = "container"  layout:fragment="content">
 	<form action = "/order/create" 
 	method = "post"
-	class = "col-8 mx-auto">
-		<h4 th:text = "${cmpName}"></h4>
-		<div class="row mb-2">
-			<b>수령방법</b>
-			<div class = "input-group col-2 ml-3">
-				<input type = "radio" 
-				name = "receive" 
-				class = "form-check-input"
-				id ="get_1"
-				>
-				<label class = "form-check-label"
-				for = "get_1">배송</label>
-			</div>
-			<div class = "input-group col">
-				<input type = "radio" 
-				name = "receive"
-				class = "form-check-input" 
-				id ="get_0"
-				checked>
-				<label class = "form-check-label"
-				for = "get_0">매장방문</label>
-			</div>
+	class = "col-7 mx-auto">
+		<div class = "input-group row">
+			<span class = "input-group-text">주문지점</span>
+			<input type = "text"  
+	  		name = "cmp_name"
+	  		class = "form-control form-control-plaintext"
+	  		th:value = "${cartList.get(0).product.cmpName}">
 		</div>
-		<div class = "row mb-2 d-none">
-			<b>배송지점</b>
-			<div class = "input-group col">
-				<input type = "text" 
-				class = "form-control"
-				readonly 
-				id = "dest_addr">
-			</div>
-		</div>
-		<div class = "row mb-2">
-		<b>주문내역</b>
+		<div class = "d-none">
+			<input type = number
+			value = 0
+			name = "pid">
+			<input type = number
+			value=0
+			name = count>
 		</div>
 		<table th:if = "${cartList.size} != 0" 
 		class = "table table-sm">
-			<tr>
-				<th class = "col-5">상품</th>
-				<th class = "col-2">수량</th>
-				<th class = "col-3">가격</th>
+			<tr class = "row table-primary">
+				<th class = "col-7" scope = "row">상품</th>
+				<th class = "col-2 ">수량</th>
+				<th class = "col-3 ">가격</th>
 			</tr>
-	        <tr th:each = "cart: ${cartList}" 
+	        <tr th:each = "cart: ${cartList}"
+	        class = "row"
 	        th:with = "total = 0">
-	        	<td th:text = "|${cart.product.name}|"></b>
+	        	<td class =  "input-group col-7">
+	        		<p
+	        		 th:text = "|${cart.product.name}|"
+	        		></p>
+	        		<input type = "number"  
+	        		name = "pid"
+	        		class = "d-none"
+	        		th:value = "${cart.productId}">
 	        	</td>
-	        	<td th:text = "${cart.count}">
-	        		<input class = "d-none" type = "number" th:value = "${cart.count}">
+	        	<td class = "input-group col-2">
+	        		<input type = "number" 
+	        		name = "count"
+	        		class =  "form-control form-control-plaintext
+	        		 text-end"
+	        		th:value = "${cart.count}">
+	        		<p>개</p>
 	        	</td>
-	        	<td>
-	        		<span th:text = "${cart.product.price}" class = "price"></span>원
+	        	<td class = "input-group col-3">
+	        		<p
+	        		class =  "price"
+	        		th:text = "${cart.product.price * cart.count}"></p>
+	        		<p>원</p>
 	        	</td>
 	        </tr>
-	        <tr>
-	        	<td>
+	        <tr class = "row">
+	        	<td class = "  col-9">
+					<p>배송비</p>
+				</td>
+	        	<td class = "input-group  col-3">
+	        		<input type = "number" 
+	        		class =  "form-control form-control-plaintext 
+	        		 text-end"
+	        		id = "ship_price"
+	        		>원
+	        	</td>
+	        </tr>
+	        <tr class = "row">
+	        	<td class = "col-9">
 	        		<b>총 가격</b>
 	        	</td>
-	        	<td></td>
-	        	<td>
-	        		<input type = "number" id = "total_price">원
+	        	<td class = "input-group col-3">
+	        		<input class =  "form-control form-control-plaintext"
+	        		type="number"
+	        		name = "total_price"
+	        		id = "total_price">
+	        		원
 	        	</td>
+	        </tr>
 	    </table>
 	    <input type = "submit" 
-	    class = "btn btn-custom mx-3"
+	    class = "btn btn-custom"
 	    value = "주문하기">
     </form>
 	<style>
@@ -76,14 +89,21 @@
  	<script type="text/javascript">
 	let navOrder = document.querySelector('#nav_cart');
 	let priceList = document.querySelectorAll('.price');
+	let shipPrice = document.querySelector("#ship_price");
 	let totalPrice = document.querySelector("#total_price");
 	
 	window.addEventListener('load', function(){
 		let sum = 0;
+		shipPrice.value  = 3000;
+
 		priceList.forEach(function(p){
 			sum += Number(p.innerText);
 		});
-		totalPrice.innerText = sum;
+		if(sum>=40000){
+			shipPrice.value = 0;
+		}
+		sum += Number(shipPrice.value);
+		totalPrice.value = sum;
 	});
 
 	navOrder.classList.add('active');

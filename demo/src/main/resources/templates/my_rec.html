@@ -1,0 +1,66 @@
+<html layout:decorate="~{layout}">
+<main class = "container d-flex"  
+layout:fragment="content">
+<ul th:replace = "~{mypage_menu :: mypageFragment}"
+></ul>
+<div class = "col-9">
+	<p th:text = "|${reviewPage.totalElements}개의 리뷰 추천함|"></p>
+	<hr>
+	<ul class = "list-group my-3">
+ 		<li class = "list-group-item" 
+ 		th:each = "rec : ${reviewPage}">
+ 			<div class = "review_title">
+ 				<a th:text = "${rec.review.cmpName}"
+ 				th:href = "@{|/review/list?name=${rec.review.cmpName}|}"></a>
+ 				<br>
+ 				<span th:text = "|⭐ ${rec.review.score}|"></span>
+ 				<b th:text = "${rec.review.uid}" class = "user_id"></b>
+ 				<span th:if = "${rec.review.modifyDate == null}" th:text = "${#temporals.format(rec.review.createDate, 'yy/MM/dd')}"></span>
+ 				<span th:unless= "${rec.review.modifyDate == null}" th:text = "|${#temporals.format(rec.review.modifyDate, 'yy/MM/dd')} (수정됨)|"></span>
+ 			</div>
+ 			<div>
+ 				<p th:id = "|content${rec.review.id}|"  
+ 				th:text = "${rec.review.content}" class = "review_content"></p>
+ 			</div>
+ 			<div>		
+ 				<span class = "btn btn-outline-custom btn-sm" 
+				th:text = "|👍 ${rec.review.recCount}|"></span>
+			</div>
+ 		</li>
+ 	</ul>
+	<hr>
+	<ul class = "pagination justify-content-center" 
+    th:if = "${reviewPage.totalPages} != 0"
+ 	th:with = "block = 10,
+ 	total = ${reviewPage.totalPages},
+ 	number = ${reviewPage.number+1},
+ 	sidx = ${(number/block)*block+1}, 
+ 	eidx = ${(total > sidx+(block-1) ? sidx+(block-1) : total)}">
+ 		<li class = "page-item" 
+ 		th:classappend="${number} == 1 ? disabled">
+ 			<a class = "page-link" 
+ 			th:href = "@{|/recommend/list?page=${number-1}|}">&lt;</a>
+ 		</li>
+ 		<th:block th:each = "idx:${#numbers.sequence(sidx, eidx)}">
+ 		<li class = "page-item" 
+ 		th:classappend="${number}==${idx} ? active">
+ 			<a class = "page-link" 
+ 			th:text = "${idx}" 
+ 			th:href = "@{|/recommend/list?page=${idx}|}" ></a>
+ 		</li>
+ 		</th:block>
+ 		<li class = "page-item" 
+ 		th:classappend="!${reviewPage.hasNext} ? disabled">
+ 			<a class = "page-link" 
+ 			th:href = "@{|/recommend/list?page=${number+1}|}">&gt;</a>
+ 		</li>
+	</ul>
+</div>
+<script type="text/javascript">
+	let navMyPage = document.querySelector('#nav_mypage');
+	let myInfoMenu = document.querySelector("#my_rec");
+	myInfoMenu.classList.add('active');
+	navMyPage.classList.add('active');
+	</script>
+</main>
+</html>
