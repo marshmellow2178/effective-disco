@@ -1,23 +1,26 @@
 @charset 'utf-8';
 header{
-	padding-top: 1rem;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	flex-wrap: wrap;
 }
 main{
-	min-height: calc(100vh - 240px);
+	height: 100vh;
+	display: flex;
+	flex-wrap: wrap;
 }
 footer{
 	display: flex;
+	width: 390px;
 	justify-content: center;
 	text-align: center;
-	padding-top: 1rem;
-	padding-bottom: 2rem;
+	position: absolute;
+	bottom: 10px;
 }
-ul{
-	width: 100%;
+aside{
+	width: 390px;
+	padding: 20px;
 }
 p{
 	margin: 0;
@@ -59,16 +62,17 @@ input[type=number]{
 	flex-direction: row;
 	align-items: center;
 }
+#map-wrap{
+	height: 100vh;
+}
 #map {
 	width: 100%;
-	height: 600px;
-	margin: 0 auto;
+	height: 100%;
 }
 
 .cmp_info figure{
 	width: 150px;
 	height: 150px;
-	padding: 1rem;
 	margin-right: 1rem;
 }
 .cmp_info img{
