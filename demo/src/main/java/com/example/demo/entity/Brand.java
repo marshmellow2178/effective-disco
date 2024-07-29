@@ -13,8 +13,6 @@ public class Brand {
 	@Id
 	@Column(name = "brand_name")
 	private String name;
-	@Column(name = "brand_img")
-	private String img;
 	@Column(name = "ctgr_name")
 	private String ctgr;
 }

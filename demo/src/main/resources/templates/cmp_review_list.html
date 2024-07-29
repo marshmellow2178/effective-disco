@@ -3,22 +3,25 @@
 	th:with = "reviewCounts = ${reviewPage.getTotalElements},
 	sort = ${param.sort == null ? 'r' : param.sort}">
 
-    <section class="cmp_info">
-		<img th:src="@{|/img/${cmp.ctgrName}.png|}" 
-		id = "dest_img">
-		<div>
-			<b th:text = "${cmp.cmpName}"></b>
-			<br>
-			<a class = "btn btn-sm btn-outline-custom" th:href = "@{|/product/list?cmp=${cmp.cmpName}|}">상품</a>
-			<a class = "btn btn-sm btn-outline-custom" th:href = "@{|/review/list?name=${cmp.cmpName}|}">리뷰</a>
-			<p th:text = "${cmp.cmpAddr}"></p>
-			<span th:text = "|⭐ ${cmp.score} (💬 ${cmp.cmpReviewCnt})|"></span>
+    <section class="cmp_info d-flex">
+    	<div class = "cmp_details col-2">
+			<span id = "dest_score"
+			th:text = "|⭐ ${cmp.score} (💬 ${cmp.cmpReviewCnt})|"></span>
 		</div>
 		<table class = "table table-sm col-4 table-borderless">
 			<tr th:each = "idx:${#numbers.sequence(4, 0)}">
-				<th scope = "row" class = "col-2" th:text = "${idx}"></th>
-				<td><input type = "range" min = 0 th:max = "${reviewCounts}" th:value = ${scoreArr[idx]} disabled></td>
-				<td th:text = "${scoreArr[idx]}"></td>
+				<th scope = "row" 
+				class = "col-2" 
+				th:text = "|⭐ ${idx+1}|"></th>
+				<td class = "col-4">
+					<input type = "range" 
+					min = 0 th:max = "${reviewCounts}" 
+					th:value = ${scoreArr[idx]} 
+					disabled
+					></td>
+				<td th:text = "|💬 ${scoreArr[idx]}|"
+				class ="col-2"
+				></td>
 			</tr>
 		</table>
 	</section>

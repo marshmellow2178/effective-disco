@@ -1,44 +1,83 @@
 <html layout:decorate="~{layout}">
 <main class = "container" layout:fragment="content">
 	<div class = "d-flex align-items-center">
-	<figure>
-		<img src = "/img/product.png">
-	</figure>
 	
     <form action = "/product/cmp/create" method = "post" 
     th:if = "${param.pid==null}" class = "col-3">
-        <input type = "text" name = "name" 
-        class = "form-control mb-3" 
-        placeholder = "상품명" required value = "상품">
-        <input type = "number" name = "price" class = "form-control mb-3" 
-        placeholder = "가격" required value = "10000" min = 0>
-        <input type = "number" name = "count" class = "form-control mb-3" 
-        placeholder = "수량" required value = "100" min = 0>
-
-        <input type = "submit" value = "등록" class = "form-control btn btn-custom">
+    	<div class = "input-group mb-3">
+    		<span class = "input-group-text col-4">상품명</span>
+    		<input type = "text" name = "name" 
+	        class = "form-control" 
+	        placeholder = "상품명" 
+	        required 
+	        value = "상품">
+    	</div>
+    	<div class = "input-group mb-3">
+    		<span class = "input-group-text col-4">가격</span>
+    		<input type = "number" 
+    		name = "price" 
+    		class = "form-control" 
+        	placeholder = "가격" 
+        	required 
+        	value = "10000" 
+        	min = 0>
+    	</div>
+    	<div class = "input-group mb-3">
+    		<span class = "input-group-text col-4">재고량</span>
+    		<input type = "number" 
+    		name = "count" 
+    		class = "form-control" 
+       		required 
+       		value = "100" 
+       		min = 0>
+    	</div>
+        <input type = "submit" 
+        value = "등록" 
+        class = "btn btn-custom">
     </form>
     
     <form action = "/product/cmp/update" method = "post" 
     th:if = "${param.pid!=null}" class = "col-3">
     	<input type = "number" class = "d-none" 
     	th:value = "${param.pid}" name = "id">
-        <input type = "text" name = "name" class = "form-control mb-3" 
-        placeholder = "상품명" required th:value = "${product.name}">
-        <input type = "number" name = "price" class = "form-control mb-3" 
-        placeholder = "가격" required th:value = "${product.price}" min = 0>
-        <input type = "number" name = "count" class = "form-control mb-3" 
-        placeholder = "수량" required th:value = "${product.count}" min = 0>
-
-        <input type = "submit" value = "수정" class = "form-control btn btn-custom">
+		<div class = "input-group mb-3">
+    		<span class = "input-group-text col-4">상품명</span>
+        	<input type = "text" 
+        	name = "name" 
+        	class = "form-control" 
+        	placeholder = "상품명" 
+        	required 
+        	th:value = "${product.name}">
+        </div>
+        <div class = "input-group mb-3">
+        	<span class = "input-group-text col-4">가격</span>
+        	<input type = "number" 
+        	name = "price" 
+        	class = "form-control" 
+        	required 
+        	th:value = "${product.price}" 
+        	min = 0>
+        </div>
+        <div class = "input-group mb-3">
+        	<span class = "input-group-text col-4">재고량</span>
+        	<input type = "number" 
+        	name = "count" 
+        	class = "form-control" 
+        	required 
+        	th:value = "${product.count}" 
+        	min = 0>
+		</div>
+       	<input type = "submit" 
+       	value = "수정" 
+       	class = "btn btn-custom">
     </form>
     </div>
    <style>
 	img{
-		width: 300px;
-		height: 300px;
+		width: 200px;
+		height: 200px;
 	}
 	figure{
-		border: 1px solid grey;
 		padding: 1rem;
 	}
 	</style>

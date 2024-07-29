@@ -4,11 +4,14 @@ th:with = "cmpName = ${param.cmp}">
 	<p th:text = "|${cmpName}의 상품 ${products.totalElements}개|"></p>
 	<hr>
 	<ul th:if = "${products} != null" 
-	class = "receipt_list container-fluid">
+	class = "list_4">
         <li th:each = "product: ${products}" 
-        class = "receipt card p-3">
-        	<img th:src = "@{|/img/products/${product.img}|}">
-        	<b th:text = "|${product.name}|"></b>
+        class = "card p-3">
+        	<figure>
+        		<img th:src = "@{|/img/products/${product.img}|}">
+        	</figure>
+        	<b th:text = "|${product.name}|"
+        	class = "mt-1"></b>
         	<span th:text = "|${product.price}원|"></span>
         	<div class = "input-group input-group-sm my-1">
 				<span
@@ -24,7 +27,7 @@ th:with = "cmpName = ${param.cmp}">
 	        	class = "btn btn-addon plus"
 	        	>+</span>
 			</div>
-        	<div class = "btn-group">
+        	<div class = "btn-group btn-group-sm mt-1">
 	        	<button th:id = "${product.id}"
 	        	class = "add_cart btn btn-custom col-6">
 	        		카트

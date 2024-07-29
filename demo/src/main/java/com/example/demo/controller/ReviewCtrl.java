@@ -116,7 +116,7 @@ public class ReviewCtrl {
 		model.addAttribute("cmp", cmp);
 		model.addAttribute("scoreArr", scoreArr);
 		model.addAttribute("reviewPage", reviewRepo.findByCmpName(cmp.getCmpName(), pageable));
-		return "review_list";
+		return "cmp_review_list";
 	}
 	
 	@GetMapping("/modify")

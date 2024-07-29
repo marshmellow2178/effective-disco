@@ -1,4 +1,4 @@
-<header th:fragment="headerFragment" class = "mb-3">
+<header th:fragment="headerFragment" class = " container mb-3">
     <h3>
     	<a class="nav-link" href="/" th:if = "${session.cmpInfo==null}">Home</a>
     	<a class="nav-link" 
@@ -13,11 +13,13 @@
             <a th:unless ="${session.userInfo==null}"
             class = "nav-link" href = "/logout">Logout</a>
         </li>
-        <li class="nav-item" th:if = "${session.cmpInfo==null}">
-    		<a href = "/cmp/login" class="nav-link">Company</a>
-    	</li>
-    	<li class="nav-item" th:if = "${session.cmpInfo!=null}">
-    		<a href = "/cmp/logout" class="nav-link">Logout</a>
+        <li class="nav-item" >
+    		<a href = "/cmp/login" 
+    		class="nav-link"
+    		th:if = "${session.cmpInfo==null}">Company</a>
+    		<a href = "/cmp/logout" 
+    		class="nav-link"
+    		th:if = "${session.cmpInfo!=null}">Logout</a>
     	</li>
     </ol>
 </header>

@@ -69,7 +69,7 @@ public class CmpCtrl {
 		if(cmpInfo==null) {
 			return "redirect:/cmp/login";
 		}
-		return "mypage";
+		return "cmp_mypage";
 	}
 	
 	@GetMapping("/open")

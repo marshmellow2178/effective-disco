@@ -1,16 +1,24 @@
 <html layout:decorate="~{layout}">
 <main class = "container"  layout:fragment="content">
 	<p th:text = "|상품 ${products.totalElements}개|"></p>
+	<hr>
 	<ul th:if = "${products} != null" 
-	class = "receipt_list container-fluid">
+	class = "list_4">
+		<li class = "card d-flex flex-wrap align-items-center justify-content-center">
+	        <a th:if =  "${session.cmpInfo!=null}"
+		    class = "btn btn-outline-custom"
+		    href = "/product/cmp/create">+</a>
+        </li>
         <li th:each = "product: ${products}" 
-        class = "receipt card p-3">
-        	<img th:src = "@{|/img/products/${product.img}.png|}">
-        	<b th:text = "|${product.name}|"></b>
+        class = "card p-3">
+        	<figure>
+        		<img th:src = "@{|/img/products/${product.img}|}">
+        	</figure>
+        	<b th:text = "|${product.name}|" class = "mt-1"></b>
         	<span th:text = "|${product.price}원|"></span>
         	<p th:if = "${session.cmpInfo!=null}"
         	th:text = "|재고 ${product.count}개|"></p>
-        	<div class = "btn-group">
+        	<div class = "btn-group btn-group-sm mt-1">
 	        	<a th:href = "@{|/product/cmp/update?pid=${product.id}|}"
 	        	class = "btn btn-custom col-6">
 	        		수정
@@ -22,9 +30,7 @@
         	</div>
         </li>
     </ul>
-    <a th:if =  "${session.cmpInfo!=null}"
-    class = "btn btn-custom"
-    href = "/product/cmp/create">등록하기</a>
+    
     <ul class = "pagination justify-content-center" 
     th:if = "${products.totalPages} != 0"
  	th:with = "block = 10,
@@ -35,20 +41,20 @@
  		<li class = "page-item" 
  		th:classappend="${number} == 1 ? disabled">
  			<a class = "page-link" 
- 			th:href = "@{|/product/list?page=${number-1}|}">&lt;</a>
+ 			th:href = "@{|/product/cmp/list?page=${number-1}|}">&lt;</a>
  		</li>
  		<th:block th:each = "idx:${#numbers.sequence(sidx, eidx)}">
  		<li class = "page-item" 
  		th:classappend="${number}==${idx} ? active">
  			<a class = "page-link" 
  			th:text = "${idx}" 
- 			th:href = "@{|/product/list?page=${idx}|}" ></a>
+ 			th:href = "@{|/product/cmp/list?page=${idx}|}" ></a>
  		</li>
  		</th:block>
  		<li class = "page-item" 
  		th:classappend="!${products.hasNext} ? disabled">
  			<a class = "page-link" 
- 			th:href = "@{|/product/list?page=${number+1}|}">&gt;</a>
+ 			th:href = "@{|/product/cmp/list?page=${number+1}|}">&gt;</a>
  		</li>
  	</ul>
  	<script type="text/javascript">

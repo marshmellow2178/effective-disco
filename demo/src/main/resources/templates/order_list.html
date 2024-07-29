@@ -4,7 +4,7 @@
 	<ul th:if = "${orderPage} != null" 
 	class = "list-group col-8 my-3">
         <li th:each = "order: ${orderPage}" 
-        class = "list-group-item">
+        class = "list-group-item mb-3">
        		<b th:text = "${#temporals.format(order.date, 'yy/MM/dd')}"></b>
        		<span th:text = "${order.cmpName}"
        		class = "mx-3"></span>

@@ -35,7 +35,7 @@ public class ProductCtrl {
 			HttpSession session,
 			@RequestParam(value = "cmp") String cmpName,
 			@RequestParam(value = "page", defaultValue = "1") int page) {
-		Pageable pageable = PageRequest.of(page-1, 9, Direction.DESC, "createDate");
+		Pageable pageable = PageRequest.of(page-1, 11, Direction.DESC, "createDate");
 		Page<Product> products =pdRepo.findByCmpName(cmpName, pageable);
 		model.addAttribute("products", products);
 		session.removeAttribute("cmp");
@@ -52,7 +52,7 @@ public class ProductCtrl {
 		if(cmp==null) {
 			return "redirect:/cmp/login";
 		}
-		Pageable pageable = PageRequest.of(page-1, 9, Direction.DESC, "createDate");
+		Pageable pageable = PageRequest.of(page-1, 11, Direction.DESC, "createDate");
 		Page<Product> products =pdRepo.findByCmpName(cmp.getCmpName(), pageable);
 		model.addAttribute("products", products);
 		
@@ -118,12 +118,10 @@ public class ProductCtrl {
 		if(cmp==null) {
 			return "redirect:/cmp/login";
 		}
-		Product p = new Product();
-		p.setCmpName(cmp.getCmpName());
+		Product p = pdRepo.findById(pid).get();
 		p.setName(pd.getName());
 		p.setPrice(pd.getPrice());
 		p.setCount(pd.getCount());
-		p.setCreateDate(LocalDateTime.now());
 		pdRepo.save(p);
 		return "redirect:/product/cmp/list";
 	}

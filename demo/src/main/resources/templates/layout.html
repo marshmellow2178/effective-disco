@@ -21,6 +21,9 @@
     <title>Document</title>
 </head>
 <body>
+	<nav th:replace = "~{header :: headerFragment}"></nav>
+	<nav th:replace="~{nav :: navFragment}"></nav>
     <th:block layout:fragment="content"></th:block>
+    <nav th:replace = "~{footer :: footerFragment}"></nav>
 </body>
 </html>

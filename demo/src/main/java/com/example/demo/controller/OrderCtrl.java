@@ -54,18 +54,18 @@ public class OrderCtrl {
 		return "redirect:/order/cmp/list";
 	}
 	
-	@GetMapping("/cmp/cancel")
-	public String cmpCancel(@RequestParam(value = "id") int orderId) {
-		OrderInfo order = orderRepo.findById(orderId);
-		orderRepo.delete(order);
-		return "redirect:/order/cmp/list";
-	}
-	
 	@GetMapping("/cancel")
 	public String cancel(@RequestParam(value = "id") int orderId) {
 		OrderInfo order = orderRepo.findById(orderId);
 		orderRepo.delete(order);
 		return "redirect:/order/list";
+	}
+	
+	@GetMapping("/cmp/cancel")
+	public String cmpCancel(@RequestParam(value = "id") int orderId) {
+		OrderInfo order = orderRepo.findById(orderId);
+		orderRepo.delete(order);
+		return "redirect:/order/cmp/list";
 	}
 	
 	@GetMapping("/cmp/list")

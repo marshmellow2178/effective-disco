@@ -1,45 +1,36 @@
 @charset 'utf-8';
 header{
+	padding-top: 1rem;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	flex-wrap: wrap;
 }
 main{
-	height: 100vh;
-	display: flex;
-	flex-wrap: wrap;
+	min-height: calc(100vh - 240px);
 }
 footer{
 	display: flex;
 	width: 390px;
 	justify-content: center;
 	text-align: center;
-	position: absolute;
-	bottom: 10px;
-}
-aside{
-	width: 390px;
-	padding: 20px;
+	padding-top: 1rem;
+	padding-bottom: 2rem;
 }
 p{
 	margin: 0;
 }
-.form-control{
-	padding: 0;
-	
-}
 input[type=number], .btn-addon{
 	background-color: white;
 }
-.list_2{
-	flex-wrap:wrap;
-	flex-direction: row;
-	gap:1rem;
-	padding: 0 1rem;
+ul{
+	width: 100%;
 }
-.list_2 li{
-	width: 49%;
+figure{
+	padding: 1rem;
+}
+img{
+	width: 100%;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -62,12 +53,11 @@ input[type=number]{
 	flex-direction: row;
 	align-items: center;
 }
-#map-wrap{
-	height: 100vh;
-}
+
 #map {
 	width: 100%;
-	height: 100%;
+	height: 600px;
+	margin: 0 auto;
 }
 
 .cmp_info figure{
@@ -78,16 +68,18 @@ input[type=number]{
 .cmp_info img{
 	width: 100%;
 }
-.receipt_list{
-	width: 100%;
+
+.list_2, .list_4{
 	display:flex;
 	flex-wrap:wrap;
-	justify-content:between;
-	gap:10px;
+	flex-direction: row;
+	gap:1rem;
 }
-.receipt{
-	width:250px;
-	height: fit-content;
+.list_2 li{
+	width: 45%;
+}
+.list_4 li{
+	width: 20%;
 }
 .btn-custom{
 	background-color: #563d7c;
