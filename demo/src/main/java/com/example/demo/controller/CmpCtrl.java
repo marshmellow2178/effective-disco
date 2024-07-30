@@ -161,32 +161,11 @@ public class CmpCtrl {
 					p.setImg(pname);
 					pdRepo.save(p);
 				}
-			}else {
-				for(Product p: pList){
-					if(p.getImg().equals(pname)) {break;}
-					p.setImg(pname);
-					pdRepo.save(p);
-				}
 			}
 		}	
 		
 		List<Review> rList = rRepo.findByCmpName(cmpName);
-		if(rList.size()==0) {
-			randNum = r.nextInt(25)+1;
-			for(int i = 1;i<=randNum;i++) {
-				Review review = new Review();
-				review.setCmpName(cmp.getCmpName());
-				review.setCreateDate(LocalDateTime.now());
-				review.setUid("user"+i);
-				int scoreNum = r.nextInt(5)+1;
-				review.setScore(scoreNum);
-				try {
-					rRepo.save(review);
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}else if(cmp.getScore()==0){
+		if(rList.size()!=0){
 			int totalScore = 0;
 			for(int i = 0;i<rList.size();i++) {
 				totalScore += rList.get(i).getScore();

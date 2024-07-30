@@ -22,6 +22,7 @@ import com.example.demo.entity.Cart;
 import com.example.demo.entity.Company;
 import com.example.demo.entity.OrderDetail;
 import com.example.demo.entity.OrderInfo;
+import com.example.demo.entity.Product;
 import com.example.demo.entity.UserInfo;
 import com.example.demo.vo.GlobalVO;
 import com.example.demo.vo.OrderFormVO;
@@ -57,6 +58,14 @@ public class OrderCtrl {
 	@GetMapping("/cancel")
 	public String cancel(@RequestParam(value = "id") int orderId) {
 		OrderInfo order = orderRepo.findById(orderId);
+		List<OrderDetail> odList = odRepo.findByOrderId(orderId);
+		for(int i = 0;i<odList.size();i++) {
+			OrderDetail od = odList.get(i);
+			Product p = pdRepo.findByCmpNameAndName(order.getCmpName(), od.getProductName());
+			p.setCount(p.getCount()+od.getProductCount());
+			pdRepo.save(p);
+			odRepo.delete(od);
+		}
 		orderRepo.delete(order);
 		return "redirect:/order/list";
 	}
@@ -168,10 +177,13 @@ public class OrderCtrl {
 		int[] pid = ofvo.getPid();
 		int[] count = ofvo.getCount();
 		for(int i = 1;i<pid.length;i++) {
+			Product p = pdRepo.findById(pid[i]).get();
 			OrderDetail od = new OrderDetail();
 			od.setOrder(order);
-			od.setProduct(pdRepo.findById(pid[i]).get());
+			od.setProduct(p);
 			od.setProductCount(count[i]);
+			p.setCount(p.getCount()-count[i]);
+			pdRepo.save(p);
 			odRepo.save(od);
 			Cart c = cartRepo.findByUserIdAndProductId(user.getId(), pid[i]);
 			if(c!=null) {cartRepo.delete(c);}

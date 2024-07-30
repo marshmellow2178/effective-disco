@@ -78,7 +78,8 @@
 		<span th:if = "${myReview.modifyDate == null}" th:text = "${#temporals.format(myReview.createDate, 'yy/MM/dd')}"></span>
 	 	<span th:unless= "${myReview.modifyDate == null}" th:text = "|${#temporals.format(myReview.modifyDate, 'yy/MM/dd')} (수정됨)|"></span> 		
 	 	
- 		<p th:text = "${myReview.content}" class = "review_content show"></p>
+ 		<p th:text = "${myReview.content}" 
+ 		class = "review_content show mb-1"></p>
  		<span class = "btn btn-sm btn-outline-disabled" th:text = "|👍 ${myReview.recCount}|"></span>
  		<a th:href = "@{|/review/modify?id=${myReview.id}&cmp=${cmp.cmpName}|}" role = "button" class = "btn btn-sm btn-custom">수정</a>
  		<a href = "javascript:void(0);" role = "button" class = "btn btn-sm btn-danger" id = "del_btn" 
@@ -110,9 +111,10 @@
 	 				<span th:if = "${review.modifyDate == null}" th:text = "${#temporals.format(review.createDate, 'yy/MM/dd')}"></span>
 	 				<span th:unless= "${review.modifyDate == null}" th:text = "|${#temporals.format(review.modifyDate, 'yy/MM/dd')} (수정됨)|"></span>
 	 			</div>
-	 			<div>
+	 			<div class = "mb-1">
 	 				<p th:id = "|content${review.id}|"  
-	 				th:text = "${review.content}" class = "review_content"></p>
+	 				th:text = "${review.content}" 
+	 				class = "review_content col-8"></p>
 	 			</div>
 	 			<div>		
 	 				<a class = "btn btn-outline-custom btn-sm recommend" 

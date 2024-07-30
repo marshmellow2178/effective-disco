@@ -20,15 +20,15 @@
 		</div>
 		<table th:if = "${cartList.size} != 0" 
 		class = "table table-sm">
-			<tr class = "row table-primary">
+			<tr>
 				<th class = "col-7" scope = "row">상품</th>
 				<th class = "col-2 ">수량</th>
 				<th class = "col-3 ">가격</th>
 			</tr>
 	        <tr th:each = "cart: ${cartList}"
-	        class = "row"
+	        
 	        th:with = "total = 0">
-	        	<td class =  "input-group col-7">
+	        	<td>
 	        		<p
 	        		 th:text = "|${cart.product.name}|"
 	        		></p>
@@ -37,43 +37,43 @@
 	        		class = "d-none"
 	        		th:value = "${cart.productId}">
 	        	</td>
-	        	<td class = "input-group col-2">
+	        	<td>
 	        		<input type = "number" 
 	        		name = "count"
-	        		class =  "form-control form-control-plaintext
-	        		 text-end"
+	        		class =  "d-none"
 	        		th:value = "${cart.count}">
-	        		<p>개</p>
+	        		<span th:text = "${cart.count}"></span>
+	        		<span>개</span>
 	        	</td>
-	        	<td class = "input-group col-3">
-	        		<p
+	        	<td>
+	        		<span
 	        		class =  "price"
-	        		th:text = "${cart.product.price * cart.count}"></p>
-	        		<p>원</p>
+	        		th:text = "${cart.product.price * cart.count}"></span>
+	        		<span>원</span>
 	        	</td>
 	        </tr>
-	        <tr class = "row">
-	        	<td class = "  col-9">
-					<p>배송비</p>
+	        <tr>
+	        	<td>
+					<span>배송비</span>
 				</td>
-	        	<td class = "input-group  col-3">
-	        		<input type = "number" 
-	        		class =  "form-control form-control-plaintext 
-	        		 text-end"
-	        		id = "ship_price"
-	        		>원
+				<td></td>
+	        	<td>
+	        		<span id = "ship_price"></span>
+	        		<span>원</span>
 	        	</td>
 	        </tr>
-	        <tr class = "row">
-	        	<td class = "col-9">
+	        <tr >
+	        	<td >
 	        		<b>총 가격</b>
 	        	</td>
-	        	<td class = "input-group col-3">
-	        		<input class =  "form-control form-control-plaintext"
+	        	<td></td>
+	        	<td >
+	        		<input class =  "col-4"
 	        		type="number"
+	        		readonly
 	        		name = "total_price"
 	        		id = "total_price">
-	        		원
+	        		<span>원</span>
 	        	</td>
 	        </tr>
 	    </table>
@@ -94,15 +94,15 @@
 	
 	window.addEventListener('load', function(){
 		let sum = 0;
-		shipPrice.value  = 3000;
+		shipPrice.innerText  = 3000;
 
 		priceList.forEach(function(p){
 			sum += Number(p.innerText);
 		});
 		if(sum>=40000){
-			shipPrice.value = 0;
+			shipPrice.innerText = 0;
 		}
-		sum += Number(shipPrice.value);
+		sum += Number(shipPrice.innerText);
 		totalPrice.value = sum;
 	});
 
