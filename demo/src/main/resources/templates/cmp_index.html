@@ -11,39 +11,4 @@
     	<a href = "/cmp/close"
     	class = "btn btn-custom">영업 종료</a>
 	</th:block>
-	<hr>
-	<ul class = "list-group col-6">
-		<li class = "list-group-item">
-			<div class = "input-group">
-				<b>할 일</b>
-				<input type = "text" 
-				class = "form-control col-6"
-				id = "todo_content">
-				<span class = "btn btn-sm btn-outline-custom"
-				id = "todo_add">+</span>
-			</div>
-		</li>
-		<li class = "list-group-item todo_list">
-			<input type= "checkbox" id = "0">
-			<label for = "0">매장 청소하기</label>
-			<span class = "btn btn-sm btn-outline-danger">X</span>
-		</li>
-	</ul>
-	
-	<script>
-	let count = 0;
-	let todoContent = document.querySelector("#todo_content");
-	let addBtn = document.querySelector("#todo_add");
-	
-	addBtn.addEventListener('click', function(){
-		let todoList = document.createElement("li");
-		todoList.classList.add('list-group-item');
-		todoList.classList.add('todo_list');
-		let input = document.createElement('input[type=checkbox]');
-		input.id = count;
-		count++;
-		let label = document.querySelector('label');
-		label.innerText = todoContent.value;
-	});
-	</script>
 </main>
