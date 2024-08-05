@@ -55,10 +55,6 @@
  				<div>
  					<span class = "btn btn-sm btn-outline-disabled" 
  					th:text = "|👍 ${review.recCount}|"></span>
-					<a href = "javascript:void(0);" 
-					class = "btn btn-sm btn-danger"
-					id = "del_btn" 
-					th:data-uri = "@{|/review/delete?id=${review.id}|}">삭제</a>
 				</div>
 				
 	 		</li>
@@ -95,7 +91,7 @@
  	</div>
  	<hr>
  	<script>
-	let delBtn = document.querySelector("#del_btn");
+	
 	let reviewSearchForm = document.querySelector('#review_search_form');
 	let pageInput = document.querySelector("#page_input");
 	let orderInput = document.querySelector('#order_input');
@@ -114,11 +110,6 @@
 		});
 	});
 	
-	delBtn.addEventListener('click', function(){
-		if(confirm('정말 삭제하시겠습니까?')){
-			location.href = this.dataset.uri;
-		}
-	});
 	
 	let reviewContents = document.querySelectorAll(".review_content");
 	let showClass = 'show';

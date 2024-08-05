@@ -59,7 +59,9 @@ public class ReviewCtrl {
 		dscore = (Math.round(dscore*100));
 		cmp.setScore(dscore/100);
 		cmpRepo.save(cmp);
-		return "redirect:/review/list?id="+cmpId;
+		session.removeAttribute("cmp");
+		session.setAttribute("cmp", cmpId);
+		return "redirect:/review/list?name=";
 	}
 	
 	@GetMapping("/list")
@@ -168,8 +170,10 @@ public class ReviewCtrl {
 			return "redirect:/login";
 		}
 		Review review = reviewRepo.findById(id);
+		session.removeAttribute("cmp");
+		session.setAttribute("cmp", review.getCmpName());
 		reviewRepo.delete(review);
-		return "redirect:/review/list?id="+review.getCmpName();
+		return "redirect:/review/list?name=";
 	}
 	
 	@GetMapping("/mypage")

@@ -64,7 +64,7 @@
 		<a href = "/login">로그인</a>해 주세요
 	</div>
  	<form th:if = "${session.userInfo!=null && myReview == null}" action = "/review/create" method = "post">
- 		<input type = "hidden" th:value = "${param.id}" name = "cmpid">
+ 		<input type = "hidden" th:value = "${session.cmp}" name = "cmpId">
  		<div class = "input-group">
  			<span class = "input-group-text">평점</span>
  			<input type = "number" min = "1" max = "5" name = "score" class = "form-control col-2">
@@ -158,12 +158,17 @@
  	<script>
 	let reviewSearchForm = document.querySelector('#review_search_form');
 	let orderInput = document.querySelector("#order_input");
-	let navStore = document.querySelector('#nav_store');
-	navStore.classList.add('active');
+	let delBtn = document.querySelector("#del_btn");
 	
 	orderInput.addEventListener('change', function(){
 		reviewSearchForm.submit();
 	});
+	
+	delBtn.addEventListener('click', function(){
+			if(confirm('정말 삭제하시겠습니까?')){
+				location.href = this.dataset.uri;
+			}
+		});
 	
 	let reviewContents = document.querySelectorAll(".review_content");
 	let showClass = 'show';
