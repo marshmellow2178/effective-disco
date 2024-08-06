@@ -1,44 +1,51 @@
 <html layout:decorate="~{layout}">
 <main class = "container"  layout:fragment="content">
+<nav th:replace = "~{nav :: navFragment}"></nav>
 	<p th:text = "|${orderPage.totalElements}개의 주문 내역|"></p>
+	<hr>
 	<ul th:if = "${orderPage} != null" 
-	class = "list-group col-8 my-3">
+	class = "list-group list_2">
         <li th:each = "order: ${orderPage}" 
-        class = "list-group-item mb-3">
-       		<b th:text = "${#temporals.format(order.date, 'yy/MM/dd')}"></b>
-       		<span th:text = "${order.cmpName}"
-       		class = "mx-3"></span>
-       		<span class = "btn btn-sm btn-outline-custom"
-       		th:if = "${order.state}==0">대기중</span>
-       		<span class = "btn btn-sm btn-outline-warning"
-       		th:if = "${order.state}==1">배송중</span>
-       		<span class = "btn btn-sm btn-outline-success"
-       		th:if = "${order.state}==2">배송완료</span>
+        class = "list-group-item">
+        	<div class = "d-flex align-items-center">
+	        	<b th:text = "${#temporals.format(order.date, 'yy/MM/dd')}"></b>
+	       		<a th:href  = "@{|/product/list?cmp=${order.cmpName}|}">
+	       		<span th:text = "${order.cmpName}"
+	       		class = "mx-3"></span></a>
+	       		<span class = "btn btn-sm btn-outline-custom"
+	       		th:if = "${order.state}==0">대기중</span>
+	       		<span class = "btn btn-sm btn-outline-warning"
+	       		th:if = "${order.state}==1">배송중</span>
+	       		<span class = "btn btn-sm btn-outline-success"
+	       		th:if = "${order.state}==2">배송완료</span>
+        	</div>
+       		
             <table class = "purchase_info table table-sm mt-3">
             	<tr>
-            		<th>상품</th>
-            		<th>수량</th>
-            		<th>가격</th>
+            		<th class = "col-7\8">상품</th>
+            		<th class = "col-2">수량</th>
+            		<th class = "col-2">가격</th>
             	</tr>
             	<tr th:each = "detail : ${order.odList}">
             		<td th:text = "${detail.productName}"></td>
             		<td th:text = "${detail.productCount}"></td>
-            		<td th:text = "${detail.productPrice}"></td>
+            		<td th:text = "|${detail.productPrice} 원|"></td>
             	</tr>
             	<tr th:if = "${order.odList.size()==0}">
             		<td colspan = 3>내역이 없습니다</td>
             	</tr>
             	<tr>
             		<td colspan = 2>배송비</td>
-            		<td th:text = "${order.price <40000 ? 3000 : 0}">
+            		<td th:text = "|${order.price <40000 ? 3000 : 0} 원|">
             	</tr>
             	<tr>
             		<td colspan = 2>총 금액</td>
-            		<td th:text = "|총 ${order.price} 원|"></td>
+            		<td th:text = "|${order.price} 원|"></td>
             	</tr>
             </table>
         </li>
     </ul>
+    <hr>
     <ul class = "pagination justify-content-center" 
     th:if = "${orderPage.totalPages} != 0"
  	th:with = "block = 10,

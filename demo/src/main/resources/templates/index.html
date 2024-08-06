@@ -1,9 +1,14 @@
-<html layout:decorate="~{layout}">
-<main class="container" layout:fragment="content">
-	<form>
-		<div class = "input-group mb-3">
-			<b class = "btn-borderless">출발</b>
-			<select class="form-control col-2" 
+<html layout:decorate="~{map_layout}">
+<main layout:fragment="content">
+	<div class = "map_content ">
+	<nav th:replace = "~{header :: headerFragment}"></nav>
+	
+	<form class = "px-3">
+		<div class = "input-group align-items-center g-3">
+			<div class = "col-3">
+				<label class = "col-form-label">내 위치</label>
+			</div>
+			<select class="form-control col" 
 			id = "start_select">
 				<option value = "현재 위치">현재 위치</option>
 				<option th:each = "fav : ${favList}" 
@@ -11,46 +16,47 @@
 				th:value = "${fav.cmpName}" 
 				th:text = "${fav.cmpName}"></option>
 			</select>
-			<input type="text"
-			class="form-control" 
-			id="start_addr" 
-			readonly>
 		</div>
 	</form>
-	<form id = "dest_form">
-		<div class = "input-group mb-3">
-			<b class = "btn-borderless">검색</b>
-			<select class="form-control col-2"
+	<form id = "dest_form"
+	class = "p-3">
+		<div class = "input-group align-items-center g-3 pb-3">
+			<div class = "col-3">
+				<label class = "col-form-label">카테고리</label>
+			</div>
+			<select class="form-control col"
 			id = "ctgr_select">
 				<option value = "">분류</option>
 				<option th:each = "ctgr: ${ctgrList}" 
 				th:value = "${ctgr.name}"
 				th:text = "${ctgr.text}"></option>
 			</select>
-			<select class="form-control col-2" 
+			<select class="form-control col" 
 			id="brand_select">
 				<option value = "0">상세</option>
 			</select>
+		</div>
+		<div class = "input-group">
+			<div class = "col-3">
+				<label class = "col-form-label">검색</label>
+			</div>
 			<input type="search" 
 			class="form-control" 
 			id="keyword_input">
-			
 			<input type="submit" 
 			value="검색" 
 			class="btn btn-custom">
 		</div>
 	</form>
-	<div class="map_wrap">
-		<div id="map"></div>
-	</div>
-	<hr>
-	<section class="cmp_info d-flex flex-wrap">
+	<div class = "container">
+	<nav th:replace = "~{nav :: navFragment}"></nav>
+	<section class="cmp_info d-flex">
 		<figure>
 			<img src="/img/all.png"
 			id = "dest_img">
 		</figure>
 		
-		<div class = "cmp_details col-4">
+		<div class = "cmp_details col-8">
 			<p><a href = "#"
 			id = "product_list">
 			<b id = "dest_name" >현재 위치</b></a></p>
@@ -73,12 +79,16 @@
 			</div>
 			<p id="dest_addr"></p>
 			<p id="dest_dist"></p>
-			<!--  카카오맵 베끼기: 첫출 브랜드|평점|리뷰수 둘째줄 북마크|길찾기|리뷰 셋째줄 주소-> 영업시간 -> 기타 -->
 		</div>
 	</section>
-	<script src = "/js/map.js"></script>
+	</div>
+	<nav th:replace = "~{footer :: footerFragment}"></nav>
+	</div>
+	<div class="map_wrap col">
+		<div id="map"></div>
+	</div>
+	
 	<script>
-	let startAddr = document.querySelector("#start_addr");
 	let startSelect = document.querySelector("#start_select");
 	
 	let destForm = document.querySelector("#dest_form");
@@ -113,7 +123,7 @@
 		let options = {
 			    center: currentPos,
 			    draggable: false, //지도변경금지
-			    level: 4
+			    level: 3
 			};
 		map = new kakao.maps.Map(container, options);
 		let currentMarker = new kakao.maps.Marker({
@@ -140,7 +150,6 @@
 		searchAddrFromCoords(currentPos, function (result, status) {
 	        if (status === kakao.maps.services.Status.OK) {
 	            let content = result[0].address.address_name;
-	            startAddr.value = content;
 				destAddr.innerText = content;
 			}
 	    });
@@ -191,7 +200,7 @@
 		.then((response) => response.json())
 		.then((data) => {
 			destAddr.innerText = data.cmpAddr;
-			startAddr.value = data.cmpAddr;
+			startAddr.innerText = data.cmpAddr;
 			currentPos = new kakao.maps.LatLng(Number(data.cmpLat), 
 			Number(data.cmpLng));
 			drawMap(currentPos);
@@ -228,7 +237,6 @@
 		})
 		.then(response=>{
 			if(response.ok){
-				console.log(1);
 				showPlaceInfo();
 			}
 		});
@@ -260,7 +268,7 @@
 		brand.replaceChildren();
 		let option = document.createElement('option');
 		option.value = 0;
-		option.innerText = '브랜드 선택';
+		option.innerText = '상세';
 		brand.appendChild(option);
 		
 		fetch("/brand/list?ctgr="+category.value, {

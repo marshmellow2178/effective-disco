@@ -1,4 +1,4 @@
-<nav th:fragment="navFragment" class = "container">
+<nav th:fragment="navFragment">
 	<ul th:if = "${session.cmpInfo!=null}" class="nav nav-tabs my-3"
 	th:classappend = "${session.cmpInfo.state=='c'} ? 'd-none'">
 		<li class="nav-item">
@@ -49,37 +49,7 @@
 		<li class="nav-item">
 			<a href="/mypage" 
 			class="nav-link" 
-			id = "nav_mypage">MY</a>
-		</li>
-		<li class="nav-item d-flex flex-column dropdown_btn">
-			<a href = "#" 
-			class="nav-link"
-			th:classappend = "${session.cmp==null} ? disabled" 
-			id = "nav_store"
-			th:text = "${session.cmp}"></a>
-			<div th:if= "${session.cmp!=null}"
-			class = "dropdown d-none">
-				<a th:href = "@{|/cmp/route?ename=${session.cmp}|}"
-				class="nav-link">
-				길찾기</a>
-				<a th:href = "@{|/product/list?cmp=${session.cmp}|}"
-				class="nav-link">
-				상품</a>
-				<a th:href = "@{|/review/list?name=${session.cmp}|}"
-				class="nav-link">
-				리뷰</a>
-			</div>
+			id = "nav_mypage">내정보</a>
 		</li>
 	</ul>
-	<script th:if = "${session.userInfo!=null}">
-		let dropDownBtn = document.querySelector(".dropdown_btn");
-		let dropDown = document.querySelector(".dropdown");
-		dropDownBtn.addEventListener('click', function(){
-			if(dropDown.classList.contains('d-none')){
-				dropDown.classList.remove('d-none');
-			}else{
-				dropDown.classList.add('d-none');
-			}
-		});
-	</script>
 </nav>

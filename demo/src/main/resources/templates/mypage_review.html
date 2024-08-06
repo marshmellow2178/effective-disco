@@ -1,6 +1,8 @@
 <html layout:decorate="~{layout}">
-<main class = "container d-flex"  
+<main class = "container"  
 layout:fragment="content">
+<nav th:replace = "~{nav :: navFragment}"></nav>
+<div class = "d-flex flex-row">
 <ul th:replace = "~{mypage_menu :: mypageFragment}"
 ></ul>
 <div class = "col-9">
@@ -30,7 +32,7 @@ layout:fragment="content">
 	 	th:with = "block = 10,
 	 	total = ${reviewPage.totalPages},
 	 	number = ${reviewPage.number+1},
-	 	sidx = ${(number/block)*block+1}, 
+	 	sidx = ${((number-1)/block)*block+1}, 
 	 	eidx = ${(total > sidx+(block-1) ? sidx+(block-1) : total)}">
 	 		<li class = "page-item" 
 	 		th:classappend="${number} == 1 ? disabled">
@@ -51,6 +53,7 @@ layout:fragment="content">
 	 			th:href = "@{|/review/mypage?page=${number+1}|}">&gt;</a>
 	 		</li>
  		</ul>
+ 	</div>
 </div>
 <script type="text/javascript">
 	let navMyPage = document.querySelector('#nav_mypage');

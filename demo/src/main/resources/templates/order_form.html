@@ -1,14 +1,44 @@
 <html layout:decorate="~{layout}">
-<main class = "container"  layout:fragment="content">
+<main class = "container mx-auto my-3"  layout:fragment="content">
 	<form action = "/order/create" 
 	method = "post"
 	class = "col-7 mx-auto">
-		<div class = "input-group row">
-			<span class = "input-group-text">주문지점</span>
+	<h3 class = "mb-3">주문 내역</h3>
+	<hr>
+		<div class = "input-group align-items-center mb-3">
+			<b class = "col-3">회원정보</b>
+			<p th:text = "${session.userInfo.id}"></p>
+		</div>
+		<div class = "input-group align-items-center mb-3">
+			<b class = "col-3">연락처</b>
+			<span class = "input-group-text">010</span>
+			<input type = "number" max = 8 value = "12345678"
+			class = "form-control col-3">
+		</div>
+
+		<div class = "input-group align-items-center mb-3">
+			<b class = "col-3">배송지</b>
+			<select class = "form-control col-4">
+				<option value = 1>기본 배송지</option>
+			</select>
+		</div>
+		<div class = "input-group align-items-center mb-3">
+			<b class = "col-3">주문지점</b>
 			<input type = "text"  
 	  		name = "cmp_name"
-	  		class = "form-control form-control-plaintext"
+	  		class = "form-control col-4"
+	  		readonly
 	  		th:value = "${cartList.get(0).product.cmpName}">
+		</div>
+		<div class = "input-group align-items-center mb-3">
+			<b class = "col-3">결제방식</b>
+			<input type = "radio" 
+			value = "c" 
+			id = "payment" 
+			name = "payment"
+			checked>
+			<label for = "payment"
+			class = "form-check-label">&nbsp;카드</label>
 		</div>
 		<div class = "d-none">
 			<input type = number
@@ -21,12 +51,11 @@
 		<table th:if = "${cartList.size} != 0" 
 		class = "table table-sm">
 			<tr>
-				<th class = "col-7" scope = "row">상품</th>
-				<th class = "col-2 ">수량</th>
-				<th class = "col-3 ">가격</th>
+				<th class = "col-8" scope = "row">상품</th>
+				<th class = "col-1 ">수량</th>
+				<th class = "col-3 text-right">가격</th>
 			</tr>
 	        <tr th:each = "cart: ${cartList}"
-	        
 	        th:with = "total = 0">
 	        	<td>
 	        		<p
@@ -45,7 +74,7 @@
 	        		<span th:text = "${cart.count}"></span>
 	        		<span>개</span>
 	        	</td>
-	        	<td>
+	        	<td class = "text-right">
 	        		<span
 	        		class =  "price"
 	        		th:text = "${cart.product.price * cart.count}"></span>
@@ -57,20 +86,20 @@
 					<span>배송비</span>
 				</td>
 				<td></td>
-	        	<td>
+	        	<td class = "text-right">
 	        		<span id = "ship_price"></span>
 	        		<span>원</span>
 	        	</td>
 	        </tr>
-	        <tr >
+	        <tr>
 	        	<td >
 	        		<b>총 가격</b>
 	        	</td>
 	        	<td></td>
-	        	<td >
-	        		<input class =  "col-4"
+	        	<td class = "input-group 
+	            align-items-center">
+	        		<input class =  "form-control form-control-plaintext"
 	        		type="number"
-	        		readonly
 	        		name = "total_price"
 	        		id = "total_price">
 	        		<span>원</span>

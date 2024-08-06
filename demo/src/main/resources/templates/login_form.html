@@ -1,15 +1,43 @@
 <html layout:decorate="~{layout}">
 <main class="container" layout:fragment="content">
 	<form action = "/login" method = "post">
-		<input type = "text" required class = "form-control mb-3" name = "userId" value = "anon011">
-		<input type = "password" required class = "form-control mb-3" name = "pwd" value = "1234">
-		<input type = "submit" class = "form-control btn btn-custom">
+		<div class = "input-group g-3 align-items-center mb-3">
+			<div class = "col-2">
+				<label for = "userId"
+				class = "col-form-label col-form-label-lg">ID</label>
+			</div>
+			<div class = "col-10">
+				<input type = "text" 
+				required 
+				class = "form-control form-control-lg" 
+				name = "userId" 
+				value = "anon011">
+			</div>
+		</div>
+		<div class = "input-group g-3 align-items-center mb-3">
+			<div class = "col-auto">
+				<label for = "pwd"
+				class = "col-form-label col-form-label-lg">PW</label>
+			</div>
+			<div class = "col-auto">
+				<input type = "password" 
+				required 
+				class = "form-control form-control-lg" 
+				name = "pwd" 
+				value = "1234">
+			</div>
+		</div>
+		<div class = "input-group justify-content-center">
+			<input type = "submit" 
+			class = "btn btn-custom btn-lg col-11"
+			value = "LOGIN">
+		</div>
 	</form>
 	<style>
 	main{
 		display:flex;
 		justify-content: center;
-		align-item: center;
+		padding-top: 5rem;
 	}
 	</style>
 </main>

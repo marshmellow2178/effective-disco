@@ -87,15 +87,9 @@ public class ReviewCtrl {
 			model.addAttribute("myReview", myReview);
 		}
 		int[] scoreArr = new int[5];
-		double total = 0.0;
-		int cnt = 0;
 		for(int i = 0;i<5;i++) {
 			scoreArr[i] = reviewRepo.countByCmpNameAndScore(cmpName, i+1);
-			total += scoreArr[i]*(i+1);
-			cnt += scoreArr[i];
 		}
-		total /= cnt;
-		cmp.setScore(total);
 		model.addAttribute("cmp", cmp);
 		model.addAttribute("scoreArr", scoreArr);
 		model.addAttribute("reviewPage", reviewRepo.findByCmpName(cmpName, pageable));

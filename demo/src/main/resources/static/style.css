@@ -1,27 +1,30 @@
 @charset 'utf-8';
 header{
-	padding-top: 1rem;
+	padding: 1rem 3rem;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	flex-wrap: wrap;
+	background-color:#fee500;
+}
+a{
+	color: #191919;
+}
+a:hover{
+	color: #191919;
 }
 main{
-	min-height: calc(100vh - 240px);
+	min-height: calc(100vh - 160px);
 }
 footer{
 	display: flex;
-	width: 390px;
 	justify-content: center;
 	text-align: center;
-	padding-top: 1rem;
-	padding-bottom: 2rem;
+	padding: 1rem;
+	background-color: rgb(245, 245, 245);
 }
 p{
 	margin: 0;
-}
-input[type=number], .btn-addon{
-	background-color: white;
 }
 ul{
 	width: 100%;
@@ -32,67 +35,59 @@ figure{
 img{
 	width: 100%;
 }
+.nav-pills a,
+.pagination .page-link{
+	color: #191919;
+}
+.nav-pills .nav-link.active,
+.pagination .page-item.active .page-link{
+	background-color: #fee500;
+	color: #191919;
+	border-color: #fee500;
+}
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 input[type=number]{
-	padding: 0;
 	text-align: right;
 }
 .table td{
 	vertical-align: baseline;
 }
 
-.input-group-text{
-	background: transparent;
-	border:none;
-}
-.row{
-	flex-direction: row;
-	align-items: center;
-}
-
-#map {
-	width: 100%;
-	height: 600px;
-	margin: 0 auto;
-}
-
 .cmp_info figure{
 	width: 150px;
 	height: 150px;
-	margin-right: 1rem;
 }
-.cmp_info img{
-	width: 100%;
+.cmp_details{
+	padding: 20px;
 }
-
 .list_2, .list_4{
-	width: 100%;
 	display:flex;
 	flex-wrap:wrap;
 	flex-direction: row;
 	gap:1rem;
 }
 .list_2 li{
-	width: 45%;
+	width: 500px;
 }
 .list_4 li{
-	width: 22%;
+	width: 210px;
 }
+
 .btn-custom{
-	background-color: #563d7c;
+	background-color: #191919;
 	color: white;
 }
 .btn-custom:hover{
 	color: white;
 }
 .btn-outline-custom{
-	border-color:  #563d7c;
+	border-color: #191919;
 	background-color: white;
-	color: #563d7c;
+	color: #191919;
 }
 .btn-outline-disabled{
 	border-color: rgba(118, 118, 118, 0.3);
@@ -119,11 +114,11 @@ input[type=number]{
 	width: 38px;
 	font-size: 1.5rem;
 	line-height: 1;
+	background-color: white;
 }
-.map_wrap{
-	position: relative;
+.btn-group{
+	gap: 1rem;
 }
-
 .table-borderless th, .table-borderless td{
 	border: none;
 }
@@ -139,14 +134,4 @@ input[type=number]{
 .show{
 	max-height: fit-content;
 	display:block;
-}
-.dropdown_btn{
-	position:relative;
-}
-.dropdown{
-	position:absolute;
-	z-index : 1;
-	background-color: white;
-	width: 100%;
-	bottom: -300%;
 }

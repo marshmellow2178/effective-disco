@@ -1,5 +1,6 @@
 <html layout:decorate="~{layout}">
 <main class = "container"  layout:fragment="content">
+<nav th:replace = "~{nav :: navFragment}"></nav>
 	<form action = "/order/cart" 
 	method = "post"
 	class = "d-flex flex-wrap flex-row">
@@ -21,16 +22,18 @@
 				
 			</li>
 			<li th:each = "cart: ${cartPage}"
-			class = "list-group-item d-flex flex-wrap flex-row align-items-center ">
+			class = "list-group-item 
+			d-flex 
+			align-items-center ">
 				<input type = "checkbox" 
 				name = "pid" 
 				class = "check_cart"
 				th:value = "${cart.product.id}"
 				checked
 				>
-				<figure class = "col-6">
+				<figure>
 					<img th:src = "@{|/img/products/${cart.product.img}|}" 
-					class = "col-12">
+					>
 				</figure>
 				<div class = "product_detail col-5">
 					<b th:text = "|${cart.product.name}|"></b>
@@ -41,20 +44,21 @@
 	        		<span th:text = "|${cart.product.price}|"
 	        		class = "product_price"></span>원
 	        		<br>
-	        		<div class = "input-group input-group-sm my-1">
-						<span
-						class = "btn btn-addon minus"
-						>-</span>
-						<input type = "number" 
-			        	name = "count" 
-			        	th:value = "${cart.count}"
-			        	class = "form-control col-4 p_count"
-			        	min = 0 max = 99
-			        	>
-			        	<span 
-			        	class = "btn btn-addon plus"
-			        	>+</span>
-					</div>
+	        		
+				</div>
+				<div class = "input-group input-group-sm my-1 num_change">
+					<span
+					class = "btn btn-addon minus"
+					>-</span>
+					<input type = "number" 
+		        	name = "count" 
+		        	th:value = "${cart.count}"
+		        	class = "form-control col-4 p_count"
+		        	min = 0 max = 99
+		        	>
+		        	<span 
+		        	class = "btn btn-addon plus"
+		        	>+</span>
 				</div>
 				<a th:href = "@{|/cart/del?id=${cart.id}|}" class = "btn btn-sm btn-danger">X</a>
 			</li>

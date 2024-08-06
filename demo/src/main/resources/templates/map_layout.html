@@ -21,13 +21,34 @@
     <title>Document</title>
 </head>
 <body>
-	<nav th:replace = "~{header :: headerFragment}"></nav>
     <th:block layout:fragment="content"></th:block>
-    <nav th:replace = "~{footer :: footerFragment}"></nav>
+    <script src = "/js/map.js"></script>
     <style>
-	header{
-		padding: 1rem 23%;
-	}
-</style>
+		form{
+			background-color: #fee500;
+		}
+    	main{
+    		display: flex;
+    		flex-wrap: wrap;
+    	}
+    	.map_content{
+    		width: 500px;
+    	}
+    	#map {
+			height: 100%;
+		}
+		.map_wrap{
+			height: 100vh;
+			padding: 0;
+		}
+		header{
+			padding: 20px;
+		}
+		footer{
+			width: 500px;
+			position: absolute;
+			bottom: 0px;
+		}
+    </style>
 </body>
 </html>
