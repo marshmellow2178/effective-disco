@@ -1,13 +1,10 @@
-<html layout:decorate = "~{layout}">
+<html layout:decorate="~{layout/cmp_layout}">
 <main class="container" layout:fragment = "content"
 	th:with = "reviewCounts = ${reviewPage.getTotalElements},
 	sort = ${param.sort == null ? 'r' : param.sort}">
 
     <section class="cmp_info d-flex">
-    	<div class = "cmp_details col-2">
-			<span id = "dest_score"
-			th:text = "|⭐ ${cmp.score} (💬 ${cmp.cmpReviewCnt})|"></span>
-		</div>
+    	
 		<table class = "table table-sm col-4 table-borderless">
 			<tr th:each = "idx:${#numbers.sequence(4, 0)}">
 				<th scope = "row" 
@@ -24,6 +21,10 @@
 				></td>
 			</tr>
 		</table>
+		<div class = "cmp_details col-2">
+			<span id = "dest_score"
+			th:text = "|⭐ ${cmp.score} (💬 ${cmp.cmpReviewCnt})|"></span>
+		</div>
 	</section>
  	<!--리뷰 정렬 폼 -->
  	
@@ -40,25 +41,22 @@
  	<!--리뷰 출력 -->
  	
  	<div th:unless = "${reviewCounts}==0">
-	 	<ul class = "list-group my-3">
-	 		<li class = "list-group-item review_item" th:each = "review : ${reviewPage}">
-	 			<div class = "review_title">
-	 				<span th:text = "|⭐ ${review.score}|"></span>
-	 				<b th:text = "${review.uid}" class = "user_id"></b>
-	 				<span th:if = "${review.modifyDate == null}" th:text = "${#temporals.format(review.createDate, 'yy/MM/dd')}"></span>
-	 				<span th:unless= "${review.modifyDate == null}" th:text = "|${#temporals.format(review.modifyDate, 'yy/MM/dd')} (수정됨)|"></span>
-	 			</div>
-	 			<div>
-	 				<p th:id = "|content${review.id}|"  
-	 				th:text = "${review.content}" class = "review_content"></p>
-	 			</div>
- 				<div>
- 					<span class = "btn btn-sm btn-outline-disabled" 
- 					th:text = "|👍 ${review.recCount}|"></span>
-				</div>
-				
-	 		</li>
-	 	</ul>
+	 	<table class = "table table-sm my-3">
+	 		<tr>
+	 			<th>평점</th>
+	 			<th>작성자</th>
+	 			<th>내용</th>
+	 			<th>추천수</th>
+	 			<th>날짜</th>
+	 		</tr>
+	 		<tr th:each = "review : ${reviewPage}">
+	 			<td th:text = "${review.score}"></td>
+	 			<td th:text = "${review.uid}"></td>
+	 			<td th:text = "${review.content}"></td>
+	 			<td th:text = "${review.recCount}"></td>
+	 			<td th:text = "${#temporals.format(review.createDate, 'yy/MM/dd')}"></td>
+	 		</tr>
+	 	</table>
 	 	
 	 	<!--페이징 -->
 	 	

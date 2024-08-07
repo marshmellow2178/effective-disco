@@ -1,19 +1,21 @@
-<html layout:decorate="~{layout}">
+<html layout:decorate="~{layout/cmp_layout}">
 <main class = "container" layout:fragment="content">
 	<div class = "d-flex align-items-center">
 	
     <form action = "/product/cmp/create" method = "post" 
-    th:if = "${param.pid==null}" class = "col-3">
-    	<div class = "input-group mb-3">
-    		<span class = "input-group-text col-4">상품명</span>
+    th:if = "${param.pid==null}" class = "">
+    	<div class = "input-group 
+    	input-group-lg
+    	mb-3 align-items-center">
+    		<b class = "col-4">상품명</b>
     		<input type = "text" name = "name" 
 	        class = "form-control" 
 	        placeholder = "상품명" 
 	        required 
 	        value = "상품">
     	</div>
-    	<div class = "input-group mb-3">
-    		<span class = "input-group-text col-4">가격</span>
+    	<div class = "input-group input-group-lg mb-3 align-items-center">
+    		<b class = "col-4">가격</b>
     		<input type = "number" 
     		name = "price" 
     		class = "form-control" 
@@ -22,8 +24,8 @@
         	value = "10000" 
         	min = 0>
     	</div>
-    	<div class = "input-group mb-3">
-    		<span class = "input-group-text col-4">재고량</span>
+    	<div class = "input-group input-group-lg mb-3 align-items-center">
+    		<b class = "col-4">재고량</b>
     		<input type = "number" 
     		name = "count" 
     		class = "form-control" 
@@ -33,15 +35,17 @@
     	</div>
         <input type = "submit" 
         value = "등록" 
-        class = "btn btn-custom">
+        class = "btn btn-custom form-control btn-lg">
     </form>
     
     <form action = "/product/cmp/update" method = "post" 
-    th:if = "${param.pid!=null}" class = "col-3">
+    th:if = "${param.pid!=null}">
     	<input type = "number" class = "d-none" 
     	th:value = "${param.pid}" name = "id">
-		<div class = "input-group mb-3">
-    		<span class = "input-group-text col-4">상품명</span>
+		<div class = "input-group 
+    	input-group-lg
+    	mb-3 align-items-center">
+    		<b class = "col-4">상품명</b>
         	<input type = "text" 
         	name = "name" 
         	class = "form-control" 
@@ -49,8 +53,10 @@
         	required 
         	th:value = "${product.name}">
         </div>
-        <div class = "input-group mb-3">
-        	<span class = "input-group-text col-4">가격</span>
+        <div class = "input-group 
+    	input-group-lg
+    	mb-3 align-items-center">
+    		<b class = "col-4">가격</b>
         	<input type = "number" 
         	name = "price" 
         	class = "form-control" 
@@ -58,8 +64,10 @@
         	th:value = "${product.price}" 
         	min = 0>
         </div>
-        <div class = "input-group mb-3">
-        	<span class = "input-group-text col-4">재고량</span>
+        <div class = "input-group 
+    	input-group-lg
+    	mb-3 align-items-center">
+    		<b class = "col-4">재고량</b>
         	<input type = "number" 
         	name = "count" 
         	class = "form-control" 
@@ -69,18 +77,9 @@
 		</div>
        	<input type = "submit" 
        	value = "수정" 
-       	class = "btn btn-custom">
+       	class = "btn btn-custom form-control btn-lg">
     </form>
     </div>
-   <style>
-	img{
-		width: 200px;
-		height: 200px;
-	}
-	figure{
-		padding: 1rem;
-	}
-	</style>
 </main>
 
 </html>

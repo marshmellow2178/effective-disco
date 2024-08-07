@@ -1,4 +1,4 @@
-<nav th:fragment="navFragment">
+<nav th:fragment="navFragment" class = "container">
 	<ul th:if = "${session.cmpInfo!=null}" class="nav nav-tabs my-3"
 	th:classappend = "${session.cmpInfo.state=='c'} ? 'd-none'">
 		<li class="nav-item">
@@ -25,31 +25,6 @@
 			<a href="/review/cmp/list" 
 			class="nav-link" 
 			id = "nav_review">리뷰</a>
-		</li>
-	</ul>
-	
-	<ul th:if = "${session.userInfo!=null}" 
-	class="nav nav-tabs my-3">
-		
-		<li class="nav-item">
-			<a href="/fav/list" 
-			class="nav-link" 
-			id = "nav_fav">북마크</a>
-		</li>
-		<li class="nav-item">
-			<a href="/cart/list" 
-			class="nav-link" 
-			id = "nav_cart">카트</a>
-		</li>
-		<li class="nav-item">
-			<a href="/order/list" 
-			class="nav-link" 
-			id = "nav_order">주문내역</a>
-		</li>
-		<li class="nav-item">
-			<a href="/mypage" 
-			class="nav-link" 
-			id = "nav_mypage">내정보</a>
 		</li>
 	</ul>
 </nav>

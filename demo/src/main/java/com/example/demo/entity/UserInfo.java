@@ -17,6 +17,8 @@ public class UserInfo {
 	private String id;
 	@Column(name = "user_pwd")
 	private String pwd;
+	@Column(name = "user_location")
+	private String location;
 	@Column(name = "join_date")
 	private LocalDateTime joinDate;
 }

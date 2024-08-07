@@ -1,0 +1,27 @@
+<header th:fragment="headerFragment">
+	<div class = "container d-flex justify-content-between">
+    <h3>
+    	<a class="nav-link" 
+    	href="/cmp" 
+    	th:if = "${session.cmpInfo==null}"
+    	>Company</a>
+    	<a class="nav-link" 
+    	href="/cmp" 
+    	th:if = "${session.cmpInfo!=null}"
+    	th:text = "${session.cmpInfo.cmpName}"></a>
+    </h3>
+    <ol class="nav">
+        <li class="nav-item">
+            <a th:if = "${session.cmpInfo==null}"
+            class="nav-link" href="/login">Login</a>
+            <a th:if = "${session.cmpInfo!=null}"
+            class = "nav-link" href = "/cmp/logout">Logout</a>
+        </li>
+    </ol>
+    </div>
+    <style>
+    	header{
+    		background-color: #FFB200;
+    	}
+    </style>
+</header>

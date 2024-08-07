@@ -1,10 +1,21 @@
-<html layout:decorate="~{layout}">
+<html layout:decorate="~{layout/cmp_layout}">
 <main class = "container d-flex"  
 layout:fragment="content">
 <div class = "col-6">
-	<table class = "table table-borderless"
+	<table class = "table table-borderless table-sm"
 	th:if = "${session.cmpInfo!=null}"
 	th:with = "cmp = ${session.cmpInfo}">
+		<tr>
+			<th>이미지</th>
+			<td>
+			<figure style="width:150px">
+				<img th:src = "@{|/img/${cmp.ctgrName}.png|}">
+			</figure></td>
+		</tr>
+		<tr>
+			<th>브랜드</th>
+			<td th:text = "${cmp.brandName}"></td>
+		</tr>
 		<tr>
 			<th>상호명</th>
 			<td th:text = "${cmp.cmpName}"></td>
@@ -12,6 +23,10 @@ layout:fragment="content">
 		<tr>
 			<th>주소</th>
 			<td th:text = "${cmp.cmpAddr}"></td>
+		</tr>
+		<tr>
+			<th>평가</th>
+			<td th:text = "|⭐ ${cmp.score} (💬 ${cmp.cmpReviewCnt})|"></td>
 		</tr>
 	</table>
 </div>

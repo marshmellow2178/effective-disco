@@ -1,40 +1,22 @@
-<html layout:decorate="~{layout}">
+<html layout:decorate="~{layout/cmp_layout}">
 <main class = "container"  layout:fragment="content">
-	<p th:text = "|${orderPage.totalElements}개의 주문 완료됨|"></p>
-	<hr>
-	<ul th:if = "${orderPage} != null" 
-	class = "list-group col-8 my-3">
-        <li th:each = "order: ${orderPage}" 
-        class = "list-group-item mb-3">
-        	<div class = "d-flex justify-content-between align-items-center">
-        		<b th:text = "|${order.userId}의 주문서|"></b>
-        	</div>
-        	<table class = "purchase_info table table-sm mt-3">
-            	<tr>
-            		<th>상품</th>
-            		<th>수량</th>
-            		<th>가격</th>
-            	</tr>
-            	<tr th:each = "detail : ${order.odList}">
-            		<td th:text = "${detail.productName}"></td>
-            		<td th:text = "${detail.productCount}"></td>
-            		<td th:text = "${detail.productPrice}"></td>
-            	</tr>
-            	<tr th:if = "${order.odList.size()==0}">
-            		<td colspan = 3>내역이 없습니다</td>
-            	</tr>
-            	<tr>
-            		<td colspan = 2>배송비</td>
-            		<td th:text = "${order.price <40000 ? 3000 : 0}">
-            	</tr>
-            	<tr>
-            		<td colspan = 2>총 금액</td>
-            		<td th:text = "|총 ${order.price} 원|"></td>
-            	</tr>
-            </table>
-        </li>
-    </ul>
-    
+   	<table class = "table">
+       	<tr>
+       		<th>상품</th>
+       		<th>수량</th>
+       		<th>가격</th>
+       		<th>날짜</th>
+       	</tr>
+       	<th:block th:each = "order: ${orderPage}">
+        	<tr th:each = "detail : ${order.odList}">
+        		<td th:text = "${detail.productName}"></td>
+        		<td th:text = "${detail.productCount}"></td>
+        		<td th:text = "${detail.productPrice}"></td>
+        		<td th:text = "${#temporals.format(order.date, 'yy/MM/dd')}"></td>
+        	</tr>
+       	</th:block>
+    </table>
+    <hr>
     <ul class = "pagination justify-content-center" 
     th:if = "${orderPage.totalPages} != 0"
  	th:with = "block = 10,

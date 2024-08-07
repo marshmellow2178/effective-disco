@@ -1,0 +1,13 @@
+<header th:fragment="headerFragment">
+    <h3>
+    	<a class="nav-link" href="/">Home</a>
+    </h3>
+    <ol class="nav">
+        <li class="nav-item">
+            <a th:if="${session.userInfo==null}"
+            class="nav-link" href="/login">Login</a>
+            <a th:unless ="${session.userInfo==null}"
+            class = "nav-link" href = "/logout">Logout</a>
+        </li>
+    </ol>
+</header>

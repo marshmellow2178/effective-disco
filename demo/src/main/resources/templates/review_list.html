@@ -1,8 +1,7 @@
-<html layout:decorate = "~{layout}">
+<html layout:decorate = "~{layout/layout}">
 <main class="container" layout:fragment = "content"
 	th:with = "reviewCounts = ${reviewPage.getTotalElements},
 	sort = ${param.sort == null ? 'r' : param.sort}">
-<nav th:replace = "~{nav :: navFragment}"></nav>
     <!--장소 정보 -->
 
 	<section class="cmp_info d-flex">

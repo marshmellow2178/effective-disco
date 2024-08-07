@@ -1,6 +1,5 @@
-<html layout:decorate="~{layout}">
+<html layout:decorate="~{layout/layout}">
 <main class = "container"  layout:fragment="content">
-	<nav th:replace = "~{nav :: navFragment}"></nav>
 	<b th:text = "|${favPage.totalElements}개의 즐겨찾기|"></b>
 	<hr>
 	<ul th:if = "${favPage} != null" 

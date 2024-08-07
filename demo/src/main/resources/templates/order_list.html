@@ -1,6 +1,5 @@
-<html layout:decorate="~{layout}">
+<html layout:decorate="~{layout/layout}">
 <main class = "container"  layout:fragment="content">
-<nav th:replace = "~{nav :: navFragment}"></nav>
 	<p th:text = "|${orderPage.totalElements}개의 주문 내역|"></p>
 	<hr>
 	<ul th:if = "${orderPage} != null" 

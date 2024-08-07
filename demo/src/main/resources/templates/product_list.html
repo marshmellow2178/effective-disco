@@ -1,7 +1,6 @@
-<html layout:decorate="~{layout}">
+<html layout:decorate="~{layout/layout}">
 <main class = "container"  layout:fragment="content"
 th:with = "cmpName = ${param.cmp}">
-<nav th:replace = "~{nav :: navFragment}"></nav>
 	<p th:text = "|${cmpName}의 상품 ${products.totalElements}개|"></p>
 	<hr>
 	<ul th:if = "${products} != null" 

@@ -1,7 +1,7 @@
-<html layout:decorate="~{map_layout}">
+<html layout:decorate="~{layout/map_layout}">
 <main layout:fragment="content">
 	<div class = "map_content ">
-	<nav th:replace = "~{header :: headerFragment}"></nav>
+	<nav th:replace = "~{fragments/header :: headerFragment}"></nav>
 	
 	<form name = "searchForm" class = "px-3">
 		<div class = "input-group align-items-center g-3">
@@ -29,7 +29,7 @@
 		</div>
 	</form>
 	<div class = "container">
-	<nav th:replace = "~{nav :: navFragment}"></nav>
+	<nav th:replace = "~{fragments/nav :: navFragment}"></nav>
 	<section class="cmp_info d-flex">
 		<figure>
 			<img th:src="@{|/img/${end.ctgrName}.png|}">
@@ -60,7 +60,7 @@
 		</div>
 	</section>
 	</div>
-	<nav th:replace = "~{footer :: footerFragment}"></nav>
+	<nav th:replace = "~{fragments/footer :: footerFragment}"></nav>
 	</div>
 	
 	<div class="map_wrap col">

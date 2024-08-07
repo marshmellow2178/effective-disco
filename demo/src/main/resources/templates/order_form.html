@@ -1,4 +1,4 @@
-<html layout:decorate="~{layout}">
+<html layout:decorate="~{layout/layout}">
 <main class = "container mx-auto my-3"  layout:fragment="content">
 	<form action = "/order/create" 
 	method = "post"
@@ -12,14 +12,14 @@
 		<div class = "input-group align-items-center mb-3">
 			<b class = "col-3">연락처</b>
 			<span class = "input-group-text">010</span>
-			<input type = "number" max = 8 value = "12345678"
+			<input type = "number" value = "12345678"
 			class = "form-control col-3">
 		</div>
 
 		<div class = "input-group align-items-center mb-3">
 			<b class = "col-3">배송지</b>
-			<select class = "form-control col-4">
-				<option value = 1>기본 배송지</option>
+			<select class = "form-control col-8">
+				<option value = 1 th:text = "${session.userInfo.location}"></option>
 			</select>
 		</div>
 		<div class = "input-group align-items-center mb-3">

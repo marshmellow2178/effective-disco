@@ -1,10 +1,5 @@
-<html layout:decorate="~{layout}">
-<main class = "container"  
-layout:fragment="content">
-<nav th:replace = "~{nav :: navFragment}"></nav>
-<div class = "d-flex flex-row">
-	<ul th:replace = "~{mypage_menu :: mypageFragment}"></ul>
-	<div class = "col-6">
+<html layout:decorate="~{layout/mypage_layout}">
+<div class = "col-6" layout:fragment="content">
 	<table class = "table table-sm table-borderless" >
 		<tr>
 			<th scope = "col"
@@ -13,17 +8,21 @@ layout:fragment="content">
 		</tr>
 		<tr>
 			<th scope = "col"
+			class = "col-2">배송지</th>
+			<td th:text = "${session.userInfo.location}"></td>
+		</tr>
+		<tr>
+			<th scope = "col"
 			class = "col-2">가입일</th>
 			<td th:text = "${#temporals.format(session.userInfo.joinDate, 'yy/MM/dd')}"></td>
 		</tr>
 	</table>
-	</div>
-</div>
-<script type="text/javascript">
-	let navMyPage = document.querySelector('#nav_mypage');
-	let myInfoMenu = document.querySelector("#my_info");
-	myInfoMenu.classList.add('active');
-	navMyPage.classList.add('active');
+	<script type="text/javascript">
+		let navMyPage = document.querySelector('#nav_mypage');
+		let myInfoMenu = document.querySelector("#my_info");
+		myInfoMenu.classList.add('active');
+		navMyPage.classList.add('active');
 	</script>
-</main>
+</div>
+
 </html>

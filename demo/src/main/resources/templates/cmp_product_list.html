@@ -1,6 +1,6 @@
-<html layout:decorate="~{layout}">
+<html layout:decorate="~{layout/cmp_layout}">
 <main class = "container"  layout:fragment="content">
-	<p th:text = "|상품 ${products.totalElements}개|"></p>
+	<b th:text = "|상품 ${products.totalElements}개|"></b>
 	<hr>
 	<ul th:if = "${products} != null" 
 	class = "list_4">
@@ -18,9 +18,9 @@
         	<span th:text = "|${product.price}원|"></span>
         	<p th:if = "${session.cmpInfo!=null}"
         	th:text = "|재고 ${product.count}개|"></p>
-        	<div class = "btn-group btn-group-sm mt-1">
+        	<div class = "btn-group mt-3">
 	        	<a th:href = "@{|/product/cmp/update?pid=${product.id}|}"
-	        	class = "btn btn-custom col-6">
+	        	class = "btn btn-warning col-6">
 	        		수정
 	        	</a>
 	        	<button class = "del_product btn btn-danger col-6"
@@ -30,7 +30,7 @@
         	</div>
         </li>
     </ul>
-    
+    <hr>
     <ul class = "pagination justify-content-center" 
     th:if = "${products.totalPages} != 0"
  	th:with = "block = 10,

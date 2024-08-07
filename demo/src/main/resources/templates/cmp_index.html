@@ -1,14 +1,75 @@
-<html layout:decorate="~{layout}">
+<html layout:decorate="~{layout/cmp_layout}">
 <main class = "container"  layout:fragment="content">
-	<th:block th:if = "${session.cmpInfo.state} == 'c'">
-		<p class = "btn btn-outline-warning">CLOSED</p>
-		<a href = "/cmp/open"
-    	class = "btn btn-custom">영업 시작</a>
-	</th:block>
+	<div class = "d-flex m-3 g-3 flex-column">
+		<div class = "p-3 col-8 d-flex flex-column align-items-center"
+		>
+			<th:block th:if = "${session.cmpInfo.state} == 'c'">
+			<h3>CLOSED</h3>
+			<a href = "/cmp/open"
+	    	class = "btn btn-success btn-lg">영업 시작</a>
+	    	</th:block>
+	    	
+	    	<th:block th:if = "${session.cmpInfo.state} == 'o'">
+	    	<h3>OPEN</h3>
+	    	<a href = "/cmp/close"
+	    	class = "btn btn-danger btn-lg">영업 종료</a>
+	    	</th:block>
+		</div>
+		<hr>
+    	<ul class = "list-group col-8"
+    	id = "todo_list">
+			<li class = "list-group-item text-center">
+				<b>오늘의 할 일</b>
+			</li>
+			<li class = " list-group-item">
+				<div class = "input-group">
+				<input type = "text" value = "할 일"
+				placeholder = "할 일"
+				class = "form-control" id = "todo_input">
+				<button class = "btn btn-outline-custom"
+				id = "btn_add" >+</button></div>
+			</li>
+		</ul>
+    	
+	</div>
 	
-    <th:block th:if = "${session.cmpInfo.state} == 'o'">
-    	<p class = "btn btn-outline-success">OPEN</p>
-    	<a href = "/cmp/close"
-    	class = "btn btn-custom">영업 종료</a>
-	</th:block>
+	<script>
+		let todoList = document.querySelector("#todo_list");
+		let addBtn = document.querySelector("#btn_add");
+		let todoInput = document.querySelector("#todo_input");
+		let todoItems = document.querySelectorAll(".todo_item");
+		let delBtns = document.querySelectorAll(".del_btn");
+		
+		addBtn.addEventListener("click", function(){
+			let value = todoInput.value;
+			if(value != ""){
+				let li = document.createElement("li");
+				let span = document.createElement('span');
+				let delBtn = document.createElement('button');
+				delBtn.innerText = 'X';
+				delBtn.classList.add('btn');
+				delBtn.classList.add('btn-sm');
+				delBtn.classList.add('btn-danger');
+				delBtn.classList.add('del_btn');
+				delBtn.addEventListener('click', function(){
+					li.remove();
+				})
+				span.innerText = todoInput.value;
+				li.classList.add('list-group-item');
+				li.classList.add('todo_item');
+				li.appendChild(span);
+				li.appendChild(delBtn);
+				todoInput.value = "할 일";
+				todoList.appendChild(li);
+			}
+		});
+	</script>
+	<style>
+		.todo_item{
+			display:flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			align-items: center;
+		}
+	</style>
 </main>
