@@ -13,6 +13,16 @@
 		</tr>
 		<tr>
 			<th scope = "col"
+			class = "col-2">연락처</th>
+			<td th:text = "|010${session.userInfo.phone}|"></td>
+		</tr>
+		<tr>
+			<th scope = "col"
+			class = "col-2">이메일</th>
+			<td th:text = "${session.userInfo.email}"></td>
+		</tr>
+		<tr>
+			<th scope = "col"
 			class = "col-2">가입일</th>
 			<td th:text = "${#temporals.format(session.userInfo.joinDate, 'yy/MM/dd')}"></td>
 		</tr>

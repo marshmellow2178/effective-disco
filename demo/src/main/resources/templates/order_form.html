@@ -12,10 +12,14 @@
 		<div class = "input-group align-items-center mb-3">
 			<b class = "col-3">연락처</b>
 			<span class = "input-group-text">010</span>
-			<input type = "number" value = "12345678"
+			<input type = "number" th:value = "${session.userInfo.phone}"
 			class = "form-control col-3">
 		</div>
-
+		<div class = "input-group align-items-center mb-3">
+			<b class = "col-3">이메일</b>
+			<input type = "text" th:value = "${session.userInfo.email}"
+			class = "form-control col-5">
+		</div>
 		<div class = "input-group align-items-center mb-3">
 			<b class = "col-3">배송지</b>
 			<select class = "form-control col-8">

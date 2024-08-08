@@ -19,6 +19,10 @@ public class UserInfo {
 	private String pwd;
 	@Column(name = "user_location")
 	private String location;
+	@Column(name = "user_phone")
+	private String phone;
+	@Column(name = "user_email")
+	private String email;
 	@Column(name = "join_date")
 	private LocalDateTime joinDate;
 }
