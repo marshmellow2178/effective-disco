@@ -103,7 +103,7 @@
 	 	<ul class = "list-group my-3">
 	 		<li class = "list-group-item review_item" 
 	 		th:each = "review : ${reviewPage}"
-	 		th:if = "${session.userInfo == null || review.uid != session.userInfo.getId}">
+	 		>
 	 			<div class = "review_title">
 	 				<span th:text = "|⭐ ${review.score}|"></span>
 	 				<b th:text = "${review.uid}" class = "user_id"></b>
