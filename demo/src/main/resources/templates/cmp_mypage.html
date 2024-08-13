@@ -1,10 +1,9 @@
-<html layout:decorate="~{layout/cmp_layout}">
-<main class = "container d-flex"  
-layout:fragment="content">
-<div class = "col-6">
+<html layout:decorate="~{layout/cmpinfo_layout}">
+<div class = "col-6" layout:fragment="content">
 	<table class = "table table-borderless table-sm"
 	th:if = "${session.cmpInfo!=null}"
-	th:with = "cmp = ${session.cmpInfo}">
+	th:with = "cmp = ${session.cmpInfo}"
+	>
 		<tr>
 			<th>이미지</th>
 			<td>
@@ -29,12 +28,12 @@ layout:fragment="content">
 			<td th:text = "|⭐ ${cmp.score} (💬 ${cmp.cmpReviewCnt})|"></td>
 		</tr>
 	</table>
-</div>
-<script type="text/javascript">
-	let navMyPage = document.querySelector('#nav_mypage');
-	let myInfoMenu = document.querySelector("#my_info");
-	myInfoMenu.classList.add('active');
-	navMyPage.classList.add('active');
+	<script type="text/javascript">
+	let cmpInfo = document.querySelector("#nav_mypage");
+	let cmpInfoCol = document.querySelector("#cmp_info");
+	cmpInfoCol.classList.add("active");
+	cmpInfo.classList.add('active');
 	</script>
-</main>
+</div>
+
 </html>

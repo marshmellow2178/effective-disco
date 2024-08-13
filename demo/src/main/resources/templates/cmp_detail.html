@@ -1,0 +1,29 @@
+<html layout:decorate = "~{layout/layout}">
+<main class="container" layout:fragment = "content"
+th:with = "cmpName = ${param.cmp}">
+<nav th:replace = "~{fragments/shop_menu :: shopFragment}"></nav>
+	<hr>
+	<section class="cmp_info d-flex">
+		<figure>
+			<img th:src="@{|/img/${cmp.ctgrName}.png|}" 
+			id = "dest_img">
+		</figure>
+		<div class = "cmp_details col-4">
+			<span id = "dest_ctgr"
+			th:text = "${cmp.brandName}"
+			class = "badge text-bg-secondary"></span>
+			<br>
+			<span id="dest_addr"
+			th:text = "${cmp.cmpAddr}"></span>
+			<br>
+			<span id = "dest_score"
+			th:text = "|⭐ ${cmp.score} (💬 ${cmp.cmpReviewCnt})|"></span>
+		</div>
+	</section>
+	<hr>
+	<script>
+		let cmpDetail = document.querySelector("#cmp_detail");
+		cmpDetail.classList.add('active');
+	</script>
+</main>
+</html>

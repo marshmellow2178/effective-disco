@@ -15,7 +15,7 @@
 				<div class = "btn-group">
 					<span class = "btn-borderless"
 					id = "free_ship">/40,000</span>
-					<span class = "btn btn-outline-success" 
+					<span class = "btn btn-outline-info" 
 					id = "ship_btn">무료배송</span>
 				</div>
 				
@@ -181,19 +181,19 @@
 		totalProduct.value = sum;
 		freeShipPer.innerText = sum + " / " + free;
 		if(sum == 0){
-			shipFreeBtn.classList.remove('btn-success');
-			shipFreeBtn.classList.add('btn-outline-success');
+			shipFreeBtn.classList.remove('btn-info');
+			shipFreeBtn.classList.add('btn-outline-info');
 			shipPrice.value = 0;
 			submit.disabled = true;
 		}
 		else if(sum >= free){
-			shipFreeBtn.classList.remove('btn-outline-success');
-			shipFreeBtn.classList.add('btn-success');
+			shipFreeBtn.classList.remove('btn-outline-info');
+			shipFreeBtn.classList.add('btn-info');
 			shipPrice.value = 0;
 			submit.disabled = false;
 		}else{
-			shipFreeBtn.classList.remove('btn-success');
-			shipFreeBtn.classList.add('btn-outline-success');
+			shipFreeBtn.classList.remove('btn-info');
+			shipFreeBtn.classList.add('btn-outline-info');
 			shipPrice.value = ship;
 			submit.disabled = false;
 		}

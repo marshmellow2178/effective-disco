@@ -21,10 +21,10 @@
     <title>Document</title>
 </head>
 <body>
-	<nav th:replace = "~{fragments/header :: headerFragment}"></nav>	
+	<nav th:replace = "~{fragments/cmp_header :: headerFragment}"></nav>	
 	<main class = "container">
 	<div class = "d-flex flex-row">
-		<ul th:replace = "~{fragments/mypage_menu :: mypageFragment}"></ul>
+		<ul th:replace = "~{fragments/cmp_info :: cmpInfoFragment}"></ul>
    		<th:block layout:fragment="content"></th:block>
    	</div>
    	</main>

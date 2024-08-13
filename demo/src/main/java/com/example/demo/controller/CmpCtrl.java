@@ -196,4 +196,16 @@ public class CmpCtrl {
 		model.addAttribute("end", end);
 		return "cmp_route";
 	}
+	
+	@GetMapping("/detail")
+	public String cmpDetail(
+			@RequestParam(value = "cmp") String cmpName,
+			Model model) {
+		if(cmpName == null) {
+			return "redirect:/";
+		}
+		Company cmp = cmpRepo.findByCmpId(cmpName);
+		model.addAttribute("cmp", cmp);
+		return "cmp_detail";
+	}
 }

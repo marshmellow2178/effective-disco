@@ -1,0 +1,24 @@
+<ul th:fragment="cmpInfoFragment" 
+class="nav nav-pills flex-column col-2">
+  <li class="nav-item">
+    <a class="nav-link" 
+    th:href="@{|/cmp/mypage|}"
+    id = "cmp_info">
+    매장정보
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" 
+    th:href="@{|/review/cmp/list|}"
+    id = "cmp_review">
+    매장리뷰
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" 
+    th:href="@{|/notice/list/cmp|}"
+    id= "cmp_notice">
+    공지사항
+    </a>
+  </li>
+</ul>

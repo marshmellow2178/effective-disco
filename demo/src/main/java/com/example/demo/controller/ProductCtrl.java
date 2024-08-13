@@ -82,6 +82,7 @@ public class ProductCtrl {
 		if(p==null) {
 			p = new Product();
 			p.setCmpName(cmp.getCmpName());
+			p.setImg("product0.png");
 			p.setName(pd.getName());
 			p.setPrice(pd.getPrice());
 			p.setCount(pd.getCount());

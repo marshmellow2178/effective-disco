@@ -1,0 +1,46 @@
+<html layout:decorate="~{layout/layout}">
+<main class = "container"  layout:fragment="content"
+th:with = "cmpName = ${param.cmp}">
+<nav th:replace = "~{fragments/shop_menu :: shopFragment}"></nav>
+   	<table class = "table">
+       	<tr>
+       		<th>제목</th>
+       		<th>작성일</th>
+       	</tr>
+       	<tr th:each = "notice: ${noticePage}">
+       		<td >
+       			<a th:href = "@{|/notice/detail?id=${notice.seq}|}"
+       			th:text = "${notice.title}"></a>
+       		</td>
+       		<td th:text = "${#temporals.format(notice.createDate, 'yy/MM/dd')}"></td>
+       	</tr>
+    </table>
+    <hr>
+    <ul class = "pagination justify-content-center" 
+    th:if = "${noticePage.totalPages} != 0"
+ 	th:with = "block = 10,
+ 	total = ${noticePage.totalPages},
+ 	number = ${noticePage.number+1},
+ 	sidx = ${((number-1)/block)*block+1}, 
+ 	eidx = ${(total > sidx+(block-1) ? sidx+(block-1) : total)}">
+ 		<li class = "page-item" th:classappend="${number} == 1 ? disabled">
+ 			<a class = "page-link" 
+ 			th:href = "@{|/notice/list?cmp=${cmpName}&page=${number-1}|}">&lt;</a>
+ 		</li>
+ 		<th:block th:each = "idx:${#numbers.sequence(sidx, eidx)}">
+ 		<li class = "page-item" th:classappend="${number}==${idx} ? active">
+ 			<a class = "page-link" th:text = "${idx}" 
+ 			th:href = "@{|/notice/list?cmp=${cmpName}&page=${idx}|}" ></a>
+ 		</li>
+ 		</th:block>
+ 		<li class = "page-item" th:classappend="!${noticePage.hasNext} ? disabled">
+ 			<a class = "page-link" th:href = "@{|/notice/list?cmp=${cmpName}&page=${number+1}|}">&gt;</a>
+ 		</li>
+ 	</ul>
+ 	<script>
+ 	let cmpNotice = document.querySelector("#cmp_notice");
+ 	cmpNotice.classList.add('active');
+ 	</script>
+ </main>
+
+ </html>

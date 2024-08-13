@@ -1,0 +1,28 @@
+<nav th:fragment="shopFragment">
+	<ul class="nav nav-pills my-3">
+		<li class = "nav-item mr-3">
+			<b th:text = "${cmpName}"
+			class="nav-link" ></b>
+		</li>
+		<li class="nav-item">
+			<a th:href = "@{|/cmp/detail?cmp=${cmpName}|}" 
+			class="nav-link" 
+			id = "cmp_detail">상세정보</a>
+		</li>
+		<li class="nav-item">
+			<a th:href="@{|/product/list?cmp=${cmpName}|}" 
+			class="nav-link" 
+			id = "cmp_product">상품</a>
+		</li>
+		<li class="nav-item">
+			<a th:href="@{|/notice/list?cmp=${cmpName}|}" 
+			class="nav-link" 
+			id = "cmp_notice">공지</a>
+		</li>
+		<li class="nav-item">
+			<a th:href="@{|/review/list?name=${cmpName}|}" 
+			class="nav-link" 
+			id = "cmp_review">리뷰</a>
+		</li>
+	</ul>
+</nav>

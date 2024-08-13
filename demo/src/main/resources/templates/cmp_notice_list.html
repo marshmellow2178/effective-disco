@@ -1,0 +1,48 @@
+<html layout:decorate="~{layout/cmpinfo_layout}">
+<div class = "col-8" layout:fragment="content">
+	<table class = "table">
+       	<tr>
+       		<th class = "col-8">제목</th>
+       		<th>작성일</th>
+       	</tr>
+       	<tr th:each = "notice: ${noticePage}">
+       		<td >
+       			<a th:href = "@{|/notice/detail/cmp?id=${notice.seq}|}"
+       			th:text = "${notice.title}"></a>
+       		</td>
+       		<td th:text = "${#temporals.format(notice.createDate, 'yy/MM/dd')}"></td>
+       	</tr>
+    </table>
+    <a href = "/notice/cmp/create"
+    class = "btn btn-custom">등록</a>
+    <hr>
+    <ul class = "pagination justify-content-center" 
+    th:if = "${noticePage.totalPages} != 0"
+ 	th:with = "block = 10,
+ 	total = ${noticePage.totalPages},
+ 	number = ${noticePage.number+1},
+ 	sidx = ${((number-1)/block)*block+1}, 
+ 	eidx = ${(total > sidx+(block-1) ? sidx+(block-1) : total)}">
+ 		<li class = "page-item" th:classappend="${number} == 1 ? disabled">
+ 			<a class = "page-link" 
+ 			th:href = "@{|/notice/list/cmp?page=${number-1}|}">&lt;</a>
+ 		</li>
+ 		<th:block th:each = "idx:${#numbers.sequence(sidx, eidx)}">
+ 		<li class = "page-item" th:classappend="${number}==${idx} ? active">
+ 			<a class = "page-link" th:text = "${idx}" 
+ 			th:href = "@{|/notice/list/cmp?page=${idx}|}" ></a>
+ 		</li>
+ 		</th:block>
+ 		<li class = "page-item" th:classappend="!${noticePage.hasNext} ? disabled">
+ 			<a class = "page-link" 
+ 			th:href = "@{|/notice/list/cmp?page=${number+1}|}">&gt;</a>
+ 		</li>
+ 	</ul>
+ 	<script>
+	let navMyPage = document.querySelector('#nav_mypage');
+ 	let cmpNotice = document.querySelector("#cmp_notice");
+ 	cmpNotice.classList.add('active');
+ 	navMyPage.classList.add('active');
+ 	</script>
+</div>
+</html>

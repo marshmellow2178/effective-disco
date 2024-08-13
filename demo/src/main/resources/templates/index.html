@@ -49,7 +49,7 @@
 		</div>
 	</form>
 	<div class = "container">
-	<nav th:replace = "~{fragments/nav :: navFragment}"></nav>
+	<hr>
 	<section class="cmp_info d-flex">
 		<figure>
 			<img src="/img/all.png"
@@ -203,6 +203,8 @@
 			currentPos = new kakao.maps.LatLng(Number(data.cmpLat), 
 			Number(data.cmpLng));
 			drawMap(currentPos);
+			destName.innerText = data.cmpName;
+			showPlaceInfo();
 		});
 	}
 

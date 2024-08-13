@@ -207,6 +207,8 @@ public class ReviewCtrl {
 		}
 		review.setRecCount(rcRepo.countByReviewId(reviewId));
 		reviewRepo.save(review);
+		session.removeAttribute("cmp");
+		session.setAttribute("cmp", review.getCmpName());
 		return "redirect:/review/list?name=";
 	}
 	

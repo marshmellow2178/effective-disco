@@ -1,17 +1,19 @@
 @charset 'utf-8';
 header{
-	padding: 1rem 3rem;
+	background-color:#FAE100;
+	padding: 20px 0;
+}
+header .container{
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	flex-wrap: wrap;
-	background-color:#fee500;
 }
 a{
-	color: #191919;
+	color: black;
 }
 a:hover{
-	color: #191919;
+	color: black;
 }
 main{
 	min-height: calc(100vh - 160px);
@@ -21,7 +23,7 @@ footer{
 	justify-content: center;
 	text-align: center;
 	padding: 1rem;
-	background-color: rgb(245, 245, 245);
+	background-color:#e5e5e5;
 }
 p{
 	margin: 0;
@@ -39,11 +41,18 @@ img{
 .pagination .page-link{
 	color: #191919;
 }
-.nav-pills .nav-link.active,
+.nav-pills .nav-link.active
+{
+	font-weight: bold;
+	background-color: #191919;
+	color: #FAE100;
+	border-color: #191919;
+}
 .pagination .page-item.active .page-link{
-	background-color: #fee500;
-	color: #191919;
-	border-color: #fee500;
+	font-weight: bold;
+	background-color: #FAE100;
+	color: black;
+	border-color: #FAE100;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -79,24 +88,21 @@ input[type=number]{
 
 .btn-custom{
 	background-color: #191919;
-	color: white;
+	color: #FAE100;
+	font-weight: bold;
 }
 .btn-custom:hover{
-	color: white;
+	color: #FAE100;
 }
 .btn-outline-custom{
 	border-color: #191919;
 	background-color: white;
 	color: #191919;
 }
-.btn-outline-disabled{
-	border-color: rgba(118, 118, 118, 0.3);
-	background-color:#e9ecef;
-	color: black;
-}
+
 .btn-toggle{
 	background-color:white;
-	color: #007bff;
+	color: #4F37A5;
 	border: 1px solid white;
 	margin-bottom: 0.5rem;
 	padding: 0;

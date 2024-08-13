@@ -1,0 +1,89 @@
+<html layout:decorate="~{layout/layout}">
+<main class = "container"  layout:fragment="content"
+th:with = "cmpName = ${notice.cmpName}">
+<nav th:replace = "~{fragments/shop_menu :: shopFragment}"></nav>
+   	<hr>
+   	<b th:text = "|[공지] ${notice.title}|"></b>
+   	<br>
+   	<span th:text = "${#temporals.format(notice.createDate, 'yy/MM/dd')}"></span>
+   	|
+   	<span th:text = "|조회수 ${notice.read}|"></span>
+   	|
+   	<span th:text = "|댓글 ${replyPage.totalElements}|"></span>
+   	<hr>
+   	<figure>
+   		<img src = "/img/event.jpg">
+   	</figure>
+   	<p th:text = "${notice.content}"
+   	class = "text-center"></p>
+	<span th:text = "|추천 ${notice.like}|"
+	class = "btn btn-warning my-3"></span>
+	<hr>
+	<p th:text = "|${replyPage.totalElements}개의 댓글|"></p>
+   	<hr>
+   	<div th:if = "${session.userInfo == null}">
+		<a href = "/login">로그인</a>해 주세요
+	</div>
+ 	<form th:if = "${session.userInfo!=null}" 
+ 	action = "/notice/reply" method = "post"
+ 	class = "input-group">
+ 		<input type = "number"
+ 		th:value = "${notice.seq}"
+ 		name = "id"
+ 		class = "d-none">
+ 		<textarea 
+ 		placeholder = "댓글을 작성해주세요"
+ 		class = "form-control"
+ 		name = "content"
+ 		required></textarea>
+ 		<input type = "submit"
+ 		class = "btn btn-custom"
+ 		value = "등록">
+ 	</form>
+   	<table class = "table my-3">
+   		<tr>
+   			<th>작성자</th>
+   			<th>내용</th>
+   			<th>작성일</th>
+   		</tr>
+   		<tr th:each = "reply: ${replyPage}">
+   			<td th:text = "${reply.userId}"
+   			class = "col-2"></td>
+   			<td th:text = "${reply.content}"
+   			class = "col-6"></td>
+   			<td th:text = "${#temporals.format(reply.createDate, 'yy/MM/dd')}"></td>
+   		</tr>
+   	</table>
+   	<hr>
+   	<ul class = "pagination justify-content-center" 
+	    th:if = "${replyPage.totalPages} != 0"
+	 	th:with = "block = 10,
+	 	total = ${replyPage.totalPages},
+	 	number = ${replyPage.number+1},
+	 	sidx = ${((number-1)/block)*block+1}, 
+	 	eidx = ${(total > sidx+(block-1) ? sidx+(block-1) : total)}">
+	 		<li class = "page-item" 
+	 		th:classappend="${number} == 1 ? disabled">
+	 			<a class = "page-link" 
+	 			th:href = "@{|/notice/detail?id=${notice.seq}&page=${number-1}|}">&lt;</a>
+	 		</li>
+	 		<th:block th:each = "idx:${#numbers.sequence(sidx, eidx)}">
+	 		<li class = "page-item" 
+	 		th:classappend="${number}==${idx} ? active">
+	 			<a class = "page-link" 
+	 			th:text = "${idx}" 
+	 			th:href = "@{|/notice/detail?id=${notice.seq}&page=${idx}|}" ></a>
+	 		</li>
+	 		</th:block>
+	 		<li class = "page-item" 
+	 		th:classappend="!${replyPage.hasNext} ? disabled">
+	 			<a class = "page-link" 
+	 			th:href = "@{|/notice/detail?id=${notice.seq}&page=${number+1}|}">&gt;</a>
+	 		</li>
+ 		</ul>
+ 	<script>
+ 	let cmpNotice = document.querySelector("#cmp_notice");
+ 	cmpNotice.classList.add('active');
+ 	</script>
+</main>
+</html>
