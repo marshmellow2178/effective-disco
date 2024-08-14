@@ -254,7 +254,7 @@
 		.then((result) => {
 			destImg.setAttribute('src', `/img/${result.ctgrName}.png`);
 			destLinks.classList.remove('d-none');
-			favLink.href = `/fav/add?name=${result.cmpName}`;
+			favLink.href = `/fav/add?id=${result.cmpSeq}`;
 			routeLink.href = `/cmp/route?sname=${startSelect.value}&ename=${result.cmpName}`;
 			reviewLink.href = `/review/list?name=${result.cmpName}`;
 			prodLink.href = `/product/list?cmp=${result.cmpName}`;
