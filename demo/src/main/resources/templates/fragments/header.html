@@ -1,8 +1,20 @@
 <header th:fragment="headerFragment" class = "mb-3">
-	<div class = "container ">
-    <h3>
-    	<a class="nav-link" href="/">Home</a>
-    </h3>
+	<div class = "container">
+    <ol class="nav nav-pills align-items-center
+     justify-content-between">
+    	<li class="nav-item">
+    		<h3>
+		    	<a class="nav-link" href="/">Home</a>
+		    </h3>
+		</li>
+		<li class="nav-item">
+            <a th:if="${session.userInfo==null}"
+            class="nav-link" href="/login">Login</a>
+            <a th:unless ="${session.userInfo==null}"
+            class = "nav-link" href = "/logout">Logout</a>
+        </li>
+    </ol>
+    
     <ol class="nav nav-pills align-items-center">
 		<li class="nav-item">
 			<a href="/fav/list" 
@@ -24,12 +36,7 @@
 			class="nav-link" 
 			id = "nav_mypage">MY</a>
 		</li>
-        <li class="nav-item">
-            <a th:if="${session.userInfo==null}"
-            class="nav-link" href="/login">Login</a>
-            <a th:unless ="${session.userInfo==null}"
-            class = "nav-link" href = "/logout">Logout</a>
-        </li>
+        
     </ol>
    </div>
 </header>

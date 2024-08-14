@@ -1,13 +1,12 @@
 <html layout:decorate="~{layout/mypage_layout}">
 
 <div class = "col-9" layout:fragment="content">
-	<p th:text = "|${reviewPage.totalElements}개의 리뷰 작성함|"></p>
-	<hr>
-	<table class = "table table-sm table-borderless" >
+	<b th:text = "|${reviewPage.totalElements}개의 작성된 리뷰|"></b>
+	<table class = "table table-sm my-3" >
 		<tr>
 			<th class = "col-1">점수</th>
 			<th class = "col-4">지점</th>
-			<th class = "col-4">내용</th>
+			<th class = "col-2">추천수</th>
 			<th class = "col-2">날짜</th>
 		</tr>
 		<tr th:each = "review: ${reviewPage}">
@@ -16,7 +15,7 @@
 				<a th:href = "@{|/review/list?name=${review.cmpName}|}"
 				th:text = "${review.cmpName}"></a>
 			</td>
-			<td th:text = "${review.content}"></td>
+			<td th:text = "${review.recCount}"></td>
 			<td th:text = "${#temporals.format(review.createDate, 'yy/MM/dd')}"></td>
 			
 		</tr>

@@ -1,13 +1,9 @@
 @charset 'utf-8';
 header{
 	background-color:#FAE100;
-	padding: 20px 0;
+	padding-top: 10px	
 }
 header .container{
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	flex-wrap: wrap;
 	font-weight: bold;
 }
 a{
@@ -40,6 +36,7 @@ img{
 }
 .nav-pills a,
 .pagination .page-link{
+	
 	color: #191919;
 }
 .nav-pills .nav-link.active
@@ -51,6 +48,7 @@ img{
 }
 .pagination .page-item.active .page-link{
 	font-weight: bold;
+	text-decoration: underline;
 	background-color: #FAE100;
 	color: black;
 	border-color: #FAE100;

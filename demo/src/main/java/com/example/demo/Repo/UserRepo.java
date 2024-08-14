@@ -6,4 +6,5 @@ import com.example.demo.entity.UserInfo;
 
 public interface UserRepo extends JpaRepository<UserInfo, String> {
 	UserInfo findByIdAndPwd(String id, String pwd);
+	int countById(String id);
 }

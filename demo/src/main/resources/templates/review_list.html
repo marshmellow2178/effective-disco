@@ -2,7 +2,7 @@
 <main class="container" layout:fragment = "content"
 	th:with = "reviewCounts = ${reviewPage.getTotalElements},
 	sort = ${param.sort == null ? 'r' : param.sort},
-	cmpName = ${session.cmp}">
+	cmpName = ${param.name}">
 	<nav th:replace = "~{fragments/shop_menu :: shopFragment}"></nav>
 	<hr>
 	<section class="cmp_info d-flex">

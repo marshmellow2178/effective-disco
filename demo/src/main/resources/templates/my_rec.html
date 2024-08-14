@@ -1,55 +1,50 @@
 <html layout:decorate="~{layout/mypage_layout}">
 
 <div class = "col-9" layout:fragment="content">
-	<p th:text = "|${reviewPage.totalElements}개의 리뷰 추천함|"></p>
-	<hr>
-	<ul class = "list-group my-3">
- 		<li class = "list-group-item" 
- 		th:each = "rec : ${reviewPage}">
- 			<div class = "review_title">
- 				<a th:text = "${rec.review.cmpName}"
- 				th:href = "@{|/review/list?name=${rec.review.cmpName}|}"></a>
- 				<br>
- 				<span th:text = "|⭐ ${rec.review.score}|"></span>
- 				<b th:text = "${rec.review.uid}" class = "user_id"></b>
- 				<span th:if = "${rec.review.modifyDate == null}" th:text = "${#temporals.format(rec.review.createDate, 'yy/MM/dd')}"></span>
- 				<span th:unless= "${rec.review.modifyDate == null}" th:text = "|${#temporals.format(rec.review.modifyDate, 'yy/MM/dd')} (수정됨)|"></span>
- 			</div>
- 			<div>
- 				<p th:id = "|content${rec.review.id}|"  
- 				th:text = "${rec.review.content}" class = "review_content"></p>
- 			</div>
- 			<div>		
- 				<span class = "btn btn-outline-custom btn-sm" 
-				th:text = "|👍 ${rec.review.recCount}|"></span>
-			</div>
- 		</li>
- 	</ul>
+	<b th:text = "|${reviewPage.totalElements}개의 추천한 리뷰|"></b>
+ 	<table class = "table table-sm my-3">
+		<tr>
+			<th class = "col-1">점수</th>
+			<th class = "col-7">지점</th>
+			<th class = "col-2">작성자</th>
+			<th class = "col-2">날짜</th>
+		</tr>
+		<tr th:each = "rec : ${reviewPage}">
+			<td th:text = "|${rec.review.score} ⭐|"></td>
+			<td >
+				<a th:href = "@{|/review/list?name=${rec.review.cmpName}|}"
+				th:text = "${rec.review.cmpName}"></a>
+			</td>
+			<td th:text = "${rec.review.uid}"></td>
+			<td th:text = "${#temporals.format(rec.review.createDate, 'yy/MM/dd')}"></td>
+			
+		</tr>
+	</table>
 	<hr>
 	<ul class = "pagination justify-content-center" 
     th:if = "${reviewPage.totalPages} != 0"
  	th:with = "block = 10,
  	total = ${reviewPage.totalPages},
  	number = ${reviewPage.number+1},
- 	sidx = ${(number/block)*block+1}, 
+ 	sidx = ${((number-1)/block)*block+1}, 
  	eidx = ${(total > sidx+(block-1) ? sidx+(block-1) : total)}">
  		<li class = "page-item" 
  		th:classappend="${number} == 1 ? disabled">
  			<a class = "page-link" 
- 			th:href = "@{|/recommend/list?page=${number-1}|}">&lt;</a>
+ 			th:href = "@{|/review/recommend/list?page=${number-1}|}">&lt;</a>
  		</li>
  		<th:block th:each = "idx:${#numbers.sequence(sidx, eidx)}">
  		<li class = "page-item" 
  		th:classappend="${number}==${idx} ? active">
  			<a class = "page-link" 
  			th:text = "${idx}" 
- 			th:href = "@{|/recommend/list?page=${idx}|}" ></a>
+ 			th:href = "@{|/review/recommend/list?page=${idx}|}" ></a>
  		</li>
  		</th:block>
  		<li class = "page-item" 
  		th:classappend="!${reviewPage.hasNext} ? disabled">
  			<a class = "page-link" 
- 			th:href = "@{|/recommend/list?page=${number+1}|}">&gt;</a>
+ 			th:href = "@{|/review/recommend/list?page=${number+1}|}">&gt;</a>
  		</li>
 	</ul>
 	

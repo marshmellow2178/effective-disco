@@ -1,0 +1,152 @@
+<html layout:decorate="~{layout/layout}">
+<main class="container" layout:fragment="content">
+	<form action = "/user/signup" method = "post">
+		<b>회원 가입</b>
+		<div class = "input-group 
+		align-items-center my-3">
+			<label for = "id"
+			class = "col-3">
+			ID</label>
+			<input type = "text" 
+			required 
+			class = "form-control col-4" 
+			name = "id" 
+			id = "id_input"
+			value = "testing"
+			>
+			<span class = "btn btn-danger mx-2"
+			id = "id_check">
+			중복확인</span>
+		</div>
+		<div class = "input-group  
+		align-items-center mb-3">
+			<label for = "pwd"
+			class = "col-3">
+			PW</label>
+			<input type = "password" 
+			required 
+			class = "form-control col-4" 
+			name = "pwd" 
+			value = "1234"
+			id = "pw1">
+		</div>
+		<div class = "input-group  
+		align-items-center mb-3">
+			<label for = "pwd2"
+			class = "col-3">
+			PW 확인</label>
+			<input type = "password" 
+			required 
+			class = "form-control col-4" 
+			id = "pw2"
+			value = "1234">
+		</div>
+		<div class = "input-group align-items-center mb-3">
+			<label for = "phone"
+			class = "col-3">
+			연락처</label>
+			<span class = "input-group-text">
+			010</span>
+			<input type = "number" 
+			required 
+			class = "form-control col-3" 
+			name = "phone" 
+			maxlength = "8"
+			value = "12345678">
+		</div>
+		<div class = "input-group align-items-center mb-3">
+				<label for = "location"
+				class = "col-3">
+				배송지</label>
+				<input type = "text" 
+				required 
+				class = "form-control" 
+				name = "location" 
+				value = "신분당선 11번 출구"
+				readonly
+				>
+				<button class = "btn btn-custom"
+				id = "addr_input">
+				주소 검색</button>
+		</div>
+		<div class = "input-group align-items-center mb-3">
+			<label for = "email"
+			class = "col-3">
+			이메일</label>
+			<input type = "text" 
+			required 
+			class = "form-control" 
+			name = "email" 
+			value = "example"
+			>
+			<span class = "input-group-text"
+			>@</span>
+			<select class = "form-control"
+			name = "domain" value = "gmail">
+				<option value = "gmail">gmail</option>
+				<option value = "naver">naver</option>
+			</select>
+			<span class = "input-group-text"
+			>.com</span>
+		</div>
+		<div class = "input-group mb-1">
+			<p class = "col-3">이용약관</p>
+			<textarea class = "form-control"
+			>이용약관</textarea>
+		</div>
+		<div class = "input-group mb-3">
+			<p class = "col-3"></p>
+			<input type = "checkbox"
+			id = "agree">
+			<label class = "form-check-label ml-1" 
+			for = "agree">필수약관 동의</label>
+		</div>
+		<input type = "submit" 
+		class = "btn btn-custom"
+		value = "Sign Up">
+	</form>
+	<script>
+	let form = document.querySelector("form");
+	let idInput = document.querySelector("#id_input");
+	let idCheck = document.querySelector("#id_check");
+	let agree = document.querySelector("#agree");
+	
+	form.addEventListener('submit', function(event){
+		event.preventDefault();
+		if(idCheck.classList.contains('btn-info') && agree.checked){
+			form.submit();
+		}
+	});
+	
+	idInput.addEventListener('input', function(){
+		fetch("/user/find?id=" + idInput.value, {
+			method: 'get',
+			headers: {
+				'content-type': 'text'
+			},
+		})
+		.then((response)=>response.json())
+		.then((data) => {
+			console.log(data, idInput.value);
+			if(data>0){
+				alert('이미 존재하는 아이디입니다');
+				idCheck.innerText = "아이디 중복";
+				idCheck.classList.remove('btn-info');
+				idCheck.classList.add('btn-danger');
+			}else{
+				idCheck.innerText = "확인완료";
+				idCheck.classList.remove('btn-danger');
+				idCheck.classList.add('btn-info');
+			}
+		});
+	})
+	</script>
+	<style>
+	main{
+		display:flex;
+		justify-content: center;
+		padding-top: 5rem;
+	}
+	</style>
+</main>
+</html>
