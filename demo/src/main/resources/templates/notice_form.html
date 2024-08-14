@@ -1,0 +1,49 @@
+<html layout:decorate="~{layout/cmpinfo_layout}">
+<div class = "col-8" layout:fragment="content">
+   	<form action = "/notice/cmp/create"
+   	th:if = "${notice}==null"
+   	method = "post">
+   		<b>공지 등록</b>
+   		<input type = "text" 
+   		name = "title"
+   		placeholder = "제목"
+   		class = "form-control my-3">
+   		<textarea
+   		class = "form-control mb-3"
+   		name = "content"
+   		>내용</textarea>
+   		<input type = "submit"
+   		value = "등록"
+   		class = "btn btn-custom">
+   	</form>
+   	
+   	<form action = "/notice/cmp/modify"
+   	th:unless = "${notice}==null"
+   	method = "post">
+   		<b>공지 수정</b>
+   		<input type = "number"
+   		name = "id"
+   		th:value = "${notice.seq}"
+   		class = "d-none">
+   		<input type = "text" 
+   		name = "title"
+   		placeholder = "제목"
+   		th:value = "${notice.title}"
+   		class = "form-control my-3">
+   		<textarea
+   		class = "form-control mb-3"
+   		name = "content"
+   		th:text = "${notice.content}"
+   		>내용</textarea>
+   		<input type = "submit"
+   		value = "수정"
+   		class = "btn btn-custom">
+   	</form>
+ 	<script>
+ 	let navMyPage = document.querySelector('#nav_mypage');
+ 	let cmpNotice = document.querySelector("#cmp_notice");
+ 	cmpNotice.classList.add('active');
+ 	navMyPage.classList.add('active');
+ 	</script>
+</div>
+</html>

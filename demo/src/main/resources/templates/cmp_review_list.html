@@ -3,9 +3,10 @@
 	th:with = "reviewCounts = ${reviewPage.getTotalElements},
 	sort = ${param.sort == null ? 'r' : param.sort}">
     <section class="cmp_info d-flex">
-    	<div class = "cmp_details col">
-			<span id = "dest_score"
-			th:text = "|⭐ ${cmp.score} (💬 ${cmp.cmpReviewCnt})|"></span>
+    	<div class = "d-flex justify-content-center flex-column text-center col-4">
+			<h2 th:text = "|⭐ ${cmp.score}|"></h2>
+			<span 
+			th:text = "|💬 ${cmp.cmpReviewCnt}|"></span>
 		</div>
 		<table class = "table table-sm col-8 table-borderless">
 			<tr th:each = "idx:${#numbers.sequence(4, 0)}">

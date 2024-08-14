@@ -8,6 +8,7 @@ header .container{
 	justify-content: space-between;
 	align-items: center;
 	flex-wrap: wrap;
+	font-weight: bold;
 }
 a{
 	color: black;
@@ -16,7 +17,7 @@ a:hover{
 	color: black;
 }
 main{
-	min-height: calc(100vh - 160px);
+	min-height: calc(100vh - 185px);
 }
 footer{
 	display: flex;
@@ -80,7 +81,7 @@ input[type=number]{
 	gap:1rem;
 }
 .list_2 li{
-	width: 500px;
+	width: 450px;
 }
 .list_4 li{
 	width: 210px;

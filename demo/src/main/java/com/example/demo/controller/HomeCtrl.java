@@ -95,4 +95,8 @@ public class HomeCtrl {
 		return "cmp_index";
 	}
 
+	@GetMapping("/error")
+	public String error() {
+		return "error/500";
+	}
 }

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.Repo.CompanyRepo;
 import com.example.demo.Repo.NoticeRepo;
 import com.example.demo.Repo.ReplyRepo;
 import com.example.demo.entity.Company;
@@ -28,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/notice")
 public class NoticeCtrl {
-	private final CompanyRepo cmpRepo;
 	private final NoticeRepo noticeRepo;
 	private final ReplyRepo replyRepo;
 	
@@ -125,5 +123,74 @@ public class NoticeCtrl {
 			replyRepo.delete(reply);
 		}
 		return "redirect:/notice/detail?id="+noticeSeq;
+	}
+	
+	@GetMapping("/cmp/create")
+	public String createNotice(
+			HttpSession session
+			) {
+		Company cmp = (Company)session.getAttribute("cmpInfo");
+		if(cmp==null) {
+			return "redirect:/cmp/login";
+		}
+		return "notice_form";
+	}
+	
+	@PostMapping("/cmp/create")
+	public String createNotice(
+			@RequestParam(value = "title") String title,
+			@RequestParam(value = "content") String content,
+			HttpSession session
+			) {
+		Company cmp = (Company)session.getAttribute("cmpInfo");
+		if(cmp==null) {
+			return "redirect:/cmp/login";
+		}
+		Notice notice = new Notice();
+		notice.setCmp(cmp);
+		notice.setTitle(title);
+		notice.setContent(content);
+		notice.setCreateDate(LocalDateTime.now());
+		noticeRepo.save(notice);
+		return "redirect:/notice/list/cmp";
+	}
+	
+	@GetMapping("/cmp/modify")
+	public String modifyNotice(
+			HttpSession session,
+			@RequestParam(value = "id") int noticeSeq,
+			Model model
+			) {
+		Company cmp = (Company)session.getAttribute("cmpInfo");
+		if(cmp==null) {
+			return "redirect:/cmp/login";
+		}
+		Notice notice = noticeRepo.findBySeq(noticeSeq);
+		model.addAttribute("notice", notice);
+		return "notice_form";
+	}
+	
+	@PostMapping("/cmp/modify")
+	public String modifyNotice(
+			HttpSession session,
+			@RequestParam(value = "id") int noticeSeq,
+			@RequestParam(value = "title") String title,
+			@RequestParam(value = "content") String content
+			) {
+		Notice notice = noticeRepo.findBySeq(noticeSeq);
+		notice.setTitle(title);
+		notice.setContent(content);
+		notice.setModifyDate(LocalDateTime.now());
+		noticeRepo.save(notice);
+		return "redirect:/notice/detail/cmp?id="+notice.getSeq();
+	}
+	
+	@GetMapping("/cmp/delete")
+	public String deleteNotice(HttpSession session,
+			@RequestParam(value = "id") int noticeSeq
+			) {
+		Notice notice = noticeRepo.findBySeq(noticeSeq);
+		noticeRepo.delete(notice);
+		return "redirect:/notice/list/cmp";
 	}
 }

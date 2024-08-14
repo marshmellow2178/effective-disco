@@ -1,6 +1,6 @@
 <html layout:decorate="~{layout/cmpinfo_layout}">
 <div class = "col-8" layout:fragment="content">
-	<table class = "table">
+	<table class = "table table-sm">
        	<tr>
        		<th class = "col-8">제목</th>
        		<th>작성일</th>
@@ -13,9 +13,10 @@
        		<td th:text = "${#temporals.format(notice.createDate, 'yy/MM/dd')}"></td>
        	</tr>
     </table>
+      <hr>
     <a href = "/notice/cmp/create"
     class = "btn btn-custom">등록</a>
-    <hr>
+  
     <ul class = "pagination justify-content-center" 
     th:if = "${noticePage.totalPages} != 0"
  	th:with = "block = 10,
