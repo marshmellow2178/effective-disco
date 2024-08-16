@@ -17,6 +17,9 @@ public class Company {
 	@Column(name = "cmp_name")
 	private String cmpName;
 	
+	@Column(name = "cmp_seq")
+	private int cmpSeq;
+	
 	@Column(name = "cmp_pwd")
 	private String pwd;
 	

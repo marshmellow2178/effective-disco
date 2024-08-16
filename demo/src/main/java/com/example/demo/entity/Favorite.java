@@ -2,7 +2,6 @@ package com.example.demo.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,10 +22,19 @@ public class Favorite {
 	@Column(name="uid")
 	private String uid;
 	
+	@Column(name="cmp_seq")
+	private int cmpSeq;
+	
 	@Column(name="cmp_name")
 	private String cmpName;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "cmp_name", insertable = false, updatable = false)
 	private Company cmp;
+	
+	public void setCmp(Company cmp) {
+		this.cmp = cmp;
+		this.cmpSeq = cmp.getCmpSeq();
+		this.cmpName = cmp.getCmpName();
+	}
 }

@@ -1,25 +1,37 @@
 <header th:fragment="headerFragment" class = "mb-3">
 	<div class = "container">
-    <ol class="nav nav-pills align-items-center
+	<div class = "d-flex align-items-center
      justify-content-between">
-    	<li class="nav-item">
-    		<h3>
-		    	<a class="nav-link" href="/">Home</a>
-		    </h3>
-		</li>
-		<li class="nav-item">
-            <a th:if="${session.userInfo==null}"
-            class="nav-link" href="/login">Login</a>
-            <a th:unless ="${session.userInfo==null}"
-            class = "nav-link" href = "/logout">Logout</a>
-        </li>
-    </ol>
+     	<h3>
+	    	<a class="nav-link" href="/">Home</a>
+	    </h3>
+	     <ol class="nav nav-pills align-items-center
+	     justify-content-between">
+		     <li class="nav-item">
+				<a href="/mypage" 
+				th:unless ="${session.userInfo==null}"
+				class="nav-link" 
+				id = "nav_mypage">MY</a>
+				<a href="/user/signup" 
+				th:if ="${session.userInfo==null}"
+				class="nav-link" 
+				id = "">회원가입</a>
+			</li>
+			<li class="nav-item">
+	            <a th:if="${session.userInfo==null}"
+	            class="nav-link" href="/login">Login</a>
+	            <a th:unless ="${session.userInfo==null}"
+	            class = "nav-link" href = "/logout">Logout</a>
+	        </li>
+	    </ol>
+     </div>
+   
     
     <ol class="nav nav-pills align-items-center">
 		<li class="nav-item">
 			<a href="/fav/list" 
 			class="nav-link" 
-			id = "nav_fav">북마크</a>
+			id = "nav_fav">단골</a>
 		</li>
 		<li class="nav-item">
 			<a href="/cart/list" 
@@ -31,11 +43,7 @@
 			class="nav-link" 
 			id = "nav_order">주문</a>
 		</li>
-		<li class="nav-item">
-			<a href="/mypage" 
-			class="nav-link" 
-			id = "nav_mypage">MY</a>
-		</li>
+		
         
     </ol>
    </div>

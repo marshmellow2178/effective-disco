@@ -12,7 +12,6 @@
 			class = "form-control col-4" 
 			name = "id" 
 			id = "id_input"
-			value = "testing"
 			>
 			<span class = "btn btn-danger mx-2"
 			id = "id_check">
@@ -40,6 +39,9 @@
 			class = "form-control col-4" 
 			id = "pw2"
 			value = "1234">
+			<span class = "btn btn-danger mx-2"
+			id = "pw_check">
+			PW 확인</span>
 		</div>
 		<div class = "input-group align-items-center mb-3">
 			<label for = "phone"
@@ -63,9 +65,8 @@
 				class = "form-control" 
 				name = "location" 
 				value = "신분당선 11번 출구"
-				readonly
 				>
-				<button class = "btn btn-custom"
+				<button class = "btn btn-custom d-none"
 				id = "addr_input">
 				주소 검색</button>
 		</div>
@@ -110,10 +111,28 @@
 	let idInput = document.querySelector("#id_input");
 	let idCheck = document.querySelector("#id_check");
 	let agree = document.querySelector("#agree");
+	let pw1 = document.querySelector("#pw1");
+	let pw2 = document.querySelector("#pw2");
+	let pwCheck = document.querySelector("#pw_check");
+	
+	pw2.addEventListener('input', function(event){
+		let value  = event.target.value;
+		if(value == pw1.value){
+			pwCheck.innerText = "확인완료";
+			pwCheck.classList.remove('btn-danger');
+			pwCheck.classList.add('btn-info');
+		}else{
+			pwCheck.innerText = "PW확인";
+			pwCheck.classList.remove('btn-info');
+			pwCheck.classList.add('btn-danger');
+		}
+	});
 	
 	form.addEventListener('submit', function(event){
 		event.preventDefault();
-		if(idCheck.classList.contains('btn-info') && agree.checked){
+		if(idCheck.classList.contains('btn-info') &&
+				pwCheck.classList.contains('btn-info') 
+				&& agree.checked){
 			form.submit();
 		}
 	});

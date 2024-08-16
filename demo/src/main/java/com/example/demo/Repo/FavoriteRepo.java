@@ -11,6 +11,5 @@ import com.example.demo.entity.Favorite;
 public interface FavoriteRepo extends JpaRepository<Favorite, Integer> {
 	Page<Favorite> findByUid(String uid, Pageable pageable);
 	List<Favorite> findByUid(String uid);
-	Long countByUidAndCmpName(String uid, String cmpName);
-	Favorite findByUidAndCmpName(String uid, String cmpName);
+	Favorite findByUidAndCmpSeq(String uid, int cmpSeq);
 }

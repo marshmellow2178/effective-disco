@@ -1,5 +1,5 @@
 <html layout:decorate="~{layout/cmpinfo_layout}">
-<div class = "" layout:fragment="content"
+<div class = "col-8" layout:fragment="content"
 	th:with = "reviewCounts = ${reviewPage.getTotalElements},
 	sort = ${param.sort == null ? 'r' : param.sort}">
     <section class="cmp_info d-flex">
@@ -31,7 +31,7 @@
  	<form id = "review_search_form" class = "input-group align-items-center justify-content-between">
 	 	<input type = "hidden" name = "id" th:value = "${param.id}">
 	 	<input type = "hidden" name = "page" th:value = "${param.page}" id = "page_input">
-	 	<span th:text = "|${reviewCounts}개의 리뷰가 있습니다|"></span>
+	 	<b th:text = "|${reviewCounts}개의 리뷰가 있습니다|"></b>
 	 	<select class = "form-control col-3" name = "sort" id = "order_input">
 	 		<option value = "r" th:selected = "${#strings.equals(param.sort, 'r')}">추천순</option>
 	 		<option value = "d" th:selected = "${#strings.equals(param.sort, 'd')}">최신순</option>
@@ -43,10 +43,10 @@
  	<div th:unless = "${reviewCounts}==0">
 	 	<table class = "table table-sm my-3">
 	 		<tr>
-	 			<th>평점</th>
+	 			<th class = "col-1">평점</th>
 	 			<th>작성자</th>
 	 			<th>내용</th>
-	 			<th>추천수</th>
+	 			<th class = "col-1">추천</th>
 	 			<th>날짜</th>
 	 		</tr>
 	 		<tr th:each = "review : ${reviewPage}">

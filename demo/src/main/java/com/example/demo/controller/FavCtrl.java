@@ -8,7 +8,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.example.demo.Repo.CompanyRepo;
 import com.example.demo.Repo.FavoriteRepo;
+import com.example.demo.entity.Company;
 import com.example.demo.entity.Favorite;
 import com.example.demo.entity.UserInfo;
 import jakarta.servlet.http.HttpSession;
@@ -20,22 +23,24 @@ import lombok.RequiredArgsConstructor;
 public class FavCtrl {
 
 	private final FavoriteRepo favRepo;
+	private final CompanyRepo cmpRepo;
 	
 	@GetMapping("/add")
 	public String addFav(
-			@RequestParam(value = "name") String cmpName,
+			@RequestParam(value = "id") int cmpSeq,
 			HttpSession session) {
 		UserInfo user = (UserInfo) session.getAttribute("userInfo");
 		if(user==null) {
 			return "redirect:/login";
 		}
-		Favorite fav = favRepo.findByUidAndCmpName(user.getId(), cmpName);
+		Favorite fav = favRepo.findByUidAndCmpSeq(user.getId(), cmpSeq);
 		if(fav==null) {
+			Company cmp = cmpRepo.findByCmpSeq(cmpSeq);
 			fav = new Favorite();
+			fav.setCmp(cmp);
 			fav.setUid(user.getId());
-			fav.setCmpName(cmpName);
+			favRepo.save(fav);
 		}
-		favRepo.save(fav);
 		return "redirect:/fav/list";
 	}
 	
