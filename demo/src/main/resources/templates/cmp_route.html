@@ -73,17 +73,23 @@
 	let placeY = document.querySelector("#place_y");
 	let startName = document.querySelector("#start_name");
 	
-	navigator.geolocation.getCurrentPosition(success);
+	fetch('http://ip-api.com/json/', {
+		method: 'get',
+	})
+	.then(response=>response.json())
+	.then(res=>{
+		success(res.lat, res.lon);
+	});
 	
-	function success(pos){
+	function success(lat, lon){
 		let startLng;
 		let startLat;
 		if(startX.value != ''){
 			startLng = Number(startX.value);
 			startLat = Number(startY.value);
 		}else{
-			startLng = pos.coords.longitude;
-			startLat = pos.coords.latitude;
+			startLng = lon;
+			startLat = lat;
 			geocoder.coord2Address(startLng, startLat, function(result, status){
 				if (status === kakao.maps.services.Status.OK) {
 					startName.value = '현재 위치';
