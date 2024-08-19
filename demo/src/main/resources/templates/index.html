@@ -10,7 +10,7 @@
 			</div>
 			<select class="form-control col" 
 			id = "start_select">
-				<option value = "현재 위치">현재 위치</option>
+				<option value = "현재 위치">현재 접속 IP</option>
 				<option th:each = "fav : ${favList}" 
 				th:if = "${session.userInfo!=null}"
 				th:value = "${fav.cmpName}" 
@@ -111,8 +111,14 @@
 	let cmpState = document.querySelector("#cmp_state");
 	let navStore = document.querySelector("#nav_store");
 	
-	navigator.geolocation.getCurrentPosition(success);
-	
+	fetch('http://ip-api.com/json/', {
+		method: 'get',
+	})
+	.then(response=>response.json())
+	.then(res=>{
+		success(res.lat, res.lon);
+	});
+		
 	startSelect.addEventListener('change', onStartSelect);
 	destForm.addEventListener('submit', destFormSubmit);
 	category.addEventListener('change', onSelect);
@@ -145,8 +151,8 @@
 		circle.setMap(map);
 	}
 	
-	function success(pos){
-		currentPos = new kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+	function success(lat, lon){
+		currentPos = new kakao.maps.LatLng(lat, lon);
 		drawMap(currentPos);
 		searchAddrFromCoords(currentPos, function (result, status) {
 	        if (status === kakao.maps.services.Status.OK) {
